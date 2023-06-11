@@ -2,7 +2,7 @@ FOODSNOW GmbH<a name="TOP"></a>
 ===================
 
 - - - - 
-# Clone or Download zip #
+## Clone or Download zip ##
 
     To Clone into local repo, copy paste the following line in your terminal
       
