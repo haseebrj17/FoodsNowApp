@@ -2,6 +2,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import Home from "./src/screens/Home";
 import Details from "./src/screens/Details";
+import DataTracking from "./src/screens/DataTracking";
 
 const theme = {
   ...DefaultTheme,
@@ -23,6 +24,7 @@ export default function App() {
       >
         <Stack.Screen  name="Home" component={Home}/>
         <Stack.Screen  name="Details" component={Details}/>
+        <Stack.Screen name="DataTracking" component={DataTracking}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

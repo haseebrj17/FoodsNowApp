@@ -1,16 +1,21 @@
-import { Animated, FlatList, StyleSheet, View, ScrollView, Text, Image, Dimensions } from "react-native";
+import { Animated, FlatList, StyleSheet, View, ScrollView, Text, Image, Dimensions, TouchableWithoutFeedback, TouchableHighlight } from "react-native";
 import { AppBar, Button } from "@react-native-material/core";
 import { Searchbar } from 'react-native-paper';
 import { Center, Flex, Icon, Row, Box, Card } from "native-base";
 import { SimpleLineIcons } from '@expo/vector-icons';
+// import LinearGradient from "react-native-linear-gradient";
 import { SliderImage  } from "../../assets/Slider";
 import BrandCardsHome from "../components/BrandCardsHome";
 import CustomImageCarousal from "../components/CustomImageCarousal";
 import BuyGetOfferList from "../components/BuyGetOffer";
+import ChefRecommendation from "../components/ChefReco";
+import KidSpecialOffer from "../components/KidSpecial";
 
 const { width, height } = Dimensions.get('window');
 
-const HomeScreen = () => {
+console.log(width, height)
+
+const HomeScreen = ({ navigation }) => {
     return (
         <ScrollView style={{height: height}}>
             <AppBar style={styles.AppBar}>
@@ -82,37 +87,57 @@ const HomeScreen = () => {
             />
             <View style={{ width: "100%", height: "0.5%", backgroundColor: "#f1f1f1", marginTop: "3%", marginBottom: 10 }}></View>
             <BrandCardsHome />
-            <View style={{ width: "100%", height: "0.5%", backgroundColor: "#f1f1f1", marginTop: "3%", marginBottom: 10 }}></View>
-            <View style={styles.Container}>
-                <View
-                    style={[
-                        styles.Container,
-                        {
-                            backgroundColor: "red",
-                            width: "90%",
-                            height: undefined,
-                            justifyContent: "center",
-                            alignItems: "center",
-                            alignSelf: "center",
-                            borderRadius: 12,
-                            margin: 5,
-                        }
-                    ]}
-                >
-                    <Image source={require('../../assets/images/7.png')} style={[styles.Image, {borderRadius: 12}]} />
-                </View>
-                <Button
-                    title={custonTitleGeneral}
-                    style={styles.Button}
-                    color="rgba(50, 89, 98, 0.2)"
-                    disableElevation={true}
-                    uppercase={false}
-                    leading
-                />
+            <View style={{ width: "100%", height: "0.5%", backgroundColor: "#f1f1f1", marginTop: "3%", marginBottom: 5 }}></View>
+            <View
+                style={[
+                    styles.Container,
+                    {
+                        backgroundColor: "red",
+                        width: "90%",
+                        height: undefined,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        alignSelf: "center",
+                        borderRadius: 12,
+                        marginBottom: 5,
+                    }
+                ]}
+            >
+                <TouchableHighlight onPress={() => navigation.navigate('DataTracking')}   activeOpacity={0.6} underlayColor="#DDDDDD" borderRadius={8}>
+                    <Image source={require('../../assets/images/10.png')} style={[styles.Image, {borderRadius: 12}]} />
+                </TouchableHighlight>
             </View>
             <View style={{ width: "100%", height: "0.5%", backgroundColor: "#f1f1f1", }} />
             <View style={styles.Container}>
                 <BuyGetOfferList />
+            </View>
+            <View style={{ width: "100%", height: "0.5%", backgroundColor: "#f1f1f1", marginTop: "3%", marginBottom: 5 }}></View>
+            <View
+                style={[
+                    styles.Container,
+                    {
+                        backgroundColor: "red",
+                        width: "90%",
+                        height: undefined,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        alignSelf: "center",
+                        borderRadius: 12,
+                        marginBottom: 5,
+                    }
+                ]}
+            >
+                <TouchableHighlight onPress={() => navigation.navigate('Details')}   activeOpacity={0.6} underlayColor="#DDDDDD" borderRadius={8}>
+                    <Image source={require('../../assets/images/11.png')} style={[styles.Image, {borderRadius: 12}]} />
+                </TouchableHighlight>
+            </View>
+            <View style={{ width: "100%", height: "0.5%", backgroundColor: "#f1f1f1" }}></View>
+            <View style={styles.Container}>
+                <ChefRecommendation />
+            </View>
+            <View style={{ width: "100%", height: "0.5%", backgroundColor: "#f1f1f1"}}></View>
+            <View style={styles.Container}>
+                <KidSpecialOffer />
             </View>
         </ScrollView>
     )
@@ -204,6 +229,11 @@ const styles = StyleSheet.create({
     Container: {
         alignContent: "center",
         justifyContent: "center"
+    },
+    ContainerGold: {
+        alignContent: 'center',
+        justifyContent: 'center',
+        backgroundColor: "#000"
     },
     AppBar: {
         backgroundColor: '#F4E4CD',
@@ -300,7 +330,7 @@ const styles = StyleSheet.create({
     Image: {
         width: '100%',
         height: undefined,
-        aspectRatio: 181 / 86,
+        aspectRatio: 3/1,
     },
     Text: {
         fontSize: 15,
