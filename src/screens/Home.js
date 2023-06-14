@@ -3,13 +3,13 @@ import { AppBar, Button } from "@react-native-material/core";
 import { Searchbar } from 'react-native-paper';
 import { Center, Flex, Icon, Row, Box, Card } from "native-base";
 import { SimpleLineIcons } from '@expo/vector-icons';
-// import LinearGradient from "react-native-linear-gradient";
-import { SliderImage  } from "../../assets/Slider";
+import { SliderImage } from "../../assets/Slider";
 import BrandCardsHome from "../components/BrandCardsHome";
 import CustomImageCarousal from "../components/CustomImageCarousal";
 import BuyGetOfferList from "../components/BuyGetOffer";
 import ChefRecommendation from "../components/ChefReco";
 import KidSpecialOffer from "../components/KidSpecial";
+import { BrandCard } from "../../assets/Slider";
 
 const { width, height } = Dimensions.get('window');
 
@@ -103,7 +103,7 @@ const HomeScreen = ({ navigation }) => {
                     }
                 ]}
             >
-                <TouchableHighlight onPress={() => navigation.navigate('DataTracking')}   activeOpacity={0.6} underlayColor="#DDDDDD" borderRadius={8}>
+                <TouchableHighlight activeOpacity={0.6} underlayColor="#DDDDDD" borderRadius={8} onPress={() => navigation.navigate('Splash')}>
                     <Image source={require('../../assets/images/10.png')} style={[styles.Image, {borderRadius: 12}]} />
                 </TouchableHighlight>
             </View>

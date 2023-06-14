@@ -16,17 +16,16 @@ const formatData = (brands, column) => {
     return brands;
 }
 
-const BrandCardsHome = ({ navigation }) => {
-    const [loaded] = useFonts({
-        Poppins: require('../../assets/fonts/Poppins-Regular.ttf'),
-    });
+const BrandCardsHome = (props) => {
+    const { navigation } = props
     const [brands, setBrand] = useState(BrandCard);
     renderItem = ({ item: brand }) => {
+        const id = brand.id;
         if (brand.empty === true) {
             return <View style={[styles.BrandCard, styles.itemInvisible]} />;
         }
         return (
-            <TouchableWithoutFeedback onPress={() => navigation.navigate('Brand', {brand})}>
+            <TouchableWithoutFeedback onPress={() => navigation.navigate('Details', {id})}>
                 <View
                     style={styles.BrandCard}
                 >
@@ -54,7 +53,7 @@ const BrandCardsHome = ({ navigation }) => {
                 style={styles.container}
                 renderItem={renderItem}
                 numColumns={column}
-                // keyExtractor={(item) => item.id.toString()}
+                keyExtractor={(item) => item.id}
             />
             <ConditionalRendering />
         </View>

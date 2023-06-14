@@ -18,7 +18,7 @@ import {
         Box, Heading, AspectRatio, Center, HStack, Stack
 } from 'native-base';
 import { Button } from "@react-native-material/core";
-// import { transform } from "react-native-svg-transformer";
+import BrandCardsHome from "../components/BrandCardsHome";
 
 const { width } = Dimensions.get('window');
 
@@ -35,8 +35,9 @@ const formatData = (brands, column) => {
 }
 
 const DetailsScreen = ({ route }) => {
-    const { dishes } = route.params;
-    const [dish, setDish] = useState(dishes);
+    const { id } = route.params;
+    const { dishes } = BrandCardsHome.filter((dishes) => dishes.id === id )
+    console.log(dishes)
     const renderItem = ({ item: dishes }) => {
         return <Box alignItems="center" style={styles.OfferCardBox}>
             <Box maxW="80"
@@ -79,7 +80,7 @@ const DetailsScreen = ({ route }) => {
             <NativeBaseProvider>
                 <FlatList
                     onScrollAnimationEnd={true}
-                    data={formatData(dish, column)}
+                    data={formatData(dishes, column)}
                     aria-expanded="false"
                     style={styles.container}
                     renderItem={renderItem}

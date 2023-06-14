@@ -96,6 +96,7 @@ const BuyGetOfferList = ({ navigation }) => {
             }}>Chicken Bestseller</Text>
             <NativeBaseProvider>
                 <FlatList
+                    showsHorizontalScrollIndicator={false}
                     onScrollAnimationEnd={true}
                     horizontal={true}
                     aria-expanded="false"

@@ -18,6 +18,7 @@ export const SliderImage = [
 
 export const BrandCard = [
     {
+        id: 0,
         image: require('./images/BrandCard1.png'),
         name: 'Come A Napoli',
         description: 'Brand description',
@@ -47,6 +48,7 @@ export const BrandCard = [
         ]
     },
     {
+        id: 1,
         image: require('./images/BrandCard2.png'),
         name: 'Pasta Amico',
         description: 'Brand description',
@@ -76,6 +78,7 @@ export const BrandCard = [
         ]
     },
     {
+        id: 2,
         image: require('./images/BrandCard3.png'),
         name: 'Wok \'N Box',
         description: 'Brand description',
@@ -105,6 +108,7 @@ export const BrandCard = [
         ]
     },
     {
+        id: 3,
         image: require('./images/BrandCard4.png'),
         name: 'Wrap Time',
         description: 'Brand description',
@@ -134,6 +138,7 @@ export const BrandCard = [
         ]
     },
     {
+        id: 4,
         image: require('./images/BrandCard5.png'),
         name: 'License To Grill',
         description: 'Brand description',
@@ -163,6 +168,7 @@ export const BrandCard = [
         ]
     },
     {
+        id: 5,
         image: require('./images/BrandCard6.png'),
         name: 'Mock',
         description: 'Brand description',
@@ -326,4 +332,54 @@ export const KidSpecial = [
         description: 'Dish description',
         price: "€8"
     },
+]
+
+export const SplashScreen = [
+    {
+        id: 0,
+        title: "Very fast delivery Loreum Ipsum",
+        description: "Anything",
+        image: require('./icons/Splash1.png')
+    },
+    {
+        id: 1,
+        title: "Very Low cost afforable",
+        description: "Anything",
+        image: require('./icons/Splash2.png')
+    },
+    {
+        id: 2,
+        title: "Very authentic Italian ingredients",
+        description: "Anything",
+        image: require('./icons/Splash3.png')
+    },
+    {
+        id: 3,
+        title: "Very hot and warm food",
+        description: "Anything",
+        image: require('./icons/Splash4.png')
+    },
+]
+
+export const Splash = [
+    {
+        id: 0,
+        image: require('./icons/ComeANapoli.png')
+    },
+    {
+        id: 1,
+        image: require('./icons/PastaAmico.png')
+    },
+    {
+        id: 2,
+        image: require('./icons/LicenseToGrill.png')
+    },
+    {
+        id: 3,
+        image: require('./icons/WokNBox.png')
+    },
+    {
+        id: 4,
+        image: require('./icons/WrapTime.png')
+    }
 ]

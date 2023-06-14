@@ -3,6 +3,8 @@ import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import Home from "./src/screens/Home";
 import Details from "./src/screens/Details";
 import DataTracking from "./src/screens/DataTracking";
+// import SplashScreen from "./src/screens/SplashScreen";
+import SplashScreen from "./src/screens/Splash";
 
 const theme = {
   ...DefaultTheme,
@@ -21,10 +23,13 @@ export default function App() {
         screenOptions={{
           headerShown: false,
         }}
+        initialRouteName="DataTracking"
       >
         <Stack.Screen  name="Home" component={Home}/>
         <Stack.Screen  name="Details" component={Details}/>
         <Stack.Screen name="DataTracking" component={DataTracking}/>
+        {/* <Stack.Screen name="SlpashScreen" component={SplashScreen}/> */}
+        <Stack.Screen name="Splash" component={SplashScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

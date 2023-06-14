@@ -86,6 +86,7 @@ const ChefRecommendation = ({ navigation }) => {
                 <NativeBaseProvider>
                     <FlatList
                         onScrollAnimationEnd={true}
+                        showsHorizontalScrollIndicator={false}
                         horizontal={true}
                         aria-expanded="false"
                         data={reco}
