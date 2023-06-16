@@ -3,6 +3,7 @@ import { StyleSheet, FlatList, View, Text, Image, Dimensions, TouchableWithoutFe
 import { BrandCard } from '../../assets/Slider';
 import { useFonts } from 'expo-font';
 import { Button } from "@react-native-material/core";
+import { useNavigation } from '@react-navigation/native';
 
 const column = 3;
 
@@ -16,16 +17,15 @@ const formatData = (brands, column) => {
     return brands;
 }
 
-const BrandCardsHome = (props) => {
-    const { navigation } = props
+const BrandCardsHome = () => {
+    const navigation = useNavigation();
     const [brands, setBrand] = useState(BrandCard);
     renderItem = ({ item: brand }) => {
-        const id = brand.id;
         if (brand.empty === true) {
             return <View style={[styles.BrandCard, styles.itemInvisible]} />;
         }
         return (
-            <TouchableWithoutFeedback onPress={() => navigation.navigate('Details', {id})}>
+            <TouchableWithoutFeedback onPress={() => navigation.navigate('Details', {brand})}>
                 <View
                     style={styles.BrandCard}
                 >

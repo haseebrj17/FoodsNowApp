@@ -22,6 +22,7 @@ export const BrandCard = [
         image: require('./images/BrandCard1.png'),
         name: 'Come A Napoli',
         description: 'Brand description',
+        cover: require('./images/ComeANapoliCover.png'),
         dishes: [
             {
                 id: 0,
@@ -45,16 +46,8 @@ export const BrandCard = [
                 category1: "Pizza",
                 restaurant: "ComeANapoli"
             },
-        ]
-    },
-    {
-        id: 1,
-        image: require('./images/BrandCard2.png'),
-        name: 'Pasta Amico',
-        description: 'Brand description',
-        dishes: [
             {
-                id: 0,
+                id: 2,
                 name: "Pizza Margarita",
                 image: require("./images/Bg1Asset.png"),
                 description: "Olivenöl, Tomatensauce, frischer Büffel-Mozeralla, Basilikum",
@@ -65,7 +58,93 @@ export const BrandCard = [
                 restaurant: "ComeANapoli"
             },
             {
+                id: 3,
+                name: "Salami with Peperoni",
+                image: require("./images/Bg2Asset.png"),
+                description: "Salami, Peperoni, Käse, Gemüse und Gurke, Sauce",
+                price32: "€8",
+                price48: "€17",
+                price60: "€22",
+                category1: "Pizza",
+                restaurant: "ComeANapoli"
+            },
+            {
+                id: 4,
+                name: "Pizza Margarita",
+                image: require("./images/Bg1Asset.png"),
+                description: "Olivenöl, Tomatensauce, frischer Büffel-Mozeralla, Basilikum",
+                price32: "€11",
+                price48: "€22",
+                price60: "€32",
+                category1: "Pizza",
+                restaurant: "ComeANapoli"
+            },
+        ]
+    },
+    {
+        id: 1,
+        image: require('./images/BrandCard2.png'),
+        name: 'Pasta Amico',
+        description: 'Brand description',
+        cover: require('./images/PastaAmicoCover.png'),
+        dishes: [
+            {
+                id: 0,
+                name: "Pizza Margarita",
+                image: require("./images/Bg1Asset.png"),
+                description: "Olivenöl, Tomatensauce, frischer Büffel-Mozeralla, Basilikum",
+                price32: "€11",
+                price48: "€22",
+                price60: "€32",
+                category1: "Pizza",
+                restaurant: "PastaAmico"
+            },
+            {
                 id: 1,
+                name: "Salami with Peperoni",
+                image: require("./images/Bg2Asset.png"),
+                description: "Salami, Peperoni, Käse, Gemüse und Gurke, Sauce",
+                price32: "€8",
+                price48: "€17",
+                price60: "€22",
+                category1: "Pizza",
+                restaurant: "PastaAmico"
+            },
+            {
+                id: 2,
+                name: "Pizza Margarita",
+                image: require("./images/Bg1Asset.png"),
+                description: "Olivenöl, Tomatensauce, frischer Büffel-Mozeralla, Basilikum",
+                price32: "€11",
+                price48: "€22",
+                price60: "€32",
+                category1: "Pizza",
+                restaurant: "PastaAmico"
+            },
+            {
+                id: 3,
+                name: "Salami with Peperoni",
+                image: require("./images/Bg2Asset.png"),
+                description: "Salami, Peperoni, Käse, Gemüse und Gurke, Sauce",
+                price32: "€8",
+                price48: "€17",
+                price60: "€22",
+                category1: "Pizza",
+                restaurant: "PastaAmico"
+            },
+            {
+                id: 4,
+                name: "Pizza Margarita",
+                image: require("./images/Bg1Asset.png"),
+                description: "Olivenöl, Tomatensauce, frischer Büffel-Mozeralla, Basilikum",
+                price32: "€11",
+                price48: "€22",
+                price60: "€32",
+                category1: "Pizza",
+                restaurant: "ComeANapoli"
+            },
+            {
+                id: 5,
                 name: "Salami with Peperoni",
                 image: require("./images/Bg2Asset.png"),
                 description: "Salami, Peperoni, Käse, Gemüse und Gurke, Sauce",
@@ -92,10 +171,54 @@ export const BrandCard = [
                 price48: "€22",
                 price60: "€32",
                 category1: "Pizza",
-                restaurant: "ComeANapoli"
+                restaurant: "WokNBox"
             },
             {
                 id: 1,
+                name: "Salami with Peperoni",
+                image: require("./images/Bg2Asset.png"),
+                description: "Salami, Peperoni, Käse, Gemüse und Gurke, Sauce",
+                price32: "€8",
+                price48: "€17",
+                price60: "€22",
+                category1: "Pizza",
+                restaurant: "WokNBox"
+            },
+            {
+                id: 2,
+                name: "Pizza Margarita",
+                image: require("./images/Bg1Asset.png"),
+                description: "Olivenöl, Tomatensauce, frischer Büffel-Mozeralla, Basilikum",
+                price32: "€11",
+                price48: "€22",
+                price60: "€32",
+                category1: "Pizza",
+                restaurant: "WokNBox"
+            },
+            {
+                id: 3,
+                name: "Salami with Peperoni",
+                image: require("./images/Bg2Asset.png"),
+                description: "Salami, Peperoni, Käse, Gemüse und Gurke, Sauce",
+                price32: "€8",
+                price48: "€17",
+                price60: "€22",
+                category1: "Pizza",
+                restaurant: "WokNBox"
+            },
+            {
+                id: 4,
+                name: "Pizza Margarita",
+                image: require("./images/Bg1Asset.png"),
+                description: "Olivenöl, Tomatensauce, frischer Büffel-Mozeralla, Basilikum",
+                price32: "€11",
+                price48: "€22",
+                price60: "€32",
+                category1: "Pizza",
+                restaurant: "ComeANapoli"
+            },
+            {
+                id: 5,
                 name: "Salami with Peperoni",
                 image: require("./images/Bg2Asset.png"),
                 description: "Salami, Peperoni, Käse, Gemüse und Gurke, Sauce",
@@ -112,6 +235,7 @@ export const BrandCard = [
         image: require('./images/BrandCard4.png'),
         name: 'Wrap Time',
         description: 'Brand description',
+        cover: require('./images/WrapTimeCover.png'),
         dishes: [
             {
                 id: 0,
@@ -122,10 +246,54 @@ export const BrandCard = [
                 price48: "€22",
                 price60: "€32",
                 category1: "Pizza",
-                restaurant: "ComeANapoli"
+                restaurant: "WrapTime"
             },
             {
                 id: 1,
+                name: "Salami with Peperoni",
+                image: require("./images/Bg2Asset.png"),
+                description: "Salami, Peperoni, Käse, Gemüse und Gurke, Sauce",
+                price32: "€8",
+                price48: "€17",
+                price60: "€22",
+                category1: "Pizza",
+                restaurant: "WrapTime"
+            },
+            {
+                id: 2,
+                name: "Pizza Margarita",
+                image: require("./images/Bg1Asset.png"),
+                description: "Olivenöl, Tomatensauce, frischer Büffel-Mozeralla, Basilikum",
+                price32: "€11",
+                price48: "€22",
+                price60: "€32",
+                category1: "Pizza",
+                restaurant: "WrapTime"
+            },
+            {
+                id: 3,
+                name: "Salami with Peperoni",
+                image: require("./images/Bg2Asset.png"),
+                description: "Salami, Peperoni, Käse, Gemüse und Gurke, Sauce",
+                price32: "€8",
+                price48: "€17",
+                price60: "€22",
+                category1: "Pizza",
+                restaurant: "WrapTime"
+            },
+            {
+                id: 4,
+                name: "Pizza Margarita",
+                image: require("./images/Bg1Asset.png"),
+                description: "Olivenöl, Tomatensauce, frischer Büffel-Mozeralla, Basilikum",
+                price32: "€11",
+                price48: "€22",
+                price60: "€32",
+                category1: "Pizza",
+                restaurant: "ComeANapoli"
+            },
+            {
+                id: 5,
                 name: "Salami with Peperoni",
                 image: require("./images/Bg2Asset.png"),
                 description: "Salami, Peperoni, Käse, Gemüse und Gurke, Sauce",
@@ -142,6 +310,7 @@ export const BrandCard = [
         image: require('./images/BrandCard5.png'),
         name: 'License To Grill',
         description: 'Brand description',
+        cover: require('./images/LicenseToGrillCover.png'),
         dishes: [
             {
                 id: 0,
@@ -152,10 +321,54 @@ export const BrandCard = [
                 price48: "€22",
                 price60: "€32",
                 category1: "Pizza",
-                restaurant: "ComeANapoli"
+                restaurant: "LicenseToGrill"
             },
             {
                 id: 1,
+                name: "Salami with Peperoni",
+                image: require("./images/Bg2Asset.png"),
+                description: "Salami, Peperoni, Käse, Gemüse und Gurke, Sauce",
+                price32: "€8",
+                price48: "€17",
+                price60: "€22",
+                category1: "Pizza",
+                restaurant: "LicenseToGrill"
+            },
+            {
+                id: 2,
+                name: "Pizza Margarita",
+                image: require("./images/Bg1Asset.png"),
+                description: "Olivenöl, Tomatensauce, frischer Büffel-Mozeralla, Basilikum",
+                price32: "€11",
+                price48: "€22",
+                price60: "€32",
+                category1: "Pizza",
+                restaurant: "LicenseToGrill"
+            },
+            {
+                id: 3,
+                name: "Salami with Peperoni",
+                image: require("./images/Bg2Asset.png"),
+                description: "Salami, Peperoni, Käse, Gemüse und Gurke, Sauce",
+                price32: "€8",
+                price48: "€17",
+                price60: "€22",
+                category1: "Pizza",
+                restaurant: "LicenseToGrill"
+            },
+            {
+                id: 4,
+                name: "Pizza Margarita",
+                image: require("./images/Bg1Asset.png"),
+                description: "Olivenöl, Tomatensauce, frischer Büffel-Mozeralla, Basilikum",
+                price32: "€11",
+                price48: "€22",
+                price60: "€32",
+                category1: "Pizza",
+                restaurant: "ComeANapoli"
+            },
+            {
+                id: 5,
                 name: "Salami with Peperoni",
                 image: require("./images/Bg2Asset.png"),
                 description: "Salami, Peperoni, Käse, Gemüse und Gurke, Sauce",
@@ -172,6 +385,7 @@ export const BrandCard = [
         image: require('./images/BrandCard6.png'),
         name: 'Mock',
         description: 'Brand description',
+        cover: require('./images/WrapTimeCover.png'),
         dishes: [
             {
                 id: 0,
@@ -182,10 +396,54 @@ export const BrandCard = [
                 price48: "€22",
                 price60: "€32",
                 category1: "Pizza",
-                restaurant: "ComeANapoli"
+                restaurant: "Mock"
             },
             {
                 id: 1,
+                name: "Salami with Peperoni",
+                image: require("./images/Bg2Asset.png"),
+                description: "Salami, Peperoni, Käse, Gemüse und Gurke, Sauce",
+                price32: "€8",
+                price48: "€17",
+                price60: "€22",
+                category1: "Pizza",
+                restaurant: "Mock"
+            },
+            {
+                id: 2,
+                name: "Pizza Margarita",
+                image: require("./images/Bg1Asset.png"),
+                description: "Olivenöl, Tomatensauce, frischer Büffel-Mozeralla, Basilikum",
+                price32: "€11",
+                price48: "€22",
+                price60: "€32",
+                category1: "Pizza",
+                restaurant: "Mock"
+            },
+            {
+                id: 3,
+                name: "Salami with Peperoni",
+                image: require("./images/Bg2Asset.png"),
+                description: "Salami, Peperoni, Käse, Gemüse und Gurke, Sauce",
+                price32: "€8",
+                price48: "€17",
+                price60: "€22",
+                category1: "Pizza",
+                restaurant: "Mock"
+            },
+            {
+                id: 4,
+                name: "Pizza Margarita",
+                image: require("./images/Bg1Asset.png"),
+                description: "Olivenöl, Tomatensauce, frischer Büffel-Mozeralla, Basilikum",
+                price32: "€11",
+                price48: "€22",
+                price60: "€32",
+                category1: "Pizza",
+                restaurant: "ComeANapoli"
+            },
+            {
+                id: 5,
                 name: "Salami with Peperoni",
                 image: require("./images/Bg2Asset.png"),
                 description: "Salami, Peperoni, Käse, Gemüse und Gurke, Sauce",

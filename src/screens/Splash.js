@@ -5,14 +5,14 @@ import { useState } from "react";
 
 const column = 3;
 
-const formatData = (brands, column) => {
-    const numOfFullRow = Math.floor(brands.length / column)
-    let numOfElementsLastRow = brands.length - (numOfFullRow * column);
+const formatData = (Splash, column) => {
+    const numOfFullRow = Math.floor(Splash.length / column)
+    let numOfElementsLastRow = Splash.length - (numOfFullRow * column);
     while (numOfElementsLastRow !== column && numOfElementsLastRow !== 0) {
-        brands.push({ key: `balnk-${numOfElementsLastRow}`, empty: true });
+        Splash.push({ key: `balnk-${numOfElementsLastRow}`, empty: true });
         numOfElementsLastRow = numOfElementsLastRow + 1;
     }
-    return brands;
+    return Splash;
 }
 
 const SplashScreen  = () => {
@@ -32,8 +32,7 @@ const SplashScreen  = () => {
             <NativeBaseProvider>
                 <FlatList
                     aria-expanded="false"
-                    // data={formatData(Splash, column)}
-                    data={Splash}
+                    data={formatData(Splash, column)}
                     style={styles.container}
                     renderItem={renderItem}
                     numColumns={column}

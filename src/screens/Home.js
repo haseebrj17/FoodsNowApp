@@ -10,12 +10,14 @@ import BuyGetOfferList from "../components/BuyGetOffer";
 import ChefRecommendation from "../components/ChefReco";
 import KidSpecialOffer from "../components/KidSpecial";
 import { BrandCard } from "../../assets/Slider";
+import { useNavigation } from '@react-navigation/native';
 
 const { width, height } = Dimensions.get('window');
 
 console.log(width, height)
 
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = () => {
+    const navigation = useNavigation();
     return (
         <ScrollView style={{height: height}}>
             <AppBar style={styles.AppBar}>
@@ -50,6 +52,7 @@ const HomeScreen = ({ navigation }) => {
                         title="Sign Up"
                         color="#FFAF51"
                         uppercase={false}
+                        titleStyle={{ color: "#325962" }}
                         style={{
                             position: "absolute",
                             right: "9%",
