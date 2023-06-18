@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { StyleSheet, FlatList, View, Text, Image, Dimensions, TouchableWithoutFeedback } from 'react-native';
-import { ChefReco } from '../../assets/Slider';
+import { ChefReco } from '../assets/constants/Slider';
 import { useFonts } from 'expo-font';
 import { Button } from "@react-native-material/core";
 import {LinearGradient} from 'expo-linear-gradient';

@@ -4,6 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import HomeScreen from './Home';
 import DetailsScreen from './Details';
+import { useFonts } from 'expo-font';
 
 const Drawer  = createDrawerNavigator();
 

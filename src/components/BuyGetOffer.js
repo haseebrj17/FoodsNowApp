@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { StyleSheet, FlatList, View, Text, Image, Dimensions, TouchableWithoutFeedback } from 'react-native';
-import { BuyGetOffer } from '../../assets/Slider';
+import { BuyGetOffer } from '../assets/constants/Slider';
 import { useFonts } from 'expo-font';
 import { Button } from "@react-native-material/core";
 import {
@@ -26,9 +26,6 @@ const column = 3;
 // }
 
 const BuyGetOfferList = ({ navigation }) => {
-    const [loaded] = useFonts({
-        Poppins: require('../../assets/fonts/Poppins-Regular.ttf'),
-    });
     const [offer, setOffer] = useState(BuyGetOffer);
     renderItem = ({ item: offer }) => {
         return (

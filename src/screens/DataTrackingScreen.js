@@ -2,7 +2,7 @@ import { View, Image, Text, FlatList, StyleSheet } from "react-native";
 import {LinearGradient} from 'expo-linear-gradient';
 import { Button } from "@react-native-material/core";
 
-const DataTracking = ({ navigation }) => {
+const DataTrackingScreen = ({ navigation }) => {
     return (
         <View style={styles.Container}>
             <LinearGradient
@@ -11,21 +11,21 @@ const DataTracking = ({ navigation }) => {
             >
                 <View style={styles.flexBox}>
                     <View style={styles.box}>
-                        <Image source={require('../../assets/images/DT4Asset.png')} style={styles.image} />
+                        <Image source={require('../assets/images/DT4Asset.png')} style={styles.image} />
                         <Text style={styles.heading}>Datenverfolgung zulassen</Text>
                         <Text style={styles.subHeading}>Ihre Zustimmung hilft uns,{"\n"}Sie besser zu bedienen</Text>
                     </View>
                     <View style={styles.note}>
                         <View style={styles.noteBox}>
-                            <Image style={[styles.noteImage, { aspectRatio: 35/41 }]} source={require('../../assets/images/DT1Asset.png')} />
+                            <Image style={[styles.noteImage, { aspectRatio: 35/41 }]} source={require('../assets/images/DT1Asset.png')} />
                             <Text style={styles.noteText}>Individuelles Erlebnis für Ihr Empfinden</Text>
                         </View>
                         <View style={styles.noteBox}>
-                            <Image style={[styles.noteImage, { aspectRatio: 35/44 }]} source={require('../../assets/images/DT2Asset.png')} />
+                            <Image style={[styles.noteImage, { aspectRatio: 35/44 }]} source={require('../assets/images/DT2Asset.png')} />
                             <Text style={styles.noteText}>Benachrichtigungen, die Ihren{'\n'}Interessen entsprechen</Text>
                         </View>
                         <View style={styles.noteBox}>
-                            <Image style={[styles.noteImage, { aspectRatio: 41/33 }]} source={require('../../assets/images/DT3Asset.png')} />
+                            <Image style={[styles.noteImage, { aspectRatio: 41/33 }]} source={require('../assets/images/DT3Asset.png')} />
                             <Text style={styles.noteText}>Personalisierte Angebote und{'\n'}Werbeaktionen</Text>
                         </View>
                     </View>
@@ -123,4 +123,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default DataTracking;
+export default DataTrackingScreen;

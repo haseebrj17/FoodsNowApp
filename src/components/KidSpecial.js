@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { StyleSheet, FlatList, View, Text, Image, Dimensions, TouchableWithoutFeedback } from 'react-native';
-import { KidSpecial } from '../../assets/Slider';
+import { KidSpecial } from '../assets/constants/Slider';
 import { useFonts } from 'expo-font';
 import { Button } from "@react-native-material/core";
 import {
@@ -16,9 +16,6 @@ import {
 const column = 3;
 
 const KidSpecialOffer = ({ navigation }) => {
-    const [loaded] = useFonts({
-        Poppins: require('../../assets/fonts/Poppins-Regular.ttf'),
-    });
     const [kidSpecial, setKidSpecial] = useState(KidSpecial);
 
     renderItem = ({ item: offer }) => {

@@ -15,12 +15,14 @@ import {
         Card,
         CardItem,
         Body,
-        Box, Heading, AspectRatio, Center, HStack, Stack
+        Box, Heading, AspectRatio, Center, HStack, Stack, ScrollView
 } from 'native-base';
 import { Button } from "@react-native-material/core";
 import { useState } from "react";
+import { useFonts } from 'expo-font';
 
-const { width } = Dimensions.get('screen');
+
+const { width, height } = Dimensions.get('screen');
 
 const column = 2;
 
@@ -35,10 +37,58 @@ const formatData = (dish, column) => {
 }
 
 const DetailsScreen = ({route}) => {
+    const [fontsLoaded] = useFonts({
+        'PEBO': require('../assets/fonts/Poppins-ExtraBold.ttf'),
+        'PBO': require('../assets/fonts/Poppins-Bold.ttf'),
+        'PSB': require('../assets/fonts/Poppins-SemiBold.ttf'),
+        'PM': require('../assets/fonts/Poppins-Medium.ttf'),
+        'PR': require('../assets/fonts/Poppins-Regular.ttf'),
+        'PL': require('../assets/fonts/Poppins-Light.ttf'),
+    });
     const { dishes } = route.params.brand;
     const [dish, setDish] = useState(dishes);
     console.log(dish)
     const renderItem = ({ item: dishes }) => {
+
+        const ListPrices = () => {
+            if (dishes.restaurant === 'come a napoli') {
+                return <View style={{ flexDirection: 'column', marginTop: 10 }}>
+                    <View style={{ flexDirection: 'row' }}>
+                        <View style={{
+                            flexDirection: 'column',
+                            justifyContent: "center",
+                            alignItems: "center",
+                            marginRight: 10,
+                        }}>
+                            <Text style={[styles.SubTextPrice, {fontSize: 14, fontFamily: 'PBO'}]}>S</Text>
+                            <Text style={styles.SubTextPrice}>{dishes.price32}</Text>
+                        </View>
+                        <View style={{
+                            flexDirection: 'column',
+                            justifyContent: "center",
+                            alignItems: "center",
+                            marginRight: 10,
+                        }}>
+                            <Text style={[styles.SubTextPrice, {fontSize: 14, fontFamily: 'PBO'}]}>M</Text>
+                            <Text style={styles.SubTextPrice}>{dishes.price48}</Text>
+                        </View>
+                        <View style={{
+                            flexDirection: 'column',
+                            justifyContent: "center",
+                            alignItems: "center",
+                            marginRight: 10,
+                        }}>
+                            <Text style={[styles.SubTextPrice, {fontSize: 14, fontFamily: 'PBO'}]}>L</Text>
+                            <Text style={styles.SubTextPrice}>{dishes.price60}</Text>
+                        </View>
+                    </View>
+                </View>
+            }
+            else {
+                return <Text>{dishes.price}</Text>
+            }
+        }
+
         if (dishes.empty === true) {
             return <View style={[styles.itemInvisible, { width: 186, margin: 10 }]} />;
         }
@@ -61,7 +111,7 @@ const DetailsScreen = ({route}) => {
                                 {dishes.name}
                             </Heading>
                             <Text style={styles.SubTextBrand}>
-                                {dishes.restaurant}
+                                {route.params.brand.name}
                             </Text>
                         </View>
                         <Text fontWeight="400" style={styles.SubText}>
@@ -69,9 +119,7 @@ const DetailsScreen = ({route}) => {
                         </Text>
                         <View>
                             <HStack alignItems="center" justifyContent="space-between">
-                                <Text style={styles.SubTextPrice}>
-                                    {dishes.price32}
-                                </Text>
+                                <ListPrices />
                             </HStack>
                         </View>
                     </View>
@@ -84,6 +132,7 @@ const DetailsScreen = ({route}) => {
                         contentContainerStyle={styles.Button}
                         style={{
                             width: '90%',
+                            marginTop: 8,
                         }}
                     />
                 </View>
@@ -97,9 +146,17 @@ const DetailsScreen = ({route}) => {
     }
 
     return (
-        <View style={styles.Container}>
+        <NativeBaseProvider>
+            <ScrollView>
             <RenderImage cover={route.params.brand.cover}/>
-            <NativeBaseProvider>
+            <Text style={{ lineHeight: 30, fontSize: 20, fontFamily: 'PBO', color: '#325962', margin: 15, letterSpacing: 1, }}>{route.params.brand.name}</Text>
+            <View style={{ marginBottom: 10, height: '0.5%', width: "100%", backgroundColor: "#f1f1f1" }}></View>
+            <View>
+                <View>
+                    
+                </View>
+            </View>
+            <View>
                 <FlatList
                     aria-expanded="false"
                     data={formatData(dish, column)}
@@ -107,9 +164,10 @@ const DetailsScreen = ({route}) => {
                     renderItem={renderItem}
                     numColumns={column}
                     keyExtractor={(item) => item.id}
-                />
-            </NativeBaseProvider>
-        </View>
+                    />
+            </View>
+            </ScrollView>
+        </NativeBaseProvider>
     )
 }
 
@@ -161,7 +219,7 @@ const styles = StyleSheet.create({
     },
     textBox: {
         width: 195,
-        height: 155,
+        height: 170,
         alignItems: "center",
         justifyContent: 'flex-start',
         backgroundColor: "white",
@@ -195,8 +253,6 @@ const styles = StyleSheet.create({
         fontSize: 12,
         fontWeight: "bold",
         color: "#325962",
-        marginTop: 10,
-        marginBottom: 10,
     },
     textAlignBox: {
         marginLeft: 3,

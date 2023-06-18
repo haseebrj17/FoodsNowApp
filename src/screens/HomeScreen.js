@@ -3,20 +3,24 @@ import { AppBar, Button } from "@react-native-material/core";
 import { Searchbar } from 'react-native-paper';
 import { Center, Flex, Icon, Row, Box, Card } from "native-base";
 import { SimpleLineIcons } from '@expo/vector-icons';
-import { SliderImage } from "../../assets/Slider";
+import { SliderImage, BrandCard } from "../assets/constants/Slider";
 import BrandCardsHome from "../components/BrandCardsHome";
 import CustomImageCarousal from "../components/CustomImageCarousal";
 import BuyGetOfferList from "../components/BuyGetOffer";
 import ChefRecommendation from "../components/ChefReco";
 import KidSpecialOffer from "../components/KidSpecial";
-import { BrandCard } from "../../assets/Slider";
 import { useNavigation } from '@react-navigation/native';
+import { useFonts } from 'expo-font';
+import { Fonts } from "../assets/constants";
 
 const { width, height } = Dimensions.get('window');
 
 console.log(width, height)
 
 const HomeScreen = () => {
+    const [fontsLoaded] = useFonts({
+        Fonts
+    });
     const navigation = useNavigation();
     return (
         <ScrollView style={{height: height}}>
@@ -107,7 +111,7 @@ const HomeScreen = () => {
                 ]}
             >
                 <TouchableHighlight activeOpacity={0.6} underlayColor="#DDDDDD" borderRadius={8} onPress={() => navigation.navigate('Splash')}>
-                    <Image source={require('../../assets/images/10.png')} style={[styles.Image, {borderRadius: 12}]} />
+                    <Image source={require('../assets/images/10.png')} style={[styles.Image, {borderRadius: 12}]} />
                 </TouchableHighlight>
             </View>
             <View style={{ width: "100%", height: "0.5%", backgroundColor: "#f1f1f1", }} />
@@ -131,7 +135,7 @@ const HomeScreen = () => {
                 ]}
             >
                 <TouchableHighlight onPress={() => navigation.navigate('Details')}   activeOpacity={0.6} underlayColor="#DDDDDD" borderRadius={8}>
-                    <Image source={require('../../assets/images/11.png')} style={[styles.Image, {borderRadius: 12}]} />
+                    <Image source={require('../assets/images/11.png')} style={[styles.Image, {borderRadius: 12}]} />
                 </TouchableHighlight>
             </View>
             <View style={{ width: "100%", height: "0.5%", backgroundColor: "#f1f1f1" }}></View>
@@ -173,7 +177,7 @@ const customTitleDorm = () => {
             height: "100%",
             top: "5%",
         }}>
-            <Image source={require('../../assets/icons/DormUniHome.png')} style={{width: 50, height: 50, marginTop: "2%"}} />
+            <Image source={require('../assets/icons/DormUniHome.png')} style={{width: 50, height: 50, marginTop: "2%"}} />
             <View style={{ 
                     flexDirection: "column",
                     position: "absolute",
@@ -202,7 +206,7 @@ const CustomLocationButton = () => {
     return (
         <View style={{flexDirection: "row"}}>
             <Image 
-                source={require('../../assets/LocationPinHome.png')} 
+                source={require('../assets/LocationPinHome.png')} 
                 style={{
                     height: 40,
                     width: 40,

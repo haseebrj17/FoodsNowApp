@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { StyleSheet, FlatList, View, Text, Image, Dimensions, TouchableWithoutFeedback } from 'react-native';
-import { BrandCard } from '../../assets/Slider';
+import { BrandCard } from '../assets/constants/Slider';
 import { useFonts } from 'expo-font';
 import { Button } from "@react-native-material/core";
 import { useNavigation } from '@react-navigation/native';
