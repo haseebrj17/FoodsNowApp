@@ -6,6 +6,7 @@ import {
     HomeScreen,
     WelcomeScreen,
     SplashScreen,
+    SreachScreen,
 } from "../screens";
 import { Connect } from "react-redux";
 
@@ -30,6 +31,7 @@ const Navigators = () => {
             >
                 <Stack.Screen name="Home" component={HomeScreen} />
                 <Stack.Screen name="Details" component={DetailsScreen} />
+                <Stack.Screen name="Search" component={SreachScreen} />
                 <Stack.Screen name="DataTracking" component={DataTrackingScreen} />
                 {/* <Stack.Screen name="SlpashScreen" component={SplashScreen}/> */}
                 <Stack.Screen name="Welcome" component={WelcomeScreen} /> 

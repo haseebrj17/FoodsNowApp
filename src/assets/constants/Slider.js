@@ -21,17 +21,18 @@ export const BrandCard = [
         id: 0,
         image: require('../images/BrandCard1.png'),
         name: 'Come A Napoli',
-        description: 'Brand description',
+        description: 'Authentische Neapolitanische Pizza',
         cover: require('../images/ComeANapoliCover.png'),
+        logobox: require('../icons/LogoBoxCAN.png'),
         dishes: [
             {
                 id: 0,
                 name: "Pizza Margarita",
                 image: require("../images/Bg1Asset.png"),
                 description: "Olivenöl, Tomatensauce, frischer Büffel-Mozeralla, Basilikum",
-                price32: "€11",
-                price48: "€22",
-                price60: "€32",
+                price32: "11",
+                price48: "22",
+                price60: "32",
                 category1: "Pizza",
                 restaurant: "come a napoli",
                 mild: false,
@@ -42,9 +43,9 @@ export const BrandCard = [
                 name: "Salami with Peperoni",
                 image: require("../images/Bg2Asset.png"),
                 description: "Salami, Peperoni, Käse, Gemüse und Gurke, Sauce",
-                price32: "€8",
-                price48: "€17",
-                price60: "€22",
+                price32: "8",
+                price48: "17",
+                price60: "22",
                 category1: "Pizza",
                 restaurant: "come a napoli",
                 mild: false,
@@ -55,9 +56,9 @@ export const BrandCard = [
                 name: "Pizza Margarita",
                 image: require("../images/Bg1Asset.png"),
                 description: "Olivenöl, Tomatensauce, frischer Büffel-Mozeralla, Basilikum",
-                price32: "€11",
-                price48: "€22",
-                price60: "€32",
+                price32: "11",
+                price48: "22",
+                price60: "32",
                 category1: "Pizza",
                 restaurant: "come a napoli",
                 mild: true,
@@ -68,9 +69,9 @@ export const BrandCard = [
                 name: "Salami with Peperoni",
                 image: require("../images/Bg2Asset.png"),
                 description: "Salami, Peperoni, Käse, Gemüse und Gurke, Sauce",
-                price32: "€8",
-                price48: "€17",
-                price60: "€22",
+                price32: "8",
+                price48: "17",
+                price60: "22",
                 category1: "Pizza",
                 restaurant: "come a napoli",
                 mild: true,
@@ -81,9 +82,9 @@ export const BrandCard = [
                 name: "Pizza Margarita",
                 image: require("../images/Bg1Asset.png"),
                 description: "Olivenöl, Tomatensauce, frischer Büffel-Mozeralla, Basilikum",
-                price32: "€11",
-                price48: "€22",
-                price60: "€32",
+                price32: "11",
+                price48: "22",
+                price60: "32",
                 category1: "Pizza",
                 restaurant: "come a napoli",
                 mild: true,
@@ -97,13 +98,14 @@ export const BrandCard = [
         name: 'Pasta Amico',
         description: 'Brand description',
         cover: require('../images/PastaAmicoCover.png'),
+        logobox: require('../icons/LogoBoxPA.png'),
         dishes: [
             {
                 id: 0,
                 name: "Pizza Margarita",
                 image: require("../images/Bg1Asset.png"),
                 description: "Olivenöl, Tomatensauce, frischer Büffel-Mozeralla, Basilikum",
-                price: "€11",
+                price: "11",
                 category1: "Pizza",
                 restaurant: "pasta amico",
                 mild: true,
@@ -114,7 +116,7 @@ export const BrandCard = [
                 name: "Salami with Peperoni",
                 image: require("../images/Bg2Asset.png"),
                 description: "Salami, Peperoni, Käse, Gemüse und Gurke, Sauce",
-                price: "€11",
+                price: "11",
                 category1: "Pizza",
                 restaurant: "pasta amico",
                 mild: true,
@@ -125,7 +127,7 @@ export const BrandCard = [
                 name: "Pizza Margarita",
                 image: require("../images/Bg1Asset.png"),
                 description: "Olivenöl, Tomatensauce, frischer Büffel-Mozeralla, Basilikum",
-                price: "€11",
+                price: "11",
                 category1: "Pizza",
                 restaurant: "pasta amico",
                 mild: true,
@@ -136,7 +138,7 @@ export const BrandCard = [
                 name: "Salami with Peperoni",
                 image: require("../images/Bg2Asset.png"),
                 description: "Salami, Peperoni, Käse, Gemüse und Gurke, Sauce",
-                price: "€11",
+                price: "11",
                 category1: "Pizza",
                 restaurant: "pasta amico",
                 mild: false,
@@ -147,7 +149,7 @@ export const BrandCard = [
                 name: "Pizza Margarita",
                 image: require("../images/Bg1Asset.png"),
                 description: "Olivenöl, Tomatensauce, frischer Büffel-Mozeralla, Basilikum",
-                price: "€11",
+                price: "11",
                 category1: "Pizza",
                 restaurant: "pasta amico",
                 mild: false,
@@ -158,7 +160,7 @@ export const BrandCard = [
                 name: "Salami with Peperoni",
                 image: require("../images/Bg2Asset.png"),
                 description: "Salami, Peperoni, Käse, Gemüse und Gurke, Sauce",
-                price: "€11",
+                price: "11",
                 category1: "Pizza",
                 restaurant: "pasta amico",
                 mild: false,
@@ -169,16 +171,17 @@ export const BrandCard = [
     {
         id: 2,
         image: require('../images/BrandCard3.png'),
-        name: 'Wok \'N Box',
+        name: 'Wok \'n Box',
         description: 'Brand description',
         cover: require('../images/PastaAmicoCover.png'),
+        logobox: require('../icons/LogoBoxWNB.png'),
         dishes: [
             {
                 id: 0,
                 name: "Pizza Margarita",
                 image: require("../images/Bg1Asset.png"),
                 description: "Olivenöl, Tomatensauce, frischer Büffel-Mozeralla, Basilikum",
-                price: "€11",
+                price: "11",
                 category1: "Pizza",
                 restaurant: "wok n box",
                 mild: false,
@@ -189,7 +192,7 @@ export const BrandCard = [
                 name: "Salami with Peperoni",
                 image: require("../images/Bg2Asset.png"),
                 description: "Salami, Peperoni, Käse, Gemüse und Gurke, Sauce",
-                price: "€11",
+                price: "11",
                 category1: "Pizza",
                 restaurant: "wok n box",
                 mild: false,
@@ -200,7 +203,7 @@ export const BrandCard = [
                 name: "Pizza Margarita",
                 image: require("../images/Bg1Asset.png"),
                 description: "Olivenöl, Tomatensauce, frischer Büffel-Mozeralla, Basilikum",
-                price: "€11",
+                price: "11",
                 category1: "Pizza",
                 restaurant: "wok n box",
                 mild: false,
@@ -211,7 +214,7 @@ export const BrandCard = [
                 name: "Salami with Peperoni",
                 image: require("../images/Bg2Asset.png"),
                 description: "Salami, Peperoni, Käse, Gemüse und Gurke, Sauce",
-                price: "€11",
+                price: "11",
                 category1: "Pizza",
                 restaurant: "wok n box",
                 mild: true,
@@ -222,7 +225,7 @@ export const BrandCard = [
                 name: "Pizza Margarita",
                 image: require("../images/Bg1Asset.png"),
                 description: "Olivenöl, Tomatensauce, frischer Büffel-Mozeralla, Basilikum",
-                price: "€11",
+                price: "11",
                 category1: "Pizza",
                 restaurant: "wok n box",
                 mild: true,
@@ -233,7 +236,7 @@ export const BrandCard = [
                 name: "Salami with Peperoni",
                 image: require("../images/Bg2Asset.png"),
                 description: "Salami, Peperoni, Käse, Gemüse und Gurke, Sauce",
-                price: "€11",
+                price: "11",
                 category1: "Pizza",
                 restaurant: "wok n box",
                 mild: true,
@@ -247,13 +250,14 @@ export const BrandCard = [
         name: 'Wrap Time',
         description: 'Brand description',
         cover: require('../images/WrapTimeCover.png'),
+        logobox: require('../icons/LogoBoxWT.png'),
         dishes: [
             {
                 id: 0,
                 name: "Pizza Margarita",
                 image: require("../images/Bg1Asset.png"),
                 description: "Olivenöl, Tomatensauce, frischer Büffel-Mozeralla, Basilikum",
-                price: "€11",
+                price: "11",
                 category1: "Pizza",
                 restaurant: "wrap time",
                 mild: true,
@@ -264,7 +268,7 @@ export const BrandCard = [
                 name: "Salami with Peperoni",
                 image: require("../images/Bg2Asset.png"),
                 description: "Salami, Peperoni, Käse, Gemüse und Gurke, Sauce",
-                price: "€11",
+                price: "11",
                 category1: "Pizza",
                 restaurant: "wrap time",
                 mild: true,
@@ -275,7 +279,7 @@ export const BrandCard = [
                 name: "Pizza Margarita",
                 image: require("../images/Bg1Asset.png"),
                 description: "Olivenöl, Tomatensauce, frischer Büffel-Mozeralla, Basilikum",
-                price: "€11",
+                price: "11",
                 category1: "Pizza",
                 restaurant: "wrap time",
                 mild: false,
@@ -286,7 +290,7 @@ export const BrandCard = [
                 name: "Salami with Peperoni",
                 image: require("../images/Bg2Asset.png"),
                 description: "Salami, Peperoni, Käse, Gemüse und Gurke, Sauce",
-                price: "€11",
+                price: "11",
                 category1: "Pizza",
                 restaurant: "wrap time",
                 mild: false,
@@ -297,7 +301,7 @@ export const BrandCard = [
                 name: "Pizza Margarita",
                 image: require("../images/Bg1Asset.png"),
                 description: "Olivenöl, Tomatensauce, frischer Büffel-Mozeralla, Basilikum",
-                price: "€11",
+                price: "11",
                 category1: "Pizza",
                 restaurant: "wrap time",
                 mild: false,
@@ -308,7 +312,7 @@ export const BrandCard = [
                 name: "Salami with Peperoni",
                 image: require("../images/Bg2Asset.png"),
                 description: "Salami, Peperoni, Käse, Gemüse und Gurke, Sauce",
-                price: "€11",
+                price: "11",
                 category1: "Pizza",
                 restaurant: "wrap time",
                 mild: false,
@@ -322,13 +326,14 @@ export const BrandCard = [
         name: 'License To Grill',
         description: 'Brand description',
         cover: require('../images/LicenseToGrillCover.png'),
+        logobox: require('../icons/LogoBoxLTG.png'),
         dishes: [
             {
                 id: 0,
                 name: "Pizza Margarita",
                 image: require("../images/Bg1Asset.png"),
                 description: "Olivenöl, Tomatensauce, frischer Büffel-Mozeralla, Basilikum",
-                price: "€11",
+                price: "11",
                 category1: "Pizza",
                 restaurant: "license to grill",
                 mild: false,
@@ -339,7 +344,7 @@ export const BrandCard = [
                 name: "Salami with Peperoni",
                 image: require("../images/Bg2Asset.png"),
                 description: "Salami, Peperoni, Käse, Gemüse und Gurke, Sauce",
-                price: "€11",
+                price: "11",
                 category1: "Pizza",
                 restaurant: "license to grill",
                 mild: false,
@@ -350,7 +355,7 @@ export const BrandCard = [
                 name: "Pizza Margarita",
                 image: require("../images/Bg1Asset.png"),
                 description: "Olivenöl, Tomatensauce, frischer Büffel-Mozeralla, Basilikum",
-                price: "€11",
+                price: "11",
                 category1: "Pizza",
                 restaurant: "license to grill",
                 mild: true,
@@ -361,7 +366,7 @@ export const BrandCard = [
                 name: "Salami with Peperoni",
                 image: require("../images/Bg2Asset.png"),
                 description: "Salami, Peperoni, Käse, Gemüse und Gurke, Sauce",
-                price: "€11",
+                price: "11",
                 category1: "Pizza",
                 restaurant: "license to grill",
                 mild: true,
@@ -372,7 +377,7 @@ export const BrandCard = [
                 name: "Pizza Margarita",
                 image: require("../images/Bg1Asset.png"),
                 description: "Olivenöl, Tomatensauce, frischer Büffel-Mozeralla, Basilikum",
-                price: "€11",
+                price: "11",
                 category1: "Pizza",
                 restaurant: "license to grill",
                 mild: false,
@@ -383,7 +388,7 @@ export const BrandCard = [
                 name: "Salami with Peperoni",
                 image: require("../images/Bg2Asset.png"),
                 description: "Salami, Peperoni, Käse, Gemüse und Gurke, Sauce",
-                price: "€11",
+                price: "11",
                 category1: "Pizza",
                 restaurant: "license to grill",
                 mild: true,
@@ -394,16 +399,17 @@ export const BrandCard = [
     {
         id: 5,
         image: require('../images/BrandCard6.png'),
-        name: 'Mock',
+        name: 'Bombay To Berlin',
         description: 'Brand description',
         cover: require('../images/WrapTimeCover.png'),
+        logobox: require('../icons/LogoBoxCAN.png'),
         dishes: [
             {
                 id: 0,
                 name: "Pizza Margarita",
                 image: require("../images/Bg1Asset.png"),
                 description: "Olivenöl, Tomatensauce, frischer Büffel-Mozeralla, Basilikum",
-                price: "€11",
+                price: "11",
                 category1: "Pizza",
                 restaurant: "mock",
                 mild: false,
@@ -414,7 +420,7 @@ export const BrandCard = [
                 name: "Salami with Peperoni",
                 image: require("../images/Bg2Asset.png"),
                 description: "Salami, Peperoni, Käse, Gemüse und Gurke, Sauce",
-                price: "€11",
+                price: "11",
                 category1: "Pizza",
                 restaurant: "mock",
                 mild: false,
@@ -425,7 +431,7 @@ export const BrandCard = [
                 name: "Pizza Margarita",
                 image: require("../images/Bg1Asset.png"),
                 description: "Olivenöl, Tomatensauce, frischer Büffel-Mozeralla, Basilikum",
-                price: "€11",
+                price: "11",
                 category1: "Pizza",
                 restaurant: "mock",
                 mild: false,
@@ -436,7 +442,7 @@ export const BrandCard = [
                 name: "Salami with Peperoni",
                 image: require("../images/Bg2Asset.png"),
                 description: "Salami, Peperoni, Käse, Gemüse und Gurke, Sauce",
-                price: "€11",
+                price: "11",
                 category1: "Pizza",
                 restaurant: "mock",
                 mild: true,
@@ -447,7 +453,7 @@ export const BrandCard = [
                 name: "Pizza Margarita",
                 image: require("../images/Bg1Asset.png"),
                 description: "Olivenöl, Tomatensauce, frischer Büffel-Mozeralla, Basilikum",
-                price: "€11",
+                price: "11",
                 category1: "Pizza",
                 restaurant: "mock",
                 mild: true,
@@ -458,7 +464,7 @@ export const BrandCard = [
                 name: "Salami with Peperoni",
                 image: require("../images/Bg2Asset.png"),
                 description: "Salami, Peperoni, Käse, Gemüse und Gurke, Sauce",
-                price: "€11",
+                price: "11",
                 category1: "Pizza",
                 restaurant: "mock",
                 mild: true,
@@ -474,42 +480,42 @@ export const BuyGetOffer = [
         name: 'Biryani',
         brandname: 'Taj Tandoori',
         description: 'Dish description',
-        price: "€8"
+        price: "8"
     },
     {
         image: require('../images/Bg2Asset.png'),
         name: 'Biryani',
         brandname: 'Taj Tandoori',
         description: 'Dish description',
-        price: "€8"
+        price: "8"
     },
     {
         image: require('../images/Bg1Asset.png'),
         name: 'Biryani',
         brandname: 'Taj Tandoori',
         description: 'Dish description',
-        price: "€8"
+        price: "8"
     },
     {
         image: require('../images/Bg2Asset.png'),
         name: 'Biryani',
         brandname: 'Taj Tandoori',
         description: 'Dish description',
-        price: "€8"
+        price: "8"
     },
     {
         image: require('../images/Bg1Asset.png'),
         name: 'Biryani',
         brandname: 'Taj Tandoori',
         description: 'Dish description',
-        price: "€8"
+        price: "8"
     },
     {
         image: require('../images/Bg2Asset.png'),
         name: 'Biryani',
         brandname: 'Taj Tandoori',
         description: 'Dish description',
-        price: "€8"
+        price: "8"
     },
 ]
 
@@ -519,42 +525,42 @@ export const ChefReco = [
         name: 'Biryani',
         brandname: 'License to Grill',
         description: 'Dish description',
-        price: "€8"
+        price: "8"
     },
     {
         image: require('../images/CR2Asset.png'),
         name: 'Biryani',
         brandname: 'License to Grill',
         description: 'Dish description',
-        price: "€8"
+        price: "8"
     },
     {
         image: require('../images/CR3Asset.png'),
         name: 'Biryani',
         brandname: 'Come A Napoli',
         description: 'Dish description',
-        price: "€8"
+        price: "8"
     },
     {
         image: require('../images/CR1Asset.png'),
         name: 'Biryani',
         brandname: 'License to Grill',
         description: 'Dish description',
-        price: "€8"
+        price: "8"
     },
     {
         image: require('../images/CR2Asset.png'),
         name: 'Biryani',
         brandname: 'Taj Tandoori',
         description: 'Dish description',
-        price: "€8"
+        price: "8"
     },
     {
         image: require('../images/CR3Asset.png'),
         name: 'Biryani',
         brandname: 'Come A Napoli',
         description: 'Dish description',
-        price: "€8"
+        price: "8"
     },
 ]
 
@@ -564,42 +570,42 @@ export const KidSpecial = [
         name: 'Biryani',
         brandname: 'License to Grill',
         description: 'Dish description',
-        price: "€8"
+        price: "8"
     },
     {
         image: require('../images/Bg1Asset.png'),
         name: 'Biryani',
         brandname: 'License to Grill',
         description: 'Dish description',
-        price: "€8"
+        price: "8"
     },
     {
         image: require('../images/Bg2Asset.png'),
         name: 'Biryani',
         brandname: 'Come A Napoli',
         description: 'Dish description',
-        price: "€8"
+        price: "8"
     },
     {
         image: require('../images/CR3Asset.png'),
         name: 'Biryani',
         brandname: 'License to Grill',
         description: 'Dish description',
-        price: "€8"
+        price: "8"
     },
     {
         image: require('../images/CR2Asset.png'),
         name: 'Biryani',
         brandname: 'Taj Tandoori',
         description: 'Dish description',
-        price: "€8"
+        price: "8"
     },
     {
         image: require('../images/Bg1Asset.png'),
         name: 'Biryani',
         brandname: 'Come A Napoli',
         description: 'Dish description',
-        price: "€8"
+        price: "8"
     },
 ]
 

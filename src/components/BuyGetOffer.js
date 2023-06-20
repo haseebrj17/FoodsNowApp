@@ -88,7 +88,7 @@ const BuyGetOfferList = ({ navigation }) => {
                 color: '#325962',
                 fontWeight: "bold",
                 alignSelf: "center",
-                marginBottom: 1,
+                marginBottom: 5,
                 marginTop: 5,
             }}>Chicken Bestseller</Text>
             <NativeBaseProvider>

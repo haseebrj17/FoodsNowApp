@@ -1,8 +1,9 @@
-import { Animated, FlatList, StyleSheet, View, ScrollView, Text, Image, Dimensions, TouchableWithoutFeedback, TouchableHighlight } from "react-native";
+import { Animated, FlatList, StyleSheet, View, ScrollView, Text, Image, Dimensions, TouchableWithoutFeedback, TouchableOpacity, TouchableHighlight } from "react-native";
 import { AppBar, Button } from "@react-native-material/core";
 import { Searchbar } from 'react-native-paper';
-import { Center, Flex, Icon, Row, Box, Card } from "native-base";
+import { Center, Flex, Icon, Row, Box, Card, NativeBaseProvider } from "native-base";
 import { SimpleLineIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons'; 
 import { SliderImage, BrandCard } from "../assets/constants/Slider";
 import BrandCardsHome from "../components/BrandCardsHome";
 import CustomImageCarousal from "../components/CustomImageCarousal";
@@ -12,6 +13,7 @@ import KidSpecialOffer from "../components/KidSpecial";
 import { useNavigation } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Fonts } from "../assets/constants";
+import TabBar from "fluidbottomnavigation-rn";
 
 const { width, height } = Dimensions.get('window');
 
@@ -25,12 +27,18 @@ const HomeScreen = () => {
     return (
         <ScrollView style={{height: height}}>
             <AppBar style={styles.AppBar}>
-                <Searchbar
-                    placeholder="Search for restaurants, cuisines, and more...."
-                    style={styles.SearchBar}
-                    inputStyle={styles.SearchBarInput}
-                    iconColor="#325962"
-                />
+                <TouchableOpacity onPress={() => navigation.navigate('Search')} style={{width: width * 0.9, justifyContent: 'center', alignItems: 'center'}}>
+                    <View
+                        style={styles.SearchBar}
+                    >
+                        <View style={styles.SearchBarContainer}>
+                            <Ionicons name="search-sharp" size={24} color="#325962" />
+                            <Text style={styles.SearchBarInput}>
+                                Search for restaurants, cuisines, and more....
+                            </Text>
+                        </View>
+                    </View>
+                </TouchableOpacity>
                 <View style={styles.Locationbar}>
                     <Button 
                         title={CustomLocationButton} 
@@ -250,15 +258,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     SearchBarContainer: {
-        width: '90%',
-        height: 50,
-        backgroundColor: 'white',
-        borderRadius: 12,
-        borderColor: 'rgba(50, 89, 98, 0.4)',
-        borderWidth: 1
+        width: '95%',
+        height: "80%",
+        flexDirection: 'row',
+        alignItems: 'center',
     },
     SearchBar: {
-        width: '90%',
+        width: '100%',
         height: 40,
         backgroundColor: 'white',
         borderRadius: 12,
@@ -268,11 +274,14 @@ const styles = StyleSheet.create({
         marginTop: 30,
         shadowColor: 'black',
         shadowOffset: { width: 10, height: 100 },
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     SearchBarInput: {
         fontSize: 13,
         alignSelf: "center",
-        opacity: 0.6
+        opacity: 0.6,
+        marginLeft: 10
     },
     // ButtonLocation: {
     //     width: "50%",

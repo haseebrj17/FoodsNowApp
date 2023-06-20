@@ -3,6 +3,7 @@ import DetailsScreen from "./DetailsScreen";
 import HomeScreen from "./HomeScreen";
 import WelcomeScreen from "./WelcomeScreen";
 import SplashScreen from "./SplashScreen";
+import SreachScreen from "./SreachScreen";
 
 export {
     DataTrackingScreen,
@@ -10,4 +11,5 @@ export {
     HomeScreen,
     WelcomeScreen,
     SplashScreen,
+    SreachScreen,
 }
