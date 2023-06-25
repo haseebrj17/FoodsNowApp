@@ -13,7 +13,9 @@ import KidSpecialOffer from "../components/KidSpecial";
 import { useNavigation } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Fonts } from "../assets/constants";
-import TabBar from "fluidbottomnavigation-rn";
+import { StatusBar } from "expo-status-bar";
+import Tabbar from "../navigators/Tabbar";
+
 
 const { width, height } = Dimensions.get('window');
 
@@ -142,7 +144,7 @@ const HomeScreen = () => {
                     }
                 ]}
             >
-                <TouchableHighlight onPress={() => navigation.navigate('Details')}   activeOpacity={0.6} underlayColor="#DDDDDD" borderRadius={8}>
+                <TouchableHighlight onPress={() => navigation.navigate('Welcome')}   activeOpacity={0.6} underlayColor="#DDDDDD" borderRadius={8}>
                     <Image source={require('../assets/images/11.png')} style={[styles.Image, {borderRadius: 12}]} />
                 </TouchableHighlight>
             </View>

@@ -112,7 +112,7 @@ const WelcomeScreen = () => {
                     <Image source={item.image} style={{ width: width / 2, height: height / 2, resizeMode: 'contain' }} />
                 </View>
                 <View style={{ flex: 0.3 }}>
-                    <Text style={{ fontWeight: '800', fontSize: 28, marginBottom: 10, color: 'white' }}>{item.title}</Text>
+                    <Text style={{ fontWeight: '800', fontSize: 28, marginBottom: 10, color: 'white', marginTop: 30, }}>{item.title}</Text>
                     <Text style={{ fontWeight: '300', color: 'white' }}>{item.description}</Text>
                 </View>
             </View>

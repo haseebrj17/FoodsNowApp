@@ -98,7 +98,7 @@ const ChefRecommendation = ({ navigation }) => {
                 <Button
                     title={custonTitle}
                     style={styles.Button}
-                    color="rgba(50, 89, 98, 0.2)"
+                    color= "#D6DEE0"
                     disableElevation={true}
                     uppercase={false}
                     leading
@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         borderWidth: 1,
-        borderColor: "rgba(50, 89, 98, 0.4)",
+        borderColor: "rgba(50, 89, 98, 1)",
         marginBottom: 10,
     },
     Text: {

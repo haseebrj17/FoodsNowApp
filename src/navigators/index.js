@@ -9,6 +9,8 @@ import {
     SreachScreen,
 } from "../screens";
 import { Connect } from "react-redux";
+import HomeTabs from './BottomTabs';
+import Tabbar from "./Tabbar";
 
 const theme = {
     ...DefaultTheme,
@@ -27,7 +29,7 @@ const Navigators = () => {
                 screenOptions={{
                     headerShown: false,
                 }}
-                initialRouteName="DataTracking"
+                initialRouteName="Home"
             >
                 <Stack.Screen name="Home" component={HomeScreen} />
                 <Stack.Screen name="Details" component={DetailsScreen} />
@@ -37,6 +39,7 @@ const Navigators = () => {
                 <Stack.Screen name="Welcome" component={WelcomeScreen} /> 
                 <Stack.Screen name="Splash" component={SplashScreen} />
             </Stack.Navigator>
+            <Tabbar />
         </NavigationContainer>
     );
 }

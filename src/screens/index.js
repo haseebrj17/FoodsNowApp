@@ -4,6 +4,8 @@ import HomeScreen from "./HomeScreen";
 import WelcomeScreen from "./WelcomeScreen";
 import SplashScreen from "./SplashScreen";
 import SreachScreen from "./SreachScreen";
+import AccountScreen from "./AccountScreen";
+import CartScreen from "./CartScreen";
 
 export {
     DataTrackingScreen,
@@ -12,4 +14,6 @@ export {
     WelcomeScreen,
     SplashScreen,
     SreachScreen,
+    AccountScreen,
+    CartScreen
 }

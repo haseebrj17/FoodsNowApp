@@ -658,3 +658,36 @@ export const Splash = [
         image: require('../icons/WrapTime.png')
     }
 ]
+
+export const Logo = [
+    {
+        id: 0,
+        image: require('../icons/LogoBoxCAN.png'),
+        brand: 'Come A Napoli'
+    },
+    {
+        id: 1,
+        image: require('../icons/LogoBoxPA.png'),
+        brand: 'Pasta Amico'
+    },
+    {
+        id: 2,
+        image: require('../icons/LogoBoxWNB.png'),
+        brand: 'Wok \'n Box'
+    },
+    {
+        id: 3,
+        image: require('../icons/LogoBoxLTG.png'),
+        brand: 'License To Grill'
+    },
+    {
+        id: 4,
+        image: require('../icons/LogoBoxWT.png'),
+        brand: 'Wrap Time'
+    },
+    {
+        id: 5,
+        image: require('../icons/LogoBoxCAN.png'),
+        brand: 'Bombay To Berlin'
+    },
+]
