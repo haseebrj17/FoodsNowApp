@@ -13,19 +13,19 @@ const height = 64;
 const tabs = [
     {
         name: "home",
-        nav: "AccountScreen"
+        nav: "Home"  // changed from "HomeScreen"
     },
     {
         name: "user",
-        nav:"UserScreen"
+        nav: "Account"  // changed from "AccountScreen"
     },
     {
         name: "search",
-        nav:'SearchScreen',
+        nav: "Search",  // changed from "SreachScreen"
     },
     {
         name: "shopping-cart",
-        nav: 'CartScreen'
+        nav: 'Cart'  // changed from "CartScreen"
     },
 ];
 const tabWidth = width / tabs.length;
@@ -58,7 +58,7 @@ const getPath = () => {
 
 const d = getPath();
 
-const Tabbar = () => {
+const Tabbar = ({ navigation }) => {
     const value = useRef(new Animated.Value(0)).current;
 
     const translateX = value.interpolate({
@@ -73,7 +73,7 @@ const Tabbar = () => {
                     <Path fill={backgroundColor} d={d} />
                 </AnimatedSvg>
                 <View style={StyleSheet.absoluteFill}>
-                    <StaticTabbar tabs={tabs} value={value} />
+                    <StaticTabbar tabs={tabs} value={value} navigation={navigation} />
                 </View>
             </View>
         </>

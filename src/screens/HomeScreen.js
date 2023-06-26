@@ -15,6 +15,7 @@ import { useFonts } from 'expo-font';
 import { Fonts } from "../assets/constants";
 import { StatusBar } from "expo-status-bar";
 import Tabbar from "../navigators/Tabbar";
+import { useEffect } from "react";
 
 
 const { width, height } = Dimensions.get('window');

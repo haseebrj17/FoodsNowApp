@@ -3,14 +3,19 @@ import {
     View, StyleSheet, TouchableWithoutFeedback, Animated, Dimensions,
 } from "react-native";
 import { FontAwesome as Icon } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 const { width } = Dimensions.get("window");
 
 const StaticTabbar = ({ tabs, value }) => {
+    const navigation = useNavigation();
     const initValues = tabs.map((tab, index) => new Animated.Value(index === 0 ? 1 : 0));
     const values = useRef(initValues).current;
 
     const onPress = (index) => {
+        const tab = tabs[index];
+        navigation.navigate(tab.nav);
+        
         const tabWidth = width / tabs.length;
         Animated.sequence([
             Animated.parallel(

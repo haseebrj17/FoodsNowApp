@@ -4,20 +4,38 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { Searchbar } from 'react-native-paper'
 import { Fonts } from '../assets/constants'
 import { useFonts } from 'expo-font'
-import { Entypo, SimpleLineIcons, MaterialIcons } from '@expo/vector-icons'; 
+import { Entypo, SimpleLineIcons, MaterialIcons } from '@expo/vector-icons';
 import { Logo } from '../assets/constants/Slider'
-import { useState } from 'react'
+import { BrandCard } from '../assets/constants/Slider'
+import { useState, useEffect } from 'react'
 
 const { width, height } = Dimensions.get('screen')
 
 const SreachScreen = ({ navigation }) => {
     const [fontsLoaded] = useFonts({
-        Fonts
+        PEBO: 'Poppins-ExtraBold.ttf',
+        PBO: 'Poppins-Bold.ttf',
+        PSB: 'Poppins-SemiBold.ttf',
+        PM: 'Poppins-Medium.ttf',
+        PR: 'Poppins-Regular.ttf',
+        PL: 'Poppins-Light.ttf'
     })
     const [logo, setLogo] = useState(Logo)
+    const [searchQuery, setSearchQuery] = useState('');
+    const [filteredBrands, setFilteredBrands] = useState(BrandCard);
+    const onChangeSearch = query => setSearchQuery(query);
+    useEffect(() => {
+        const results = BrandCard.filter(brand =>
+            brand.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            brand.dishes.some(dish =>
+                dish.name.toLowerCase().includes(searchQuery.toLowerCase())
+            )
+        );
+        setFilteredBrands(results);
+    }, [searchQuery]);
     const renderItem = ({ item: logo }) => {
         return (
-            <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+            <TouchableOpacity onPress={() => navigation.navigate('Details', { brand: logo.name })}>
                 <Image
                     source={logo.image}
                     resizeMode='contain'
@@ -27,24 +45,26 @@ const SreachScreen = ({ navigation }) => {
         )
     }
     return (
-        <View style={{width: width, height: height}}>
+        <View style={{ width: width, height: height }}>
             <View style={styles.Container}>
                 <Searchbar
                     placeholder="Search for restaurants, cuisines, and more...."
                     style={styles.SearchBar}
                     inputStyle={styles.SearchBarInput}
                     iconColor="#325962"
+                    onChangeText={onChangeSearch}
+                    value={searchQuery}
                 />
             </View>
-            <View style={{width: width * 0.9, alignItems: 'center', alignSelf: 'center', marginTop: 20, flexDirection: 'row' }}>
+            <View style={{ width: width * 0.9, alignItems: 'center', alignSelf: 'center', marginTop: 20, flexDirection: 'row' }}>
                 <Entypo name="back-in-time" size={24} color="#325962" />
-                <Text style={{fontSize: 18, fontFamily: 'PBO', marginLeft: 10, fontWeight: 'bold', color: '#325962'}}>
+                <Text style={{ fontSize: 18, fontFamily: 'PBO', marginLeft: 10, fontWeight: 'bold', color: '#325962' }}>
                     Recent Sreach
                 </Text>
             </View>
-            <View style={{width: width * 0.9, alignItems: 'center', alignSelf: 'center', marginTop: 20, flexDirection: 'row' }}>
+            <View style={{ width: width * 0.9, alignItems: 'center', alignSelf: 'center', marginTop: 20, flexDirection: 'row' }}>
                 <MaterialIcons name='local-fire-department' size={24} color="#325962" />
-                <Text style={{fontSize: 18, fontFamily: 'PBO', marginLeft: 10, fontWeight: 'bold', color: '#325962'}}>
+                <Text style={{ fontSize: 18, fontFamily: 'PBO', marginLeft: 10, fontWeight: 'bold', color: '#325962' }}>
                     Most loved restaurants
                 </Text>
             </View>
@@ -52,12 +72,21 @@ const SreachScreen = ({ navigation }) => {
                 marginTop: 10,
 
             }}>
-                <FlatList 
+                <FlatList
                     data={logo}
                     horizontal
                     showsHorizontalScrollIndicator={false}
                     renderItem={renderItem}
-
+                />
+            </View>
+            <View style={{
+                marginTop: 10,
+            }}>
+                <FlatList
+                    data={filteredBrands}
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    renderItem={renderItem}
                 />
             </View>
         </View>
