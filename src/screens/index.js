@@ -6,6 +6,7 @@ import SplashScreen from "./SplashScreen";
 import SreachScreen from "./SreachScreen";
 import AccountScreen from "./AccountScreen";
 import CartScreen from "./CartScreen";
+import DishDetailScreen from "./DishDetailScreen";
 
 export {
     DataTrackingScreen,
@@ -15,5 +16,6 @@ export {
     SplashScreen,
     SreachScreen,
     AccountScreen,
-    CartScreen
+    CartScreen,
+    DishDetailScreen
 }

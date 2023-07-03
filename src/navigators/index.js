@@ -7,6 +7,7 @@ import {
     WelcomeScreen,
     SplashScreen,
     SreachScreen,
+    DishDetailScreen
 } from "../screens";
 import BottomTabBar from "./BottomTabBar";
 
@@ -31,6 +32,7 @@ const Navigators = () => {
             >
                 <Stack.Screen name="Main" component={BottomTabBar} />
                 <Stack.Screen name="Details" component={DetailsScreen} />
+                <Stack.Screen name="DishDetail" component={DishDetailScreen} />
                 <Stack.Screen name="DataTracking" component={DataTrackingScreen} />
                 <Stack.Screen name="Welcome" component={WelcomeScreen} /> 
                 <Stack.Screen name="Splash" component={SplashScreen} />

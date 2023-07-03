@@ -31,7 +31,10 @@ import { Icon } from "@rneui/base";
 import { BottomSheetModal, BottomSheetModalProvider, BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 import { useRef, useCallback } from "react";
 import Animated from "react-native-reanimated";
+import { MaterialIcons } from '@expo/vector-icons';
 import CustomBackdrop from "../components/CustomBackdrop";
+import UseModal from "../components/UseModal";
+import AddToCart from "../components/AddToCart";
 
 const { width, height } = Dimensions.get('screen');
 
@@ -58,11 +61,53 @@ const DetailsScreen = ({ route }) => {
 
     const [dish, setDish] = useState(dishes);
 
-    let sortedDishes = [...dish]; // make a copy of the dishes array
+    ///////////////  Add to Cart Modal  ///////////////
+
+    const modalRef = useRef();
+
+    const [selectedDish, setSelectedDish] = useState(null);
+
+    const handleOpenModal = (dish) => {
+        setSelectedDish(dish);
+        if (modalRef.current) {
+            modalRef.current.present();
+        }
+    };
+
+    ///////////////  Sorting Modal  ///////////////
+
+    let sortedDishes = [...dish];
 
     const [isOpen, setIsOpen] = useState(true)
 
     const [isEnabled, setIsEnabled] = useState(false);
+
+    const bottomSheetModalRef = useRef(null);
+    const snapPoints = ["40%"];
+
+    function handlePresentModal() {
+        bottomSheetModalRef.current?.present();
+    }
+
+    const handlePresentModalPress = useCallback(() => {
+        bottomSheetModalRef.current.present();
+    }, []);
+
+    const handleSheetChanges = useCallback((index) => {
+        setIsOpen(index > 0 ? true : false);
+    }, []);
+
+    const closeBottomSheet = useCallback(() => {
+        setIsOpen(false);
+        bottomSheetModalRef.current.close();
+    }, []);
+
+    const renderBackdrop = useCallback(
+        (props) => (
+            <BottomSheetBackdrop {...props} onPress={closeBottomSheet} />
+        ),
+        [closeBottomSheet]
+    );
 
     const [sortByName, setSortByName] = useState(false);
     const [sortByPriceLowHigh, setSortByPriceLowHigh] = useState(false);
@@ -146,6 +191,8 @@ const DetailsScreen = ({ route }) => {
         sortedDishes.sort((a, b) => b.spice - a.spice);
     }
 
+    ///////////////  Sorting Modal  ///////////////
+
     const renderItem = ({ item: dishes }) => {
         const ListPrices = () => {
             if (dishes.restaurant === 'come a napoli') {
@@ -223,7 +270,7 @@ const DetailsScreen = ({ route }) => {
                         </View>
                     </View>
                     <Button
-                        onPress={() => navigation.navigate('Details', { brand })}
+                        onPress={() => handleOpenModal(dishes)}
                         title="Add to Cart"
                         color="#FFAF51"
                         titleStyle={{ color: "#325962", fontSize: 10, fontWeight: 800 }}
@@ -247,40 +294,13 @@ const DetailsScreen = ({ route }) => {
         return <Image source={props.logo} style={styles.logoBox} />
     }
 
-    const bottomSheetModalRef = useRef(null);
-    const snapPoints = ["40%"];
-
-    function handlePresentModal() {
-        bottomSheetModalRef.current?.present();
-    }
-
-    const handlePresentModalPress = useCallback(() => {
-        bottomSheetModalRef.current.present();
-    }, []);
-
-    const handleSheetChanges = useCallback((index) => {
-        setIsOpen(index > 0 ? true : false);
-    }, []);
-
-    const closeBottomSheet = useCallback(() => {
-        setIsOpen(false);
-        bottomSheetModalRef.current.close();
-    }, []);
-
-    const renderBackdrop = useCallback(
-        (props) => (
-            <BottomSheetBackdrop {...props} onPress={closeBottomSheet} />
-        ),
-        [closeBottomSheet]
-    );
-
     return (
         <BottomSheetModalProvider>
             <NativeBaseProvider>
                 <BottomSheetModal
                     ref={bottomSheetModalRef}
                     snapPoints={snapPoints}
-                    backdropComponent={CustomBackdrop}
+                    backdropComponent={renderBackdrop}
                     onAnimate={handleSheetChanges}
                     index={0}
                     enablePanDownToClose={true}
@@ -288,7 +308,7 @@ const DetailsScreen = ({ route }) => {
                     backgroundStyle={{
                         borderRadius: 30
                     }}
-                    // animateOnMount={true}
+                    animateOnMount={true}
                 >
                     <View style={{
                         width: '100%',
@@ -307,15 +327,6 @@ const DetailsScreen = ({ route }) => {
                                 Sort and Filter
                             </Text>
                         </View>
-                        <View 
-                            style={{
-                                width: "80%",
-                                height: "1%",
-                                opacity: 0.4,
-                                borderRadius: 10,
-                                backgroundColor: '#325962'
-                            }}
-                        />
                         <View style={{
                             width: '90%',
                             alignItems: 'center',
@@ -428,7 +439,34 @@ const DetailsScreen = ({ route }) => {
                         </View>
                     </View>
                 </BottomSheetModal>
-                <ScrollView>
+                <TouchableOpacity
+                    onPress={() => {
+                        if (navigation.canGoBack()) {
+                            navigation.goBack();
+                        } else {
+                            navigation.navigate('Home');
+                        }
+                    }}
+                    style={{
+                        zIndex: 9999
+                    }}
+                >
+                    <MaterialIcons
+                        name="keyboard-arrow-left"
+                        size={50}
+                        color="#325962"
+                        style={{
+                            position: "absolute",
+                            margin: 30,
+                            marginLeft: 0,
+                        }}
+                    />
+                </TouchableOpacity>
+                <ScrollView
+                    style={{
+                        backgroundColor: "#fff"
+                    }}
+                >
                     <View style={{ height: width / 1.3 }}>
                         <RenderImage cover={route.params.brand.cover} />
                         <RenderLogoBox logo={route.params.brand.logobox} />
@@ -448,7 +486,9 @@ const DetailsScreen = ({ route }) => {
                                 size={18}
                             />
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => navigation.navigate('search')} style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', right: '5%' }}>
+                        <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', right: '5%' }}
+                            onPress={handleOpenModal}
+                        >
                             <Text style={{ marginRight: 3, fontFamily: 'PSB', color: '#325962', opacity: 0.6 }}>Search</Text>
                             <Icon
                                 name="search"
@@ -470,6 +510,10 @@ const DetailsScreen = ({ route }) => {
                         />
                     </View>
                 </ScrollView>
+                <AddToCart
+                    ref={modalRef}
+                    dish={selectedDish}
+                />
             </NativeBaseProvider>
         </BottomSheetModalProvider>
     )
