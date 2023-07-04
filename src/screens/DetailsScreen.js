@@ -83,7 +83,7 @@ const DetailsScreen = ({ route }) => {
     const [isEnabled, setIsEnabled] = useState(false);
 
     const bottomSheetModalRef = useRef(null);
-    const snapPoints = ["40%"];
+    const snapPoints = ["50%"];
 
     function handlePresentModal() {
         bottomSheetModalRef.current?.present();
@@ -261,7 +261,7 @@ const DetailsScreen = ({ route }) => {
                             </Text>
                         </View>
                         <Text fontWeight="400" style={styles.SubText}>
-                            {dishes.description}
+                            {dishes.ingredient}
                         </Text>
                         <View>
                             <HStack alignItems="center" justifyContent="space-between">

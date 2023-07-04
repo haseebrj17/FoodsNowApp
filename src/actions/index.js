@@ -1,3 +1,5 @@
-import GeneralAction from "./GeneralAction";
+import GeneralAction from './GeneralAction';
+import CartAction from './CartAction';
+import BookmarkAction from './BookmarkAction';
 
-export { GeneralAction }
+export {GeneralAction, CartAction, BookmarkAction};
