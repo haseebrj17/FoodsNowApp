@@ -7,7 +7,9 @@ import {
     WelcomeScreen,
     SplashScreen,
     SreachScreen,
-    DishDetailScreen
+    DishDetailScreen,
+    LoginScreen,
+    RegistrationScreen
 } from "../screens";
 import BottomTabBar from "./BottomTabBar";
 
@@ -28,8 +30,10 @@ const Navigators = () => {
                 screenOptions={{
                     headerShown: false,
                 }}
-                initialRouteName="Main"
+                initialRouteName="Registration"
             >
+                <Stack.Screen name="Registration" component={RegistrationScreen} />
+                <Stack.Screen name="Login" component={LoginScreen} />
                 <Stack.Screen name="Main" component={BottomTabBar} />
                 <Stack.Screen name="Details" component={DetailsScreen} />
                 <Stack.Screen name="DishDetail" component={DishDetailScreen} />

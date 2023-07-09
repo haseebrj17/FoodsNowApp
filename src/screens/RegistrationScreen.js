@@ -1,0 +1,302 @@
+import { StyleSheet, Text, View, Dimensions, Button, ImageBackground, TouchableOpacity, Image, Keyboard, Alert } from 'react-native'
+import React, { useState } from 'react'
+import { TextInput } from 'react-native-paper'
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { Backdrop } from 'react-native-backdrop';
+import { FormControl, Stack, WarningOutlineIcon, Box, Center, NativeBaseProvider, Icon } from "native-base";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Google from '../assets/icons/Google';
+import Apple from '../assets/icons/Apple';
+import Input from '../components/Input';
+import Loader from '../components/Loader';
+
+const { width, height } = Dimensions.get('screen')
+
+const RegistrationScreen = ({ navigation }) => {
+    const [inputs, setInputs] = React.useState({
+        email: '',
+        fullname: '',
+        phone: '',
+        password: '',
+    });
+    const [errors, setErrors] = React.useState({});
+    const [loading, setLoading] = React.useState(false);
+
+    const validate = () => {
+        Keyboard.dismiss();
+        let isValid = true;
+
+        if (!inputs.email) {
+            handleError('Please input email', 'email');
+            isValid = false;
+        } else if (!inputs.email.match(/\S+@\S+\.\S+/)) {
+            handleError('Please input a valid email', 'email');
+            isValid = false;
+        }
+
+        if (!inputs.fullname) {
+            handleError('Please input fullname', 'fullname');
+            isValid = false;
+        }
+
+        if (!inputs.phone) {
+            handleError('Please input phone number', 'phone');
+            isValid = false;
+        }
+
+        if (!inputs.password) {
+            handleError('Please input password', 'password');
+            isValid = false;
+        } else if (inputs.password.length < 6) {
+            handleError('Min password length of 6', 'password');
+            isValid = false;
+        }
+
+        if (isValid) {
+            register();
+        }
+    };
+
+    const register = () => {
+        setLoading(true);
+        setTimeout(() => {
+            try {
+                setLoading(false);
+                AsyncStorage.setItem('userData', JSON.stringify(inputs));
+                navigation.navigate('Login');
+            } catch (error) {
+                Alert.alert('Error', 'Something went wrong');
+            }
+        }, 3000);
+    };
+
+    const handleOnchange = (text, input) => {
+        setInputs(prevState => ({ ...prevState, [input]: text }));
+    };
+    const handleError = (error, input) => {
+        setErrors(prevState => ({ ...prevState, [input]: error }));
+    };
+
+    return (
+        <View
+            style={{
+                backgroundColor: '#325962',
+                flex: 1
+            }}
+        >
+            <View
+                style={{
+                    backgroundColor: '#f1f1f1'
+                }}
+            >
+                <View
+                    style={{
+                        width: width,
+                        height: width / 3,
+                        backgroundColor: '#f1f1f1',
+                        overflow: 'hidden',
+                        borderBottomRightRadius: 75,
+                    }}
+                >
+                    <Image
+                        source={require('../assets/images/pattern14.png')}
+                        style={{
+                            width: width,
+                            height: width / 3,
+                            aspectRatio: 1500 / 500,
+                            borderBottomRightRadius: 75,
+                        }}
+                    />
+                </View>
+            </View>
+            <View
+                style={{
+                    flex: 1,
+                    overflow: 'hidden'
+                }}
+            >
+                <Image
+                    source={require('../assets/images/pattern14.png')}
+                    style={{
+                        ...StyleSheet.absoluteFillObject,
+                        width: width,
+                        height: width / 3,
+                        aspectRatio: 1500 / 500,
+                    }}
+                />
+                <View
+                    style={{
+                        borderRadius: 75,
+                        borderTopRightRadius: 0,
+                        backgroundColor: '#f1f1f1',
+                        flex: 1,
+                        alignItems: 'center',
+                        justifyContent: 'flex-start',
+                    }}
+                >
+                    <View
+                        style={{
+                            width: "80%",
+                            height: width,
+                            alignSelf: 'center',
+                            margin: 70
+                        }}
+                    >
+                        <Input
+                            onChangeText={text => handleOnchange(text, 'email')}
+                            onFocus={() => handleError(null, 'email')}
+                            iconName="email-outline"
+                            label="Email"
+                            placeholder="Enter your email address"
+                            error={errors.email}
+                        />
+
+                        <Input
+                            onChangeText={text => handleOnchange(text, 'fullname')}
+                            onFocus={() => handleError(null, 'fullname')}
+                            iconName="account-outline"
+                            label="Full Name"
+                            placeholder="Enter your full name"
+                            error={errors.fullname}
+                        />
+
+                        <Input
+                            keyboardType="numeric"
+                            onChangeText={text => handleOnchange(text, 'phone')}
+                            onFocus={() => handleError(null, 'phone')}
+                            iconName="phone-outline"
+                            label="Phone Number"
+                            placeholder="Enter your phone no"
+                            error={errors.phone}
+                        />
+                        <Input
+                            onChangeText={text => handleOnchange(text, 'password')}
+                            onFocus={() => handleError(null, 'password')}
+                            iconName="lock-outline"
+                            label="Password"
+                            placeholder="Enter your password"
+                            error={errors.password}
+                            password
+                        />
+                        <Button title="Register" onPress={validate} />
+                    </View>
+                </View>
+            </View>
+            <View
+                style={{
+                    height: 170,
+                    backgroundColor: '#325962'
+                }}
+            >
+                <View
+                    style={{
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        alignSelf: 'center',
+                        margin: 10,
+                    }}
+                >
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'space-evenly',
+                            margin: 10,
+                        }}
+                    >
+                        <Text
+                            style={{
+                                fontWeight: "500",
+                                fontSize: 16,
+                                color: '#f1f1f1'
+                            }}
+                        >Sign up with</Text>
+                    </View>
+                    <View
+                        style={{
+                            width: '60%',
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'space-evenly'
+                        }}
+                    >
+                        <TouchableOpacity>
+                            <View
+                                style={{
+                                    width: 50,
+                                    height: 50,
+                                    borderRadius: '50%',
+                                    backgroundColor: '#f1f1f1',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                }}
+                            >
+                                <Google size={25} />
+                            </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity>
+                            <View
+                                style={{
+                                    width: 50,
+                                    height: 50,
+                                    borderRadius: '50%',
+                                    backgroundColor: '#f1f1f1',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                }}
+                            >
+                                <Apple size={25} />
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'space-evenly',
+                            margin: 10,
+                        }}
+                    >
+                        <Text
+                            style={{
+                                fontWeight: "500",
+                                fontSize: 16,
+                                color: '#f1f1f1'
+                            }}
+                        >Already have an account? </Text>
+                        <TouchableOpacity
+                            onPress={() => navigation.navigate('Login')}
+                        ><Text
+                            style={{
+                                fontWeight: "500",
+                                fontSize: 16,
+                                color: '#FFAF51'
+                            }}
+                        >Sign In</Text></TouchableOpacity>
+                    </View>
+                </View>
+            </View>
+        </View>
+    )
+}
+
+export default RegistrationScreen
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#333',
+    },
+    text: {
+        fontSize: 30,
+        color: '#fff',
+    },
+    overlay: {
+        ...StyleSheet.absoluteFill,
+        backgroundColor: '#fff',
+        opacity: 0.3,
+    },
+});

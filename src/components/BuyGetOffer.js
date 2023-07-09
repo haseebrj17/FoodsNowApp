@@ -72,7 +72,7 @@ const BuyGetOfferList = ({ navigation }) => {
                     <HStack alignItems="center" space={4} justifyContent="space-between">
                         <HStack alignItems="center">
                             <Text style={styles.SubTextPrice}>
-                                {offer.price}
+                                €{offer.price}
                             </Text>
                         </HStack>
                     </HStack>

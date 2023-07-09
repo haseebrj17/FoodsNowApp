@@ -761,7 +761,7 @@ export const BrandCard = [
     },
     {
         id: 5,
-        image: require('../images/BrandCard6.png'),
+        image: require('../images/BrandCard7.png'),
         name: 'Bombay To Berlin',
         description: 'Brand description',
         cover: require('../images/WrapTimeCover.png'),

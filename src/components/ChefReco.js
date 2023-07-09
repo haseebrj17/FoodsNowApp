@@ -58,7 +58,7 @@ const ChefRecommendation = ({ navigation }) => {
                     <HStack alignItems="center" space={4} justifyContent="space-between">
                         <HStack alignItems="center">
                             <Text style={styles.SubTextPrice}>
-                                {reco.price}
+                                €{reco.price}
                             </Text>
                         </HStack>
                     </HStack>

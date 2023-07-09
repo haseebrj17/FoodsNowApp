@@ -4,12 +4,16 @@ import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { Button } from '@react-native-material/core';
 import { FontAwesome, MaterialCommunityIcons, AntDesign } from '@expo/vector-icons';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
-import { FlatList, NativeBaseProvider } from 'native-base';
+import { FlatList, Input, NativeBaseProvider } from 'native-base';
 import { LinearGradient } from 'expo-linear-gradient';
+import { CheckBox } from '@rneui/base';
+import { FormControl } from 'native-base';
+import { useDispatch, useSelector } from 'react-redux';
 
 const { width, height } = Dimensions.get('window')
 
 const AddToCartModal = forwardRef((props, ref) => {
+    
     const modalRef = useRef();
 
     const dish = props.dish
@@ -41,48 +45,50 @@ const AddToCartModal = forwardRef((props, ref) => {
     ]);
 
     const DetailsRoute = () => (
-        <View style={[styles.scene, { backgroundColor: 'white' }]} >
-            <Text
-                style={{
-                    fontSize: 18,
-                    fontWeight: 'bold',
-                    color: '#000',
-                    marginLeft: 10,
-                    marginTop: 10,
-                }}
-            >Description</Text>
-            <Text
-                style={{
-                    fontSize: 12,
-                    fontWeight: '400',
-                    color: '#000',
-                    marginLeft: 10,
-                    marginTop: 5,
-                    marginBottom: 10,
-                }}
-            >
-                {dish.description}
-            </Text>
-            <Text
-                style={{
-                    fontSize: 18,
-                    fontWeight: 'bold',
-                    color: '#000',
-                    marginLeft: 10,
-                    marginTop: 10,
-                }}
-            >Ingredients</Text>
-            <Text
-                style={{
-                    fontSize: 12,
-                    fontWeight: '400',
-                    color: '#000',
-                    marginLeft: 10,
-                    marginTop: 5,
-                }}
-            >
-                {dish.ingredient}
-            </Text>
+        <View style={{ height: 300, overflow: 'scroll', backgroundColor: 'black' }}>
+            <View style={[styles.scene, { backgroundColor: 'white' }]} >
+                <Text
+                    style={{
+                        fontSize: 18,
+                        fontWeight: 'bold',
+                        color: '#000',
+                        marginLeft: 10,
+                        marginTop: 10,
+                    }}
+                >Description</Text>
+                <Text
+                    style={{
+                        fontSize: 12,
+                        fontWeight: '400',
+                        color: '#000',
+                        marginLeft: 10,
+                        marginTop: 5,
+                        marginBottom: 10,
+                    }}
+                >
+                    {dish.description}
+                </Text>
+                <Text
+                    style={{
+                        fontSize: 18,
+                        fontWeight: 'bold',
+                        color: '#000',
+                        marginLeft: 10,
+                        marginTop: 10,
+                    }}
+                >Ingredients</Text>
+                <Text
+                    style={{
+                        fontSize: 12,
+                        fontWeight: '400',
+                        color: '#000',
+                        marginLeft: 10,
+                        marginTop: 5,
+                    }}
+                >
+                    {dish.ingredient}
+                </Text>
+            </View>
         </View>
     );
 
@@ -208,17 +214,19 @@ const AddToCartModal = forwardRef((props, ref) => {
 
 
     const ReviewsRoute = () => (
-        <NativeBaseProvider>
-            <FlatList
-                aria-expanded="false"
-                data={review}
-                renderItem={renderComment}
-                style={{
-                    width: "100%",
-                    height: "100%",
-                }}
-            />
-        </NativeBaseProvider>
+        <View style={{ height: 300, overflow: 'scroll' }}>
+            <NativeBaseProvider>
+                <FlatList
+                    aria-expanded="false"
+                    data={review}
+                    renderItem={renderComment}
+                    style={[styles.scene, {
+                        width: "100%",
+                        height: "100%",
+                    }]}
+                />
+            </NativeBaseProvider>
+        </View>
     );
 
     const ListPrices = () => {
@@ -320,7 +328,7 @@ const AddToCartModal = forwardRef((props, ref) => {
                                     reviews: ReviewsRoute,
                                 })}
                                 onIndexChange={setIndex}
-                                initialLayout={{ width: width, height: 400 }}
+                                initialLayout={{ width: width }}
                                 renderTabBar={props => (
                                     <TabBar
                                         {...props}
@@ -336,9 +344,11 @@ const AddToCartModal = forwardRef((props, ref) => {
                                     width: "100%",
                                     height: "50%",
                                     position: 'relative',
+                                    top: '0%',
                                     // backgroundColor: "black",
                                 }}
                             >
+
                             </View>
                         </View>
                     </ScrollView>
@@ -491,7 +501,6 @@ const styles = StyleSheet.create({
         width: '80%',
         height: 40,
         alignSelf: 'center',
-
     },
     scene: {
         padding: 10,
