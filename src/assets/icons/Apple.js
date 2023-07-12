@@ -1,6 +1,6 @@
 import Svg, { Path } from "react-native-svg"
 
-const Apple = ({ size }) => {
+const AppleIcon = ({ size }) => {
     return (
         <Svg
             xmlns="http://www.w3.org/2000/svg"
@@ -15,4 +15,4 @@ const Apple = ({ size }) => {
     )
 }
 
-export default Apple
+export default AppleIcon

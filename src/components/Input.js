@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+const { height } = Dimensions.get('screen')
 const Input = ({
     label,
     iconName,
@@ -12,7 +13,7 @@ const Input = ({
     const [hidePassword, setHidePassword] = useState(password);
     const [isFocused, setIsFocused] = useState(false);
     return (
-        <View style={{ marginBottom: 20 }}>
+        <View style={{ marginBottom: 10 }}>
             <Text style={style.label}>{label}</Text>
             <View
                 style={[
@@ -65,7 +66,7 @@ const style = StyleSheet.create({
         color: "grey",
     },
     inputContainer: {
-        height: 55,
+        height: height * 0.06,
         backgroundColor: '#f1f1f1',
         flexDirection: 'row',
         paddingHorizontal: 15,

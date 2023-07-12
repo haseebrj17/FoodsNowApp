@@ -1,10 +1,17 @@
-import { ApiContants } from '../assets/constants/ApiContants';
+import ApiContants from "../assets/constants/ApiContants";
 
 const getFlagIcon = (
-    code = 'IN',
-    style = ApiContants.COUNTRY_FLAG.STYLE.FLAT,
-    size = ApiContants.COUNTRY_FLAG.SIZE[64],
-) => `${ApiContants.COUNTRY_FLAG.BASE_URL}/${code}/${style}/${size}.png`;
+    code = 'DE',
+    style = ApiContants?.COUNTRY_FLAG?.STYLE?.SHINY,
+    size = ApiContants?.COUNTRY_FLAG?.SIZE[64],
+) => {
+    if (ApiContants?.COUNTRY_FLAG) {
+        return `${ApiContants.COUNTRY_FLAG.BASE_URL}/${code}/${style}/${size}.png`;
+    } else {
+        console.log("ApiContants.COUNTRY_FLAG is not defined");
+        return null;
+    }
+};
 
 const getLogo = imageId =>
     `${ApiContants.STATIC_IMAGE.BASE_URL}/logo/${imageId}.png`;

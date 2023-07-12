@@ -1,7 +1,7 @@
 import * as React from "react"
 import Svg, { Path } from "react-native-svg";
 
-const Google = ({ size }) => {
+const GoogleIcon = ({ size }) => {
     return (
         <Svg
             xmlns="http://www.w3.org/2000/svg"
@@ -29,4 +29,4 @@ const Google = ({ size }) => {
     );
 }
 
-export default Google
+export default GoogleIcon

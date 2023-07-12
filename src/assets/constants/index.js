@@ -1,4 +1,6 @@
 import Fonts from "./Fonts";
 import bgs from "./Colors";
+import CountryCode from "./CountryCode";
 
-export { Fonts, bgs }
+
+export { Fonts, bgs, CountryCode }

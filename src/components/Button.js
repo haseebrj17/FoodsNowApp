@@ -8,12 +8,13 @@ const Button = ({ title, onPress = () => { } }) => {
             style={{
                 height: 55,
                 width: '100%',
-                backgroundColor: '#',
-                marginVertical: 20,
+                backgroundColor: '#325962',
+                borderRadius: 10,
                 justifyContent: 'center',
                 alignItems: 'center',
+                marginTop: 10,
             }}>
-            <Text style={{ color: COLORS.white, fontWeight: 'bold', fontSize: 18 }}>
+            <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 18, letterSpacing: 1 }}>
                 {title}
             </Text>
         </TouchableOpacity>

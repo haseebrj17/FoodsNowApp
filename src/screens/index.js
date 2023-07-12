@@ -9,6 +9,9 @@ import CartScreen from "./CartScreen";
 import DishDetailScreen from "./DishDetailScreen";
 import LoginScreen from "./LoginScreen";
 import RegistrationScreen from "./RegistrationScreen";
+import VerificationScreen from './VerificationScreen';
+import CodeConfirmationScreen from "./CodeConfirmationScreen";
+import LocationScreen from "./LocationScreen";
 
 export {
     DataTrackingScreen,
@@ -22,4 +25,7 @@ export {
     DishDetailScreen,
     LoginScreen,
     RegistrationScreen,
+    VerificationScreen,
+    CodeConfirmationScreen,
+    LocationScreen,
 }

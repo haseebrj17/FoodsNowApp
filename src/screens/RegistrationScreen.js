@@ -1,18 +1,84 @@
-import { StyleSheet, Text, View, Dimensions, Button, ImageBackground, TouchableOpacity, Image, Keyboard, Alert } from 'react-native'
+import { StyleSheet, Text, View, Dimensions, ImageBackground, TouchableOpacity, Image, Keyboard, Alert } from 'react-native'
 import React, { useState } from 'react'
 import { TextInput } from 'react-native-paper'
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
-import { Backdrop } from 'react-native-backdrop';
 import { FormControl, Stack, WarningOutlineIcon, Box, Center, NativeBaseProvider, Icon } from "native-base";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Google from '../assets/icons/Google';
-import Apple from '../assets/icons/Apple';
+import * as Google from 'expo-auth-session/providers/google';
+import * as AppleAuthentication from 'expo-apple-authentication';
+import { useAuthRequest } from 'expo-auth-session';
+import * as AuthSession from 'expo-auth-session';
+import GoogleIcon from '../assets/icons/Google';
+import AppleIcon from '../assets/icons/Apple';
 import Input from '../components/Input';
 import Loader from '../components/Loader';
+import Button from '../components/Button';
 
 const { width, height } = Dimensions.get('screen')
 
 const RegistrationScreen = ({ navigation }) => {
+
+    ///// Google OAuth /////
+    const redirectUri = AuthSession.makeRedirectUri({ useProxy: true });
+
+    const [requestGoogle, responseGoogle, promptAsyncGoogle] = Google.useAuthRequest({
+        clientId: 'GOOGLE_CLIENT_ID',
+        redirectUri,
+    });
+
+    React.useEffect(() => {
+        if (responseGoogle?.type === 'success') {
+            const { authentication } = responseGoogle;
+            AsyncStorage.setItem('userToken', authentication.accessToken);
+            AsyncStorage.setItem('loginMethod', 'google');
+            AsyncStorage.setItem('googleUser', JSON.stringify(authentication.user));
+            // navigation.navigate('AddPhoneNumber');
+            AsyncStorage.setItem('userToken', authentication.accessToken);
+        }
+    }, [responseGoogle]);
+
+    const handleAppleLogin = async () => {
+        try {
+            const credential = await AppleAuthentication.signInAsync({
+                requestedScopes: [
+                    AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+                    AppleAuthentication.AppleAuthenticationScope.EMAIL,
+                ],
+            });
+            AsyncStorage.setItem('appleUser', JSON.stringify(credential));
+            AsyncStorage.setItem('loginMethod', 'apple');
+            // navigation.navigate('AddPhoneNumber');
+        } catch (e) {
+            if (e.code === 'ERR_CANCELED') {
+                Alert.alert(
+                    'Sign-in Cancelled',
+                    'You cancelled the sign-in process. If this was a mistake, please try again.'
+                );
+            } else {
+                console.error(e);
+                Alert.alert(
+                    'An error occurred',
+                    'We encountered an error while trying to sign you in. Please try again.'
+                );
+            }
+        }
+    };
+
+
+    const register = () => {
+        setLoading(true);
+        setTimeout(() => {
+            try {
+                setLoading(false);
+                AsyncStorage.setItem('userData', JSON.stringify(inputs));
+                AsyncStorage.setItem('loginMethod', 'email');
+                navigation.navigate('Login');
+            } catch (error) {
+                Alert.alert('Error', 'Something went wrong');
+            }
+        }, 3000);
+    };
+
     const [inputs, setInputs] = React.useState({
         email: '',
         fullname: '',
@@ -22,6 +88,11 @@ const RegistrationScreen = ({ navigation }) => {
     const [errors, setErrors] = React.useState({});
     const [loading, setLoading] = React.useState(false);
 
+    let margin = 50;
+    if (!inputs.email && !inputs.fullname && !inputs.password) {
+        margin = 40
+    }
+
     const validate = () => {
         Keyboard.dismiss();
         let isValid = true;
@@ -29,45 +100,38 @@ const RegistrationScreen = ({ navigation }) => {
         if (!inputs.email) {
             handleError('Please input email', 'email');
             isValid = false;
+            margin = 40
         } else if (!inputs.email.match(/\S+@\S+\.\S+/)) {
             handleError('Please input a valid email', 'email');
             isValid = false;
+            margin = 40
         }
 
         if (!inputs.fullname) {
             handleError('Please input fullname', 'fullname');
             isValid = false;
+            margin = 40
         }
 
         if (!inputs.phone) {
             handleError('Please input phone number', 'phone');
             isValid = false;
+            margin = 40
         }
 
         if (!inputs.password) {
             handleError('Please input password', 'password');
             isValid = false;
+            margin = 40
         } else if (inputs.password.length < 6) {
             handleError('Min password length of 6', 'password');
             isValid = false;
+            margin = 40
         }
 
         if (isValid) {
             register();
         }
-    };
-
-    const register = () => {
-        setLoading(true);
-        setTimeout(() => {
-            try {
-                setLoading(false);
-                AsyncStorage.setItem('userData', JSON.stringify(inputs));
-                navigation.navigate('Login');
-            } catch (error) {
-                Alert.alert('Error', 'Something went wrong');
-            }
-        }, 3000);
     };
 
     const handleOnchange = (text, input) => {
@@ -92,18 +156,18 @@ const RegistrationScreen = ({ navigation }) => {
                 <View
                     style={{
                         width: width,
-                        height: width / 3,
+                        height: width / 4,
                         backgroundColor: '#f1f1f1',
                         overflow: 'hidden',
                         borderBottomRightRadius: 75,
                     }}
                 >
                     <Image
-                        source={require('../assets/images/pattern14.png')}
+                        source={require('../assets/images/pattern15.png')}
                         style={{
                             width: width,
-                            height: width / 3,
-                            aspectRatio: 1500 / 500,
+                            height: width / 4,
+                            aspectRatio: 2000 / 500,
                             borderBottomRightRadius: 75,
                         }}
                     />
@@ -116,12 +180,12 @@ const RegistrationScreen = ({ navigation }) => {
                 }}
             >
                 <Image
-                    source={require('../assets/images/pattern14.png')}
+                    source={require('../assets/images/pattern15.png')}
                     style={{
                         ...StyleSheet.absoluteFillObject,
                         width: width,
-                        height: width / 3,
-                        aspectRatio: 1500 / 500,
+                        height: width / 4,
+                        aspectRatio: 2000 / 500,
                     }}
                 />
                 <View
@@ -139,9 +203,18 @@ const RegistrationScreen = ({ navigation }) => {
                             width: "80%",
                             height: width,
                             alignSelf: 'center',
-                            margin: 70
+                            margin: margin,
                         }}
                     >
+                        <Text
+                            style={{
+                                fontSize: 36,
+                                fontWeight: 'bold',
+                                color: '#325962',
+                                alignSelf: 'center',
+                                margin: 10
+                            }}
+                        >Sign Up</Text>
                         <Input
                             onChangeText={text => handleOnchange(text, 'email')}
                             onFocus={() => handleError(null, 'email')}
@@ -150,7 +223,6 @@ const RegistrationScreen = ({ navigation }) => {
                             placeholder="Enter your email address"
                             error={errors.email}
                         />
-
                         <Input
                             onChangeText={text => handleOnchange(text, 'fullname')}
                             onFocus={() => handleError(null, 'fullname')}
@@ -221,7 +293,7 @@ const RegistrationScreen = ({ navigation }) => {
                             justifyContent: 'space-evenly'
                         }}
                     >
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={() => promptAsyncGoogle()}>
                             <View
                                 style={{
                                     width: 50,
@@ -232,10 +304,10 @@ const RegistrationScreen = ({ navigation }) => {
                                     alignItems: 'center',
                                 }}
                             >
-                                <Google size={25} />
+                                <GoogleIcon size={25} />
                             </View>
                         </TouchableOpacity>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={handleAppleLogin}>
                             <View
                                 style={{
                                     width: 50,
@@ -246,7 +318,7 @@ const RegistrationScreen = ({ navigation }) => {
                                     alignItems: 'center',
                                 }}
                             >
-                                <Apple size={25} />
+                                <AppleIcon size={25} />
                             </View>
                         </TouchableOpacity>
                     </View>
@@ -266,7 +338,7 @@ const RegistrationScreen = ({ navigation }) => {
                             }}
                         >Already have an account? </Text>
                         <TouchableOpacity
-                            onPress={() => navigation.navigate('Login')}
+                            onPress={() => navigation.navigate('Verification')}
                         ><Text
                             style={{
                                 fontWeight: "500",
