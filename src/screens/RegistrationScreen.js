@@ -13,6 +13,7 @@ import AppleIcon from '../assets/icons/Apple';
 import Input from '../components/Input';
 import Loader from '../components/Loader';
 import Button from '../components/Button';
+import { StorageService } from '../services';
 
 const { width, height } = Dimensions.get('screen')
 
@@ -29,11 +30,11 @@ const RegistrationScreen = ({ navigation }) => {
     React.useEffect(() => {
         if (responseGoogle?.type === 'success') {
             const { authentication } = responseGoogle;
-            AsyncStorage.setItem('userToken', authentication.accessToken);
-            AsyncStorage.setItem('loginMethod', 'google');
-            AsyncStorage.setItem('googleUser', JSON.stringify(authentication.user));
+            StorageService.setToken(authentication.accessToken);
+            StorageService.setGoogleUser(authentication.user);
+            StorageService.setGoogleUser("true");
+
             // navigation.navigate('AddPhoneNumber');
-            AsyncStorage.setItem('userToken', authentication.accessToken);
         }
     }, [responseGoogle]);
 
@@ -64,14 +65,13 @@ const RegistrationScreen = ({ navigation }) => {
         }
     };
 
-
     const register = () => {
         setLoading(true);
         setTimeout(() => {
             try {
                 setLoading(false);
-                AsyncStorage.setItem('userData', JSON.stringify(inputs));
-                AsyncStorage.setItem('loginMethod', 'email');
+                StorageService.setUserData(inputs);
+                StorageService.setToken('email');
                 navigation.navigate('Login');
             } catch (error) {
                 Alert.alert('Error', 'Something went wrong');
@@ -338,7 +338,7 @@ const RegistrationScreen = ({ navigation }) => {
                             }}
                         >Already have an account? </Text>
                         <TouchableOpacity
-                            onPress={() => navigation.navigate('Verification')}
+                            onPress={() => navigation.navigate('Login')}
                         ><Text
                             style={{
                                 fontWeight: "500",

@@ -7,6 +7,7 @@ import { FormControl, Stack, WarningOutlineIcon, Box, Center, NativeBaseProvider
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Google from 'expo-auth-session/providers/google';
 import * as AppleAuthentication from 'expo-apple-authentication';
+import CryptoJS from 'react-native-crypto-js';
 import GoogleIcon from '../assets/icons/Google';
 import AppleIcon from '../assets/icons/Apple';
 import Input from '../components/Input';

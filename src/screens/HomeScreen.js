@@ -28,7 +28,7 @@ const HomeScreen = () => {
     });
     const navigation = useNavigation();
     return (
-        <ScrollView style={{height: height}}>
+        <ScrollView style={{height: height, backgroundColor: '#fff'}}>
             <AppBar style={styles.AppBar}>
                 <TouchableOpacity onPress={() => navigation.navigate('Search')} style={{width: width * 0.9, justifyContent: 'center', alignItems: 'center'}}>
                     <View

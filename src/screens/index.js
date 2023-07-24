@@ -12,6 +12,14 @@ import RegistrationScreen from "./RegistrationScreen";
 import VerificationScreen from './VerificationScreen';
 import CodeConfirmationScreen from "./CodeConfirmationScreen";
 import LocationScreen from "./LocationScreen";
+import PersonalDetialsScreen from "./PersonalDetialsScreen";
+import AddressesScreen from "./AddressesScreen";
+import SchedulesScreen from "./SchedulesScreen";
+import OrderReoderingScreen from "./OrderReoderingScreen";
+import SettingsScreen from "./SettingsScreen";
+import MoreScreen from "./MoreScreen";
+import LocationAccessScreen from "./LocationAccessScreen";
+import LocationDetailScreen from "./LocationDetailScreen";
 
 export {
     DataTrackingScreen,
@@ -28,4 +36,12 @@ export {
     VerificationScreen,
     CodeConfirmationScreen,
     LocationScreen,
+    PersonalDetialsScreen,
+    AddressesScreen,
+    SchedulesScreen,
+    OrderReoderingScreen,
+    SettingsScreen,
+    MoreScreen,
+    LocationAccessScreen,
+    LocationDetailScreen,
 }
