@@ -44,7 +44,7 @@ const BuyGetOfferList = ({ navigation }) => {
         );
     }
 
-    Example = ({ item: offer }) => {
+    renderItem = ({ item: offer }) => {
         return <Box alignItems="center" style={styles.OfferCardBox}>
             <Box maxW="80"
                 style={styles.OfferCard}>
@@ -99,7 +99,7 @@ const BuyGetOfferList = ({ navigation }) => {
                     aria-expanded="false"
                     data={offer}
                     style={styles.container}
-                    renderItem={Example}
+                    renderItem={renderItem}
                 // keyExtractor={(item) => item.id.toString()}
                 />
             </NativeBaseProvider>

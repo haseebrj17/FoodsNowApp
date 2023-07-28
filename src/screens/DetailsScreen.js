@@ -59,7 +59,39 @@ const DetailsScreen = ({ route }) => {
 
     const { dishes } = route.params.brand;
 
+    const extra = route.params.extras;
+    const dip = route.params.dips;
+
+
     const [dish, setDish] = useState(dishes);
+    const [extras, setExtras] = useState(extra);
+    const [dips, setDips] = useState(dip);
+
+    ///////////////  Extras and Dips for Dish Form  ///////////////
+
+    const Extras = (selectedDish) => {
+        if (selectedDish === null) {
+            return null
+        } else {
+            if (selectedDish.category1 === "Pizza") {
+                return extras
+            }
+        }
+        return null
+    }
+
+    const Dips = (selectedDish) => {
+        if (selectedDish === null) {
+            return null
+        } else {
+            if (selectedDish.restaurant === 'come a napoli') {
+                return dips
+            } else if (dishes.restaurant === 'wrap time') {
+                return dips
+            }
+            return null
+        }
+    }
 
     ///////////////  Add to Cart Modal  ///////////////
 
@@ -205,7 +237,7 @@ const DetailsScreen = ({ route }) => {
                             alignItems: "center",
                             marginRight: 10,
                         }}>
-                            <Text style={[styles.SubTextPrice, { fontSize: 14, fontFamily: 'PBO' }]}>S</Text>
+                            <Text style={[styles.SubTextPrice, { fontSize: 14, }]}>S</Text>
                             <Text style={styles.SubTextPrice}>€{dishes.price32}</Text>
                         </View>
                         <View style={{
@@ -214,7 +246,7 @@ const DetailsScreen = ({ route }) => {
                             alignItems: "center",
                             marginRight: 10,
                         }}>
-                            <Text style={[styles.SubTextPrice, { fontSize: 14, fontFamily: 'PBO' }]}>M</Text>
+                            <Text style={[styles.SubTextPrice, { fontSize: 14, }]}>M</Text>
                             <Text style={styles.SubTextPrice}>€{dishes.price48}</Text>
                         </View>
                         <View style={{
@@ -223,7 +255,7 @@ const DetailsScreen = ({ route }) => {
                             alignItems: "center",
                             marginRight: 10,
                         }}>
-                            <Text style={[styles.SubTextPrice, { fontSize: 14, fontFamily: 'PBO' }]}>L</Text>
+                            <Text style={[styles.SubTextPrice, { fontSize: 14, }]}>L</Text>
                             <Text style={styles.SubTextPrice}>€{dishes.price60}</Text>
                         </View>
                     </View>
@@ -471,14 +503,14 @@ const DetailsScreen = ({ route }) => {
                         <RenderImage cover={route.params.brand.cover} />
                         <RenderLogoBox logo={route.params.brand.logobox} />
                     </View>
-                    <Text style={{ fontSize: 20, fontFamily: 'PEBO', fontWeight: 'bold', color: '#325962', marginLeft: 15, marginBottom: 10, marginTop: 10, letterSpacing: 1, }}>{route.params.brand.name.toUpperCase()}</Text>
-                    <Text style={{ lineHeight: 15, fontSize: 12, fontFamily: 'PBO', fontWeight: 'bold', color: '#325962', letterSpacing: 0.5, marginLeft: 15, marginBottom: 2 }}>{route.params.brand.description}</Text>
+                    <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#325962', marginLeft: 15, marginBottom: 10, marginTop: 10, letterSpacing: 1, }}>{route.params.brand.name.toUpperCase()}</Text>
+                    <Text style={{ lineHeight: 15, fontSize: 12, fontWeight: 'bold', color: '#325962', letterSpacing: 0.5, marginLeft: 15, marginBottom: 2 }}>{route.params.brand.description ? route.params.brand.description : null}</Text>
                     <View style={{ marginBottom: 5, height: '0.5%', width: "100%", backgroundColor: "#f1f1f1" }}></View>
                     <View style={{ width: "100%", height: 25, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5, }}>
                         <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', left: '4%' }}
                             onPress={handlePresentModal}
                         >
-                            <Text style={{ marginRight: 3, fontFamily: 'PSB', color: '#325962', opacity: 0.6 }}>Sort/Filter</Text>
+                            <Text style={{ marginRight: 3, color: '#325962', opacity: 0.6 }}>Sort/Filter</Text>
                             <Icon
                                 name="sliders"
                                 type="font-awesome"
@@ -489,7 +521,7 @@ const DetailsScreen = ({ route }) => {
                         <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', right: '5%' }}
                             onPress={handleOpenModal}
                         >
-                            <Text style={{ marginRight: 3, fontFamily: 'PSB', color: '#325962', opacity: 0.6 }}>Search</Text>
+                            <Text style={{ marginRight: 3, color: '#325962', opacity: 0.6 }}>Search</Text>
                             <Icon
                                 name="search"
                                 type="font-awesome"
@@ -513,6 +545,8 @@ const DetailsScreen = ({ route }) => {
                 <AddToCart
                     ref={modalRef}
                     dish={selectedDish}
+                    extras={Extras(selectedDish)}
+                    dips={Dips(selectedDish)}
                 />
             </NativeBaseProvider>
         </BottomSheetModalProvider>

@@ -63,6 +63,30 @@ const LocationAccessScreen = ({ navigation }) => {
     const [disabled, setDisabled] = useState(true);
     const [addressAdded, setAddressAdded] = useState(false)
 
+    useEffect(() => {
+        (async () => {
+            let { status } = await Location.requestForegroundPermissionsAsync();
+            if (status !== 'granted') {
+                setErrorMsg('Permission to access location was denied');
+                return;
+            }
+            let location = await Location.getCurrentPositionAsync({});
+            Address(location.coords);
+            setSelectedLocation({
+                latitude: location.coords.latitude,
+                longitude: location.coords.longitude,
+                latitudeDelta: LATITUDE_DELTA,
+                longitudeDelta: LONGITUDE_DELTA,
+            })
+            setRegion({
+                latitude: location.coords.latitude,
+                longitude: location.coords.longitude,
+                latitudeDelta: LATITUDE_DELTA,
+                longitudeDelta: LONGITUDE_DELTA,
+            });
+        })();
+    }, []);
+
     const Address = async (location) => {
         const { latitude, longitude } = location;
         console.log(latitude, longitude)
@@ -107,33 +131,7 @@ const LocationAccessScreen = ({ navigation }) => {
             latitudeDelta: LATITUDE_DELTA,
             longitudeDelta: LONGITUDE_DELTA,
         }, 500);
-        let addresses = await Location.reverseGeocodeAsync(location.coords);
-        // Address(location.coords)
-        let firstAddress = addresses[0];
-        let formattedAddressName = `${firstAddress.name}`;
-        let formattedAddressCity = `${firstAddress.city}`;
-        setAddress(firstAddress)
-        setAddressName(formattedAddressName);
-        setCity(formattedAddressCity)
-        // console.log(firstAddress)
     };
-    useEffect(() => {
-        (async () => {
-            let { status } = await Location.requestForegroundPermissionsAsync();
-            if (status !== 'granted') {
-                setErrorMsg('Permission to access location was denied');
-                return;
-            }
-            let location = await Location.getCurrentPositionAsync({});
-            Address(location.coords);
-            setRegion({
-                latitude: location.coords.latitude,
-                longitude: location.coords.longitude,
-                latitudeDelta: LATITUDE_DELTA,
-                longitudeDelta: LONGITUDE_DELTA,
-            });
-        })();
-    }, []);
 
     const onRegionChange = (selectedLocation) => {
         Animated.parallel([

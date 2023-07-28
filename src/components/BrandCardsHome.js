@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { StyleSheet, FlatList, View, Text, Image, Dimensions, TouchableWithoutFeedback } from 'react-native';
-import { BrandCard } from '../assets/constants/Slider';
+import { BrandCard, Extras, Dips } from '../assets/constants/Slider';
 import { useFonts } from 'expo-font';
 import { Button } from "@react-native-material/core";
 import { useNavigation } from '@react-navigation/native';
@@ -25,7 +25,7 @@ const BrandCardsHome = () => {
             return <View style={[styles.BrandCard, styles.itemInvisible]} />;
         }
         return (
-            <TouchableWithoutFeedback onPress={() => navigation.navigate('Details', {brand})}>
+            <TouchableWithoutFeedback onPress={() => navigation.navigate('Details', { brand: brand, extras: Extras, dips: Dips })}>
                 <View
                     style={styles.BrandCard}
                 >

@@ -17,6 +17,7 @@ const LocationScreen = () => {
             })
             .catch((error) => console.log(error));
     }, []);
+    
     return (
         <View
             style={{

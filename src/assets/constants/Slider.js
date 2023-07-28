@@ -24,6 +24,8 @@ export const BrandCard = [
         description: 'Authentische Neapolitanische Pizza',
         cover: require('../images/ComeANapoliCover.png'),
         logobox: require('../icons/LogoBoxCAN.png'),
+        dips: true,
+        extras: true,
         dishes: [
             {
                 id: 0,
@@ -169,6 +171,8 @@ export const BrandCard = [
         description: 'Brand description',
         cover: require('../images/PastaAmicoCover.png'),
         logobox: require('../icons/LogoBoxPA.png'),
+        dips: false,
+        extras: false,
         dishes: [
             {
                 id: 0,
@@ -323,6 +327,8 @@ export const BrandCard = [
         description: 'Brand description',
         cover: require('../images/WokNBoxCover.png'),
         logobox: require('../icons/LogoBoxWNB.png'),
+        dips: false,
+        extras: false,
         dishes: [
             {
                 id: 0,
@@ -471,6 +477,8 @@ export const BrandCard = [
         description: 'Brand description',
         cover: require('../images/WrapTimeCover.png'),
         logobox: require('../icons/LogoBoxWT.png'),
+        dips: true,
+        extras: false,
         dishes: [
             {
                 id: 0,
@@ -619,6 +627,8 @@ export const BrandCard = [
         description: 'Brand description',
         cover: require('../images/LicenseToGrillCover.png'),
         logobox: require('../icons/LogoBoxLTG.png'),
+        dips: false,
+        extras: false,
         dishes: [
             {
                 id: 0,
@@ -766,6 +776,8 @@ export const BrandCard = [
         description: 'Brand description',
         cover: require('../images/WrapTimeCover.png'),
         logobox: require('../icons/LogoBoxCAN.png'),
+        dips: false,
+        extras: false,
         dishes: [
             {
                 id: 0,
@@ -906,6 +918,75 @@ export const BrandCard = [
                 ]
             },
         ]
+    },
+]
+
+export const Extras = [
+    {
+        _id: 0,
+        name: 'Zwiebel',
+        price32: 1,
+        price48: 2
+    },
+    {
+        _id: 1,
+        name: 'Gemüse',
+        price32: 1,
+        price48: 2
+    },
+    {
+        _id: 2,
+        name: 'Pilz',
+        price32: 1,
+        price48: 2
+    },
+    {
+        _id: 3,
+        name: 'Mozzarella-Käse',
+        price32: 1 + ',' + 5,
+        price48: 3
+    },
+    {
+        _id: 4,
+        name: 'Parmesankäse',
+        price32: 1 + ',' + 5,
+        price48: 3
+    },
+    {
+        _id: 5,
+        name: 'Huhn',
+        price32: 2,
+        price48: 4
+    },
+    {
+        _id: 6,
+        name: 'Döner',
+        price32: 2,
+        price48: 4
+    }
+]
+
+export const Dips = [
+    {
+        _id: 0,
+        name: 'Signature Dip',
+        desc:'made with fresh organic ingredients and hand picked by our chefs.',
+        price32: 2,
+        price48: 4
+    },
+    {
+        _id: 1,
+        name: 'Signature Green Dip',
+        desc:'made with fresh organic ingredients and hand picked by our chefs.',
+        price32: 2,
+        price48: 4
+    },
+    {
+        _id: 2,
+        name: 'Ranch Dip',
+        desc:'made with fresh organic ingredients and hand picked by our chefs.',
+        price32: 2,
+        price48: 4
     },
 ]
 

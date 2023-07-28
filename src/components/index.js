@@ -11,6 +11,7 @@ import Separator from "./Separator";
 import Slider from "./Slider";
 import ToggleButton from "./ToggleButton";
 import UseModal from "./UseModal";
+import DishForm from "./DishFormPizza";
 
 export {
     AddToCartModal,
@@ -26,4 +27,5 @@ export {
     Slider,
     ToggleButton,
     UseModal,
+    DishForm,
 }

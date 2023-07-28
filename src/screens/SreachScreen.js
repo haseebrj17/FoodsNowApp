@@ -70,7 +70,6 @@ const SreachScreen = ({ navigation }) => {
             </View>
             <View style={{
                 marginTop: 10,
-
             }}>
                 <FlatList
                     data={logo}

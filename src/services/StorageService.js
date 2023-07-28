@@ -51,17 +51,16 @@ const getLocation = async () => {
     return location !== null ? JSON.parse(location) : null;
 }
 
-// const setAddress = async (address) => {
-//     return AsyncStorage.setItem('address', JSON.stringify(address))
-// }
-
-// const getAddress = async () => {
-//     return AsyncStorage.getItem('address')
-// }
-
-const setAddress = async (address) => {
+const setAddress = async (newAddress) => {
     try {
-        await AsyncStorage.setItem('address', JSON.stringify(address));
+        const existingAddresses = await getAddress();
+        if (existingAddresses === null) {
+            await AsyncStorage.setItem('address', JSON.stringify([newAddress]));
+        } else {
+            const updatedAddresses = [...existingAddresses, newAddress];
+            await AsyncStorage.setItem('address', JSON.stringify(updatedAddresses));
+            console.log(updatedAddresses)
+        }
     } catch (e) {
     }
 }

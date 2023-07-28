@@ -1,30 +1,71 @@
 import React, { forwardRef, useImperativeHandle, useRef, useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image, Dimensions, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image, Dimensions, ScrollView, FlatList } from 'react-native';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { Button } from '@react-native-material/core';
+import { RadioButton } from 'react-native-paper';
 import { FontAwesome, MaterialCommunityIcons, AntDesign } from '@expo/vector-icons';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
-import { FlatList, Input, NativeBaseProvider } from 'native-base';
+import { Input, NativeBaseProvider } from 'native-base';
 import { LinearGradient } from 'expo-linear-gradient';
 import { CheckBox } from '@rneui/base';
 import { FormControl } from 'native-base';
 import { useDispatch, useSelector } from 'react-redux';
+import { Display } from '../utils';
+import DishFormPizza from './DishFormPizza';
 
 const { width, height } = Dimensions.get('window')
 
+const DeliveryPrice = ({ price }) => {
+    if (price >= 20) {
+        return <View
+            style={{
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+            }}
+        >
+            <MaterialCommunityIcons name="truck-fast" size={24} color="#325962" />
+            <Text
+                style={{
+                    fontSize: 16,
+                    fontWeight: '500',
+                    color: '#325962'
+                }}
+            > Free Delivery</Text>
+        </View>
+    }
+    return <View
+        style={{
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+        }}
+    ><MaterialCommunityIcons name="truck-fast" size={24} color="#325962" /><Text
+        style={{
+            fontSize: 16,
+            fontWeight: '500',
+            color: '#325962'
+        }}
+    > € 10</Text></View>
+}
+
 const AddToCartModal = forwardRef((props, ref) => {
-    
+
     const modalRef = useRef();
 
     const dish = props.dish
+
+    const extras = props.extras
+
+    const dips = props.dips
+
+    console.log(extras)
 
     const [review, setReview] = useState(dish?.reviewComment);
 
     useEffect(() => {
         setReview(dish?.reviewComment);
     }, [dish]);
-
-    console.log(review)
 
     useImperativeHandle(ref, () => ({
         present: () => {
@@ -45,7 +86,7 @@ const AddToCartModal = forwardRef((props, ref) => {
     ]);
 
     const DetailsRoute = () => (
-        <View style={{ height: 300, overflow: 'scroll', backgroundColor: 'black' }}>
+        <View style={{ height: Display.setHeight(40), overflow: 'scroll' }}>
             <View style={[styles.scene, { backgroundColor: 'white' }]} >
                 <Text
                     style={{
@@ -92,59 +133,6 @@ const AddToCartModal = forwardRef((props, ref) => {
         </View>
     );
 
-    // const renderComment = ({ item: comment }) => (
-    //     <View style={{
-    //         width: '90%',
-    //         height: 60,
-    //         backgroundColor: '#f1f1f1',
-    //         flexDirection: 'row',
-    //         alignItems: 'center',
-    //         justifyContent: 'flex-start',
-    //         alignSelf: 'center',
-    //         borderRadius: 10,
-    //         shadowColor: "#000",
-    //         shadowOffset: {
-    //             width: 0,
-    //             height: 2,
-    //         },
-    //         shadowOpacity: 0.23,
-    //         shadowRadius: 2.62,
-    //         elevation: 4,
-    //         marginBottom: 10,
-    //         padding: 10,
-    //     }}>
-    //         <View
-    //             style={{
-    //                 width: 50,
-    //                 height: 50,
-    //                 borderRadius: "50%",
-    //                 justifyContent: 'center',
-    //                 alignItems: 'center',
-    //                 marginRight: 10,
-    //                 backgroundColor: '#fff',
-    //             }}
-    //         >
-    //             <Image source={comment.image} style={{ width: 40, height: 40, borderRadius: 10 }} />
-    //         </View>
-    //         <View>
-    //             <Text
-    //                 style={{
-    //                     fontSize: 14,
-    //                     color: '#325962',
-    //                     fontWeight: '500'
-    //                 }}
-    //             >{comment.user}</Text>
-    //             <Text
-    //                 style={{
-    //                     fontSize: 12,
-    //                     color: '#000',
-    //                     fontWeight: '400',
-    //                 }}
-    //             >{comment.comment}</Text>
-    //         </View>
-    //     </View>
-    // )
-
     const [expanded, setExpanded] = useState(false);
     const renderComment = ({ item: comment }) => {
 
@@ -173,15 +161,15 @@ const AddToCartModal = forwardRef((props, ref) => {
                     shadowOpacity: 0.23,
                     shadowRadius: 2.62,
                     elevation: 4,
-                    margin: 5,
+                    marginBottom: 20,
                     padding: 10,
                 }}
             >
                 <View
                     style={{
-                        width: 50,
-                        height: 50,
-                        borderRadius: 25,
+                        width: Display.setHeight(6),
+                        height: Display.setHeight(6),
+                        borderRadius: '50%',
                         justifyContent: 'center',
                         alignItems: 'center',
                         marginRight: 10,
@@ -214,18 +202,16 @@ const AddToCartModal = forwardRef((props, ref) => {
 
 
     const ReviewsRoute = () => (
-        <View style={{ height: 300, overflow: 'scroll' }}>
-            <NativeBaseProvider>
-                <FlatList
-                    aria-expanded="false"
-                    data={review}
-                    renderItem={renderComment}
-                    style={[styles.scene, {
-                        width: "100%",
-                        height: "100%",
-                    }]}
-                />
-            </NativeBaseProvider>
+        <View style={{ height: Display.setHeight(40), overflow: 'scroll' }}>
+            <FlatList
+                aria-expanded="false"
+                data={review}
+                renderItem={renderComment}
+                style={[styles.scene, {
+                    width: "100%",
+                    height: "100%",
+                }]}
+            />
         </View>
     );
 
@@ -236,40 +222,6 @@ const AddToCartModal = forwardRef((props, ref) => {
         else {
             return <Text style={[styles.SubTextPrice, { marginTop: 5 }]}>€{dish.price}</Text>
         }
-    }
-
-    const DeliveryPrice = () => {
-        if (dish.price >= 20) {
-            return <View
-                style={{
-                    flexDirection: 'row',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                }}
-            >
-                <MaterialCommunityIcons name="truck-fast" size={24} color="#325962" />
-                <Text
-                    style={{
-                        fontSize: 16,
-                        fontWeight: '500',
-                        color: '#325962'
-                    }}
-                > Free Delivery</Text>
-            </View>
-        }
-        return <View
-            style={{
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-            }}
-        ><MaterialCommunityIcons name="truck-fast" size={24} color="#325962" /><Text
-            style={{
-                fontSize: 16,
-                fontWeight: '500',
-                color: '#325962'
-            }}
-        > € 10</Text></View>
     }
 
     return (
@@ -310,14 +262,14 @@ const AddToCartModal = forwardRef((props, ref) => {
                             <MaterialCommunityIcons name="clock-fast" size={24} color="#325962" />
                             <Text style={styles.reviewText}>{dish ? dish.deliverytime : ''}</Text>
                         </View>
-                        <DeliveryPrice />
+                        <DeliveryPrice price={dish ? dish.price : ''} />
                     </View>
                     <View style={styles.divider} />
                     <ScrollView showsVerticalScrollIndicator={false}>
                         <View
                             style={{
                                 width: "100%",
-                                height: Dimensions.get('screen').height,
+                                height: Display.setHeight(45),
                                 flexDirection: "column",
                             }}
                         >
@@ -339,20 +291,9 @@ const AddToCartModal = forwardRef((props, ref) => {
                                 )}
                             />
                             <View style={styles.divider} />
-                            <View
-                                style={{
-                                    width: "100%",
-                                    height: "50%",
-                                    position: 'relative',
-                                    top: '0%',
-                                    // backgroundColor: "black",
-                                }}
-                            >
-
-                            </View>
                         </View>
+                        <DishFormPizza dish={ dish ? dish : '' } extras={extras} dips={dips} />
                     </ScrollView>
-                    <View style={styles.divider} />
                 </View>
                 <View style={styles.buttonContainer}>
                     <View style={styles.itemAddContainer}>
