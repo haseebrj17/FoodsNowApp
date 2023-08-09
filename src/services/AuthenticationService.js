@@ -1,5 +1,5 @@
 // import axios from 'axios';
-// import { ApiContants } from '../contants';
+// import { ApiContants } from '../assets/constants';
 // import { getToken } from '../Store';
 // import { authHeader } from '../utils/Generator';
 
@@ -8,7 +8,7 @@
 // });
 
 // const register = async user => {
-//     if (!user?.username || !user?.email || !user?.password) {
+//     if (!user?.username || !user?.email || !user?.password || !user?.phone) {
 //         return { status: false, message: 'Please fill up all fields' };
 //     }
 //     try {
@@ -16,6 +16,7 @@
 //             username: user?.username,
 //             email: user?.email,
 //             password: user?.password,
+//             phone: user?.phone,
 //         };
 //         let registerResponse = await AuthRequest.post(
 //             ApiContants.BACKEND_API.REGISTER,

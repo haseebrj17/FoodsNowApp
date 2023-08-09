@@ -32,7 +32,7 @@ const LocationAccessScreen = ({ navigation }) => {
     const [isEnabled, setIsEnabled] = useState(false);
 
     const bottomSheetModalRef = useRef(null);
-    const snapPoints = ["50%"];
+    const snapPoints = ["50%", "70%"];
 
     function handlePresentModal() {
         bottomSheetModalRef.current?.present();

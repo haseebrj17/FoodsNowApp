@@ -14,10 +14,10 @@ const SplashScreen  = () => {
                 height,
                 alignItems: 'center',
                 justifyContent: 'center',
-                backgroundColor: '#325963'
+                backgroundColor: '#fff'
             }}
         >
-            <Image source={require('../assets/SplashGreen.gif')} 
+            <Image source={require('../assets/AppLoad.gif')} 
                 style={{
                     resizeMode: 'contain',
                     width: width,

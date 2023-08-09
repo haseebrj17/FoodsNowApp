@@ -1,10 +1,13 @@
 import { NativeBaseProvider } from "native-base";
 import { StatusBar } from "expo-status-bar";
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Animated, Text, FlatList, Image, View, StyleSheet, Dimensions } from "react-native"
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { SplashScreen } from '../assets/constants/Slider';
+import { useNavigation } from "@react-navigation/native";
 import { bgs } from "../assets/constants";
+import Button from "../components/Button";
+import { Display } from "../utils";
 const { width, height } = Dimensions.get('screen');
 
 const Indicator = ({ scrollX }) => {
@@ -65,25 +68,25 @@ const Backdrop = ({ scrollX }) => {
 }
 
 const Square = ({ scrollX }) => {
-    const YOLO  = Animated.modulo(Animated.divide(
+    const YOLO = Animated.modulo(Animated.divide(
         Animated.modulo(scrollX, width),
         new Animated.Value(width)
     ), 1);
 
-    const rotate  = YOLO.interpolate({
+    const rotate = YOLO.interpolate({
         inputRange: [0, 0.5, 1],
         outputRange: ['35deg', '0deg', '35deg'],
     })
-    const translateX  = YOLO.interpolate({
+    const translateX = YOLO.interpolate({
         inputRange: [0, 0.5, 1],
         outputRange: [0, -height, 0],
     })
     return (
         <Animated.View
-            style={{ 
-                width: height, 
-                height: height, 
-                backgroundColor: '#fff', 
+            style={{
+                width: height,
+                height: height,
+                backgroundColor: '#fff',
                 borderRadius: 86,
                 position: 'absolute',
                 top: -height * 0.6,
@@ -102,10 +105,33 @@ const Square = ({ scrollX }) => {
 }
 
 const WelcomeScreen = () => {
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const flatListRef = useRef(null);
+    const navigation = useNavigation();
     const scrollX = React.useRef(new Animated.Value(0)).current
     const [splash, setSplash] = useState(SplashScreen);
 
-    const renderItem = ({ item }) => {
+    useEffect(() => {
+        // Set up the interval to move to the next item every 2000 ms
+        const interval = setInterval(() => {
+            // If the last index is reached, clear the interval and return
+            if (currentIndex === SplashScreen.length - 1) {
+                clearInterval(interval);
+                return;
+            }
+
+            setCurrentIndex((prevIndex) => {
+                const nextIndex = prevIndex + 1;
+                flatListRef.current?.scrollToIndex({ index: nextIndex, animated: true });
+                return nextIndex;
+            });
+        }, 3000);
+
+        // Clean up the interval when the component unmounts
+        return () => clearInterval(interval);
+    }, [currentIndex]);
+
+    const renderItem = ({ item, index }) => {
         return (
             <View style={{ width, alignItems: 'center', paddingBottom: 20 }}>
                 <View style={{ flex: 0.7, justifyContent: 'center ' }}>
@@ -115,6 +141,24 @@ const WelcomeScreen = () => {
                     <Text style={{ fontWeight: '800', fontSize: 28, marginBottom: 10, color: 'white', marginTop: 30, }}>{item.title}</Text>
                     <Text style={{ fontWeight: '300', color: 'white' }}>{item.description}</Text>
                 </View>
+                {index === splash.length - 1 && (
+                    <View
+                        style={{
+                            width: '60%',
+                            position: 'absolute',
+                            bottom: '8%',
+                            alignSelf: 'center',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}
+                    >
+                        <Button 
+                            title={'Set your location'}
+                            color={'#FFAF51'}
+                            onPress={() => navigation.navigate('Location')}
+                        />
+                    </View>
+                )}
             </View>
         )
     }
@@ -124,6 +168,7 @@ const WelcomeScreen = () => {
             <Backdrop scrollX={scrollX} />
             <Square scrollX={scrollX} />
             <Animated.FlatList
+                ref={flatListRef}
                 data={splash}
                 keyExtractor={item => item.key}
                 horizontal

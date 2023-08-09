@@ -49,12 +49,27 @@
 
 // export const Store = configureStore({reducer: reducers})
 
-import {createStore, applyMiddleware} from 'redux';
+// import {createStore, applyMiddleware} from 'redux';
+// import Reducers from './reducers';
+// import thunk from 'redux-thunk';
+
+// const Store = createStore(Reducers, applyMiddleware(thunk));
+
+// const getToken = () => Store?.getState()?.generalState?.token;
+// const getLocation = () => Store?.getState()?.generalState?.location;
+
+// export {Store, getToken};
+
+import { configureStore } from '@reduxjs/toolkit';
 import Reducers from './reducers';
 import thunk from 'redux-thunk';
 
-const Store = createStore(Reducers, applyMiddleware(thunk));
+const Store = configureStore({
+    reducer: Reducers,
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(thunk),
+});
 
 const getToken = () => Store?.getState()?.generalState?.token;
+const getLocation = () => Store?.getState()?.generalState?.location;
 
-export {Store, getToken};
+export { Store, getToken, getLocation };

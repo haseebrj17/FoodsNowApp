@@ -172,84 +172,92 @@ const DishFormPizza = ({ dish, extras, dips }) => {
         >
             <View
                 style={{
-                    width: width * 0.91,
-                    flexDirection: "row",
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    margin: Display.setHeight(1)
-                }}
-            >
-                <Text
-                    style={{
-                        fontSize: 18,
-                        fontWeight: 'bold',
-                        color: '#000',
-                    }}
-                >Please choose a size</Text>
-                <View
-                    style={{
-                        width: Display.setHeight(9),
-                        height: Display.setHeight(3),
-                        borderRadius: Display.setHeight(3),
-                        backgroundColor: '#FFAF51',
-                        alignItems: 'center',
-                        justifyContent: 'center'
-                    }}
-                >
-                    <Text
-                        style={{
-                            fontSize: 14,
-                            fontWeight: '600',
-                            color: '#325964',
-                        }}
-                    >Required</Text>
-                </View>
-            </View>
-            <Text
-                style={{
-                    marginLeft: Display.setHeight(1),
-                    fontSize: 15,
-                    fontWeight: '500',
-                    color: '#325964',
-                }}
-            >Select 1</Text>
-            <View
-                style={{
-                    alignSelf: 'center',
-                    margin: Display.setHeight(2),
-                }}
-            >
-                <View
-                    style={{
-                        width: width * 0.91,
-                        flexDirection: 'row',
-                        justifyContent: 'space-between'
-                    }}
-                >
-                    <Text
-                        style={{
-                            fontSize: 18,
-                            fontWeight: '700',
-                            color: '#325964'
-                        }}
-                    >Size</Text>
-                    <Text
-                        style={{
-                            fontSize: 18,
-                            fontWeight: '700',
-                            color: '#325964'
-                        }}
-                    >Price</Text>
-                </View>
-            </View>
-            <View
-                style={{
                     alignSelf: 'center',
                     margin: Display.setHeight(1)
                 }}
             >
                 <NativeBaseProvider>
                     <FormControl>
+                        <View
+                            style={{
+                                alignSelf: 'center',
+                                alignItems: 'flex-start',
+                                justifyContent: 'flex-start',
+                            }}
+                        >
+                            <View
+                                style={{
+                                    width: width * 0.90,
+                                    flexDirection: "row",
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    margin: Display.setHeight(1)
+                                }}
+                            >
+                                <Text
+                                    style={{
+                                        fontSize: 18,
+                                        fontWeight: 'bold',
+                                        color: '#000',
+                                    }}
+                                >Please choose a size</Text>
+                                <View
+                                    style={{
+                                        width: Display.setHeight(9),
+                                        height: Display.setHeight(3),
+                                        borderRadius: Display.setHeight(3),
+                                        backgroundColor: '#FFAF51',
+                                        alignItems: 'center',
+                                        justifyContent: 'center'
+                                    }}
+                                >
+                                    <Text
+                                        style={{
+                                            fontSize: 14,
+                                            fontWeight: '600',
+                                            color: '#325964',
+                                        }}
+                                    >Required</Text>
+                                </View>
+                            </View>
+                            <Text
+                                style={{
+                                    marginLeft: Display.setHeight(1),
+                                    fontSize: 15,
+                                    fontWeight: '500',
+                                    color: '#325964',
+                                }}
+                            >Select 1</Text>
+                            <View
+                                style={{
+                                    alignSelf: 'center',
+                                    margin: Display.setHeight(2),
+                                }}
+                            >
+                                <View
+                                    style={{
+                                        width: width * 0.91,
+                                        flexDirection: 'row',
+                                        justifyContent: 'space-between'
+                                    }}
+                                >
+                                    <Text
+                                        style={{
+                                            fontSize: 18,
+                                            fontWeight: '700',
+                                            color: '#325964'
+                                        }}
+                                    >Size</Text>
+                                    <Text
+                                        style={{
+                                            fontSize: 18,
+                                            fontWeight: '700',
+                                            color: '#325964'
+                                        }}
+                                    >Price</Text>
+                                </View>
+                            </View>
+                        </View>
                         <Radio.Group
                             onChange={nextValue => {
                                 setValue(nextValue);
@@ -331,7 +339,7 @@ const DishFormPizza = ({ dish, extras, dips }) => {
                                 >€{dish ? dish.price48 : ''}</Text>
                             </TouchableOpacity>
                         </Radio.Group>
-                        <Separator width={width} height={Display.setHeight(0.1)} />
+                        <Separator width={width} height={Display.setHeight(0.1)} marginTop={10} />
                         <View
                             style={{
                                 alignSelf: 'center',
@@ -342,11 +350,11 @@ const DishFormPizza = ({ dish, extras, dips }) => {
                         >
                             <View
                                 style={{
-                                    width: width * 0.91,
+                                    width: width * 0.90,
                                     flexDirection: "row",
                                     alignItems: 'center',
                                     justifyContent: 'space-between',
-                                    margin: Display.setHeight(1),
+                                    margin: Display.setHeight(1)
                                 }}
                             >
                                 <Text
@@ -427,15 +435,6 @@ const DishFormPizza = ({ dish, extras, dips }) => {
                         <Separator width={width} height={Display.setHeight(0.1)} />
                         <View
                             style={{
-                                width,
-                                height: Display.setHeight(15),
-                                backgroundColor:'red',
-                            }}
-                        >
-
-                        </View>
-                        {/* <View
-                            style={{
                                 alignSelf: 'center',
                                 margin: Display.setHeight(1),
                                 alignItems: 'flex-start',
@@ -493,7 +492,7 @@ const DishFormPizza = ({ dish, extras, dips }) => {
                             >
                                 <View
                                     style={{
-                                        width: width * 0.91,
+                                        width: width * 0.90,
                                         flexDirection: 'row',
                                         justifyContent: 'space-between'
                                     }}
@@ -525,7 +524,7 @@ const DishFormPizza = ({ dish, extras, dips }) => {
                                     renderItem={renderItemDips}
                                 />
                             </View>
-                        </View> */}
+                        </View>
                     </FormControl>
                 </NativeBaseProvider>
             </View>

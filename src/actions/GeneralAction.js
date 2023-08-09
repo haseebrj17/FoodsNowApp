@@ -1,24 +1,3 @@
-// const types = {
-//     SET_IS_APP_LOADING: 'SET_IS_APP_LOADING',
-//     SET_TOKEN: 'SET_TOKEN'
-// }
-
-// const setIsAppLoading = (isAppLoading) => {
-//     return {
-//         type: types.SET_IS_APP_LOADING,
-//         payload: isAppLoading
-//     }
-// }
-
-// const setToken = (token) => {
-//     return {
-//         type: types.SET_TOKEN,
-//         payload: token
-//     }
-// }
-
-// export default {setIsAppLoading, setToken}
-
 import { AuthenicationService, StorageService } from '../services';
 import UserService from '../services/UserService';
 import BookmarkAction from './BookmarkAction';
@@ -29,6 +8,7 @@ const types = {
     SET_TOKEN: 'SET_TOKEN',
     SET_FIRST_TIME_USE: 'SET_FIRST_TIME_USE',
     SET_USER_DATA: 'SET_USER_DATA',
+    SET_LOCATION_DATA: 'SET_LOCATION_DATA',
 };
 
 const setIsAppLoading = isAppLoading => {
@@ -49,6 +29,13 @@ const setIsFirstTimeUse = () => {
     return {
         type: types.SET_FIRST_TIME_USE,
         payload: false,
+    };
+};
+
+const setLocation = location => {
+    return {
+        type: types.SET_LOCATION_DATA,
+        payload: location,
     };
 };
 
@@ -131,6 +118,7 @@ export default {
     setToken,
     appStart,
     setIsFirstTimeUse,
+    setLocation,
     setUserData,
     types,
 };

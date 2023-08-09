@@ -3,7 +3,7 @@ import { AppBar, Button } from "@react-native-material/core";
 import { Searchbar } from 'react-native-paper';
 import { Center, Flex, Icon, Row, Box, Card, NativeBaseProvider } from "native-base";
 import { SimpleLineIcons } from '@expo/vector-icons';
-import { Ionicons } from '@expo/vector-icons'; 
+import { Ionicons } from '@expo/vector-icons';
 import { SliderImage, BrandCard } from "../assets/constants/Slider";
 import BrandCardsHome from "../components/BrandCardsHome";
 import CustomImageCarousal from "../components/CustomImageCarousal";
@@ -15,8 +15,12 @@ import { useFonts } from 'expo-font';
 import { Fonts } from "../assets/constants";
 import { StatusBar } from "expo-status-bar";
 import Tabbar from "../navigators/Tabbar";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { RestaurantService, StorageService } from "../services";
+import { clientData } from '../shared/ClientData';
 
+const config = require('../../package.json').projectName;
+const CLIENT_NAME = config.name;
 
 const { width, height } = Dimensions.get('window');
 
@@ -26,11 +30,61 @@ const HomeScreen = () => {
     const [fontsLoaded] = useFonts({
         Fonts
     });
+
+    const [brand, setBrand] = useState(null);
+    const [banner, setBanner] = useState(null);
+
+    const Client = clientData.find((client) => client.name === CLIENT_NAME);
+    const clientId = Client.clientId;
+    
+    // useEffect(() => {
+    //     const location = StorageService.getLocation();
+    //     const { FranchiseId } = location;
+    //     console.log(location);
+    //     RestaurantService.getDashboard({ FranchiseId }).then(response => {
+    //         if (response?.status) {
+    //             setBrand(response?.data?.brands);
+    //             setBanner(response?.data?.banners);
+    //         } else {
+    //             console.log(`${response.message} Error Status False`); 
+    //         }
+    //     })
+    //         .catch(error => {
+    //             console.error(`${error} Error unexpected`);
+    //         });
+    // }, []);
+
+    useEffect(() => {
+        const fetchLocationAndDashboard = async () => {
+            try {
+                const location = await StorageService.getLocation();
+                const { FranchiseId } = location;
+                console.log(location);
+
+                RestaurantService.getDashboard({ FranchiseId }).then(response => {
+                    if (response?.status) {
+                        setBrand(response?.data?.brands);
+                        setBanner(response?.data?.banners);
+                    } else {
+                        console.log(`${response.message} Error Status False`);
+                    }
+                })
+                .catch(error => {
+                    console.error(`${error} Error unexpected`);
+                });
+            } catch (error) {
+                console.error(`Error fetching location: ${error}`);
+            }
+        };
+
+        fetchLocationAndDashboard();
+    }, []);    
+
     const navigation = useNavigation();
     return (
-        <ScrollView style={{height: height, backgroundColor: '#fff'}}>
+        <ScrollView style={{ height: height, backgroundColor: '#fff' }}>
             <AppBar style={styles.AppBar}>
-                <TouchableOpacity onPress={() => navigation.navigate('Search')} style={{width: width * 0.9, justifyContent: 'center', alignItems: 'center'}}>
+                <TouchableOpacity onPress={() => navigation.navigate('Search')} style={{ width: width * 0.9, justifyContent: 'center', alignItems: 'center' }}>
                     <View
                         style={styles.SearchBar}
                     >
@@ -43,8 +97,8 @@ const HomeScreen = () => {
                     </View>
                 </TouchableOpacity>
                 <View style={styles.Locationbar}>
-                    <Button 
-                        title={CustomLocationButton} 
+                    <Button
+                        title={CustomLocationButton}
                         contentContainerStyle={[
                             styles.ButtonLocation,
                             {
@@ -104,7 +158,7 @@ const HomeScreen = () => {
                 leading
             />
             <View style={{ width: "100%", height: "0.5%", backgroundColor: "#f1f1f1", marginTop: "3%", marginBottom: 10 }}></View>
-            <BrandCardsHome />
+            <BrandCardsHome brand={brand} />
             <View style={{ width: "100%", height: "0.5%", backgroundColor: "#f1f1f1", marginTop: "3%", marginBottom: 5 }}></View>
             <View
                 style={[
@@ -122,7 +176,7 @@ const HomeScreen = () => {
                 ]}
             >
                 <TouchableHighlight activeOpacity={0.6} underlayColor="#DDDDDD" borderRadius={8} onPress={() => navigation.navigate('Splash')}>
-                    <Image source={require('../assets/images/10.png')} style={[styles.Image, {borderRadius: 12}]} />
+                    <Image source={require('../assets/images/10.png')} style={[styles.Image, { borderRadius: 12 }]} />
                 </TouchableHighlight>
             </View>
             <View style={{ width: "100%", height: "0.5%", backgroundColor: "#f1f1f1", }} />
@@ -145,15 +199,15 @@ const HomeScreen = () => {
                     }
                 ]}
             >
-                <TouchableHighlight onPress={() => navigation.navigate('Welcome')}   activeOpacity={0.6} underlayColor="#DDDDDD" borderRadius={8}>
-                    <Image source={require('../assets/images/11.png')} style={[styles.Image, {borderRadius: 12}]} />
+                <TouchableHighlight onPress={() => navigation.navigate('Welcome')} activeOpacity={0.6} underlayColor="#DDDDDD" borderRadius={8}>
+                    <Image source={require('../assets/images/11.png')} style={[styles.Image, { borderRadius: 12 }]} />
                 </TouchableHighlight>
             </View>
             <View style={{ width: "100%", height: "0.5%", backgroundColor: "#f1f1f1" }}></View>
             <View style={styles.Container}>
                 <ChefRecommendation />
             </View>
-            <View style={{ width: "100%", height: "0.5%", backgroundColor: "#f1f1f1"}}></View>
+            <View style={{ width: "100%", height: "0.5%", backgroundColor: "#f1f1f1" }}></View>
             <View style={styles.Container}>
                 <KidSpecialOffer />
             </View>
@@ -188,26 +242,26 @@ const customTitleDorm = () => {
             height: "100%",
             top: "5%",
         }}>
-            <Image source={require('../assets/icons/DormUniHome.png')} style={{width: 50, height: 50, marginTop: "2%"}} />
-            <View style={{ 
-                    flexDirection: "column",
-                    position: "absolute",
-                    top: "15%",
-                    left: "18%",
-                }}
+            <Image source={require('../assets/icons/DormUniHome.png')} style={{ width: 50, height: 50, marginTop: "2%" }} />
+            <View style={{
+                flexDirection: "column",
+                position: "absolute",
+                top: "15%",
+                left: "18%",
+            }}
             >
                 <Text style={{ fontWeight: 'bold', fontSize: 12, color: "#325962" }}>Essen ins Wohnheim liefern lassen</Text>
                 <Text style={{ fontSize: 9, color: "#325962", marginTop: 2, }}>Essen, das Sie lieben, direkt ans Bett geliefert</Text>
             </View>
-            <SimpleLineIcons 
-                name="arrow-right" 
-                size={15} 
-                color="#325962" 
+            <SimpleLineIcons
+                name="arrow-right"
+                size={15}
+                color="#325962"
                 style={{
                     position: "absolute",
                     top: "37%",
                     right: "1%",
-                }} 
+                }}
             />
         </View>
     )
@@ -215,25 +269,25 @@ const customTitleDorm = () => {
 
 const CustomLocationButton = () => {
     return (
-        <View style={{flexDirection: "row"}}>
-            <Image 
-                source={require('../assets/LocationPinHome.png')} 
+        <View style={{ flexDirection: "row" }}>
+            <Image
+                source={require('../assets/LocationPinHome.png')}
                 style={{
                     height: 40,
                     width: 40,
                     marginTop: "3%",
                 }} />
-            <Text style={{        
+            <Text style={{
                 fontSize: 20,
                 color: "#325962",
                 fontWeight: "bold",
                 marginLeft: 5,
                 marginTop: "8%"
             }}>Location</Text>
-            <SimpleLineIcons 
-                name="arrow-down" 
-                size={18} 
-                color="black" 
+            <SimpleLineIcons
+                name="arrow-down"
+                size={18}
+                color="black"
                 style={{
                     marginTop: "14%",
                     marginLeft: "5%"
@@ -349,7 +403,7 @@ const styles = StyleSheet.create({
     Image: {
         width: '100%',
         height: undefined,
-        aspectRatio: 3/1,
+        aspectRatio: 3 / 1,
     },
     Text: {
         fontSize: 15,

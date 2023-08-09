@@ -1,65 +1,152 @@
-// import { ApiContants } from '../contants';
-// import axios from 'axios';
-// import { authHeader } from '../utils/Generator';
+import { ApiContants } from '../assets/constants';
+import axios from 'axios';
+import { authHeader, dashboardHeader, franchisesHeader } from '../utils/Generator';
 // import { getToken } from '../Store';
 
-// const getRestaurants = async () => {
-//     console.log(`RestaurantsService | getRestaurants`);
+const getFranchises = async ({ clientId }) => {
+    console.log(`DashboardService | getFranchises`);
+    try {
+        const requestBody = {
+            Id: clientId
+        };
+
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+
+        let franchiseResponse = await axios.post(
+            `${ApiContants.BACKEND_API.BASE_API_URL}${ApiContants.BACKEND_API.FRANCHISES}`,
+            requestBody,
+            { headers }
+        );
+        if (franchiseResponse?.status === 200) {
+            return {
+                status: true,
+                message: `Franchise data fetched`,
+                data: franchiseResponse?.data
+            };
+        } else {
+            return {
+                status: false,
+                message: `Franchise data not found. If Error Block`,
+            };
+        }
+    } catch (error) {
+        console.log('Catch Error:', error);
+        console.log('Catch Error Response:', error.response);
+        return {
+            status: false,
+            message: `Franchise data not found. Catch Error Block`,
+        };
+    }
+}
+
+const getDashboard = async ({ franchiseId }) => {
+    console.log(`DashboardService | getDashboard`);
+    try {
+        const requestBody = {
+            Id: franchiseId
+        };
+
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+        let dashboardResponse = await axios.post(
+            `${ApiContants.BACKEND_API.BASE_API_URL}${ApiContants.BACKEND_API.DASHBORAD}`,
+            requestBody,
+            { headers }
+        );
+        if (dashboardResponse?.status === 200) {
+            const banners = dashboardResponse?.data?.Banners;
+            const brands = dashboardResponse?.data?.Brands;
+            const franchiseId = dashboardResponse?.data?.FranchiseId;
+            const clientId = dashboardResponse?.data?.ClientId;
+            return {
+                status: true,
+                message: `Dashboard data fetched`,
+                data: { banners, brands, franchiseId, clientId },
+            };
+        } else {
+            return {
+                status: false,
+                message: `Dashboard data not found. If Error Block`,
+            };
+        }
+    } catch (error) {
+        return {
+            status: false,
+            message: `Dashboard data not found. Catch Error Block`,
+        };
+    }
+};
+
+const getProducts = async ({ categoryId }) => {
+    console.log(`DashboardService | getProducts`);
+    try {
+        const requestBody = {
+            Id: categoryId
+        };
+
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+        let productResponse = await axios.post(
+            `${ApiContants.BACKEND_API.BASE_API_URL}${ApiContants.BACKEND_API.PRODUCTS}`,
+            requestBody,
+            { headers }
+        );
+        if (productResponse?.status === 200) {
+            return {
+                status: true,
+                message: `Product data fetched`,
+                data: productResponse?.data,
+            };
+        } else {
+            return {
+                status: false,
+                message: `Product data not found. If Error Block`,
+            };
+        }
+    } catch (error) {
+        return {
+            status: false,
+            message: `Product data not found. Catch Error Block`,
+        };
+    }
+};
+
+// const getDashboardById = async brandIdId => {
+//     console.log(`DashboardService | getDashboardById`);
 //     try {
-//         let restaurantResponse = await axios.get(
-//             `${ApiContants.BACKEND_API.BASE_API_URL}${ApiContants.BACKEND_API.RESTAURANT}`,
+//         let dashboardResponse = await axios.get(
+//             `${ApiContants.BACKEND_API.BASE_API_URL}${ApiContants.BACKEND_API.DASHBORAD}/${brandId}`,
 //             {
 //                 headers: authHeader(getToken()),
 //             },
 //         );
-//         if (restaurantResponse?.status === 200) {
+//         if (dashboardResponse?.status === 200) {
 //             return {
 //                 status: true,
-//                 message: `Restaurant data fetched`,
-//                 data: restaurantResponse?.data?.data,
+//                 message: `Brand data fetched`,
+//                 data: dashboardResponse?.data?.data,
 //             };
 //         } else {
 //             return {
 //                 status: false,
-//                 message: `Restaurant data not found`,
+//                 message: `Brand data not found`,
 //             };
 //         }
 //     } catch (error) {
 //         return {
 //             status: false,
-//             message: `Restaurant data not found`,
+//             message: `Brand data not found`,
 //         };
 //     }
 // };
 
-// const getOneRestaurantById = async restaurantId => {
-//     console.log(`RestaurantsService | getOneRestaurantById`);
-//     try {
-//         let restaurantResponse = await axios.get(
-//             `${ApiContants.BACKEND_API.BASE_API_URL}${ApiContants.BACKEND_API.RESTAURANT}/${restaurantId}`,
-//             {
-//                 headers: authHeader(getToken()),
-//             },
-//         );
-//         if (restaurantResponse?.status === 200) {
-//             return {
-//                 status: true,
-//                 message: `Restaurant data fetched`,
-//                 data: restaurantResponse?.data?.data,
-//             };
-//         } else {
-//             return {
-//                 status: false,
-//                 message: `Restaurant data not found`,
-//             };
-//         }
-//     } catch (error) {
-//         return {
-//             status: false,
-//             message: `Restaurant data not found`,
-//         };
-//     }
-// };
-
-// export default { getRestaurants, getOneRestaurantById };
-// Ï
+export default {
+    getDashboard,
+    getFranchises,
+    getProducts
+    // getDashboardById 
+};

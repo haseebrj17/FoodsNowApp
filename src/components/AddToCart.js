@@ -1,5 +1,5 @@
 import React, { forwardRef, useImperativeHandle, useRef, useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image, Dimensions, ScrollView, FlatList } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image, Dimensions, ScrollView, FlatList, SectionList } from 'react-native';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { Button } from '@react-native-material/core';
 import { RadioButton } from 'react-native-paper';
@@ -9,9 +9,13 @@ import { Input, NativeBaseProvider } from 'native-base';
 import { LinearGradient } from 'expo-linear-gradient';
 import { CheckBox } from '@rneui/base';
 import { FormControl } from 'native-base';
+import { createAvatar } from '@dicebear/core';
+import { adventurer, thumbs } from '@dicebear/collection';
+import { SvgXml } from 'react-native-svg';
 import { useDispatch, useSelector } from 'react-redux';
 import { Display } from '../utils';
 import DishFormPizza from './DishFormPizza';
+import Separator from './Separator';
 
 const { width, height } = Dimensions.get('window')
 
@@ -59,7 +63,15 @@ const AddToCartModal = forwardRef((props, ref) => {
 
     const dips = props.dips
 
-    console.log(extras)
+    const sectionListRef = React.useRef(null);
+
+    let starArray = dish?.reviewComment?.map(item => item.star);
+
+    const StarMean = (starArray) => {
+        const sum = starArray?.reduce((total, value) => total + value, 0);
+        const mean = sum / (starArray?.length ?? 1);
+        return parseFloat(mean.toFixed(1));
+    }
 
     const [review, setReview] = useState(dish?.reviewComment);
 
@@ -136,6 +148,45 @@ const AddToCartModal = forwardRef((props, ref) => {
     const [expanded, setExpanded] = useState(false);
     const renderComment = ({ item: comment }) => {
 
+        const seed = comment.comment ? comment.comment : comment.star
+
+        const avatar = createAvatar(thumbs, {
+            seed: seed,
+            backgroundColor: ["b6e3f4", "c0aede", "d1d4f9", "ffd5dc", "ffdfbf"],
+            backgroundType: [
+                "gradientLinear",
+                "solid"
+            ],
+            mouth: [
+                "variant01",
+                "variant05",
+                "variant06",
+                "variant12",
+                "variant15",
+                "variant16",
+                "variant17",
+                "variant18",
+                "variant20",
+                "variant21",
+                "variant23",
+                "variant24",
+                "variant25",
+                "variant26",
+                "variant27",
+                "variant28",
+                "variant29",
+                "variant30",
+                "variant19"
+            ],
+            skinolor: [
+                "ecad80",
+                "f2d3b1",
+                "9e5622"
+            ],
+            radius: 50
+            // ... other options
+        }).toString();
+
         const toggleExpansion = () => {
             setExpanded(!expanded);
         };
@@ -176,10 +227,7 @@ const AddToCartModal = forwardRef((props, ref) => {
                         backgroundColor: '#fff',
                     }}
                 >
-                    <Image
-                        source={comment.image}
-                        style={{ width: 40, height: 40, borderRadius: 20 }}
-                    />
+                    <SvgXml xml={avatar} />
                 </View>
                 <View style={{ flex: 1 }}>
                     <Text
@@ -190,7 +238,7 @@ const AddToCartModal = forwardRef((props, ref) => {
                             marginBottom: 2,
                         }}
                     >
-                        {comment.user}
+                        {comment.user}  <FontAwesome name="star" size={15} color="#FFAF51" /> {comment.star}
                     </Text>
                     <Text style={[{ fontSize: 12, color: '#000', fontWeight: '400' }, commentStyle]}>
                         {comment.comment}
@@ -200,9 +248,8 @@ const AddToCartModal = forwardRef((props, ref) => {
         );
     };
 
-
     const ReviewsRoute = () => (
-        <View style={{ height: Display.setHeight(40), overflow: 'scroll' }}>
+        <ScrollView style={{ height: Display.setHeight(40), overflow: 'scroll' }}>
             <FlatList
                 aria-expanded="false"
                 data={review}
@@ -212,17 +259,26 @@ const AddToCartModal = forwardRef((props, ref) => {
                     height: "100%",
                 }]}
             />
-        </View>
+        </ScrollView>
     );
 
     const ListPrices = () => {
         if (dish.restaurant === 'come a napoli') {
             return <Text style={styles.SubTextPrice}>€{dish.price32}</Text>
-        }
-        else {
-            return <Text style={[styles.SubTextPrice, { marginTop: 5 }]}>€{dish.price}</Text>
+        } else {
+            return (
+                <Text style={[styles.SubTextPrice, { marginTop: 5 }]}>€{dish.price}</Text>
+            )
         }
     }
+
+    const scrollToSection = (sectionTitle) => {
+        const sectionIndex = sectionTitle === "Customize" ? 1 : 0;
+        sectionListRef.current.scrollToLocation({
+            sectionIndex,
+            itemIndex: 1,
+        });
+    };
 
     return (
         <BottomSheetModal
@@ -256,75 +312,141 @@ const AddToCartModal = forwardRef((props, ref) => {
                     <View style={styles.reviewContainer}>
                         <View style={styles.reviewItem}>
                             <FontAwesome name="star" size={22} color="#FFAF51" />
-                            <Text style={styles.reviewText}>{dish ? dish.review : ''} ({dish ? dish.reviewComment.length : ''})</Text>
+                            <Text style={styles.reviewText}>{StarMean(starArray)} ({dish ? dish.reviewComment.length : ''})</Text>
                         </View>
                         <View style={styles.reviewItem}>
                             <MaterialCommunityIcons name="clock-fast" size={24} color="#325962" />
-                            <Text style={styles.reviewText}>{dish ? dish.deliverytime : ''}</Text>
+                            <Text style={styles.reviewText}>{dish ? dish.deliverytime : ''} mins</Text>
                         </View>
                         <DeliveryPrice price={dish ? dish.price : ''} />
                     </View>
                     <View style={styles.divider} />
-                    <ScrollView showsVerticalScrollIndicator={false}>
-                        <View
-                            style={{
-                                width: "100%",
-                                height: Display.setHeight(45),
-                                flexDirection: "column",
-                            }}
-                        >
-                            <TabView
-                                navigationState={{ index, routes }}
-                                renderScene={SceneMap({
-                                    details: DetailsRoute,
-                                    reviews: ReviewsRoute,
-                                })}
-                                onIndexChange={setIndex}
-                                initialLayout={{ width: width }}
-                                renderTabBar={props => (
-                                    <TabBar
-                                        {...props}
-                                        indicatorStyle={{ backgroundColor: '#FFAF51' }}
-                                        style={{ backgroundColor: '#fff' }}
-                                        labelStyle={{ color: '#325962' }}
-                                    />
-                                )}
-                            />
-                            <View style={styles.divider} />
-                        </View>
-                        <DishFormPizza dish={ dish ? dish : '' } extras={extras} dips={dips} />
-                    </ScrollView>
+                    <SectionList
+                        sections={[
+                            {
+                                data: [
+                                    <View
+                                        key="details"
+                                        style={{
+                                            width: "100%",
+                                            height: Display.setHeight(45),
+                                            flexDirection: "column",
+                                        }}
+                                    >
+                                        <TabView
+                                            navigationState={{ index, routes }}
+                                            renderScene={SceneMap({
+                                                details: DetailsRoute,
+                                                reviews: ReviewsRoute,
+                                            })}
+                                            onIndexChange={setIndex}
+                                            initialLayout={{ width: width }}
+                                            renderTabBar={props => (
+                                                <TabBar
+                                                    {...props}
+                                                    indicatorStyle={{ backgroundColor: '#FFAF51' }}
+                                                    style={{ backgroundColor: '#fff' }}
+                                                    labelStyle={{ color: '#325962' }}
+                                                />
+                                            )}
+                                        />
+                                        <View style={styles.divider} />
+                                    </View>
+                                ]
+                            },
+                            { title: "Customize", data: [<DishFormPizza key="customize" dish={dish ? dish : ''} extras={extras} dips={dips} />] }
+                        ]}
+                        ref={sectionListRef}
+                        renderItem={({ item }) => item}
+                        renderSectionHeader={({ section }) => section.title ?
+                            <TouchableOpacity
+                                onPress={() => scrollToSection(section.title)}
+                            >
+                                <View
+                                    style={{
+                                        width,
+                                        height: Display.setHeight(6),
+                                        flexDirection: 'column',
+                                        alignItems: 'center',
+                                        justifyContent: 'flex-end',
+                                        backgroundColor: '#fff'
+                                    }}
+                                >
+                                    <Text
+                                        style={{
+                                            fontSize: 17,
+                                            fontWeight: '300',
+                                            lineHeight: Display.setHeight(5.5),
+                                            color: '#325964',
+                                        }}
+                                    >{section.title}</Text>
+                                    <View
+                                        style={{
+                                            width,
+                                            height: 2,
+                                            backgroundColor: '#FFAF51'
+                                        }}
+                                    >
+                                    </View>
+                                </View>
+                            </TouchableOpacity>
+                            : null}
+                    />
                 </View>
-                <View style={styles.buttonContainer}>
-                    <View style={styles.itemAddContainer}>
-                        <AntDesign
-                            name="minus"
-                            color='#FFAF51'
-                            size={20}
+                <View
+                    style={{
+                        width,
+                        height: Display.setHeight(10),
+                        backgroundColor: '#fff',
+                        alignItems: 'center',
+                        justifyContent: 'flex-start',
+                        position: 'absolute',
+                        bottom: '0%',
+                    }}
+                >
+                    <Separator width={'100%'} height={Display.setHeight(0.1)} />
+                    <View style={{
+                        width: '95%',
+                        alignItems: 'center',
+                        alignSelf: 'center',
+                        justifyContent: 'space-around',
+                        flexDirection: 'row',
+                        position: 'absolute',
+                        top: '20%'
+                    }}>
+                        <View style={styles.itemAddContainer}>
+                            <AntDesign
+                                name="minus"
+                                color='#FFAF51'
+                                size={20}
+                                style={{
+                                    marginRight: 10
+                                }}
+                            // onPress={() => removeFromCart(id)}
+                            />
+                            <Text style={styles.itemCountText}>0</Text>
+                            <AntDesign
+                                name="plus"
+                                color='#FFAF51'
+                                size={20}
+                                style={{
+                                    marginLeft: 10
+                                }}
+                            // onPress={() => addToCart(id)}
+                            />
+                        </View>
+                        <Button
                             style={{
-                                marginRight: 10
+                                width: '50%',
                             }}
-                        // onPress={() => removeFromCart(id)}
-                        />
-                        <Text style={styles.itemCountText}>0</Text>
-                        <AntDesign
-                            name="plus"
-                            color='#FFAF51'
-                            size={20}
-                            style={{
-                                marginLeft: 10
-                            }}
-                        // onPress={() => addToCart(id)}
+                            title="Add to Cart"
+                            color="#FFAF51"
+                            titleStyle={styles.buttonTitle}
+                            uppercase={false}
+                            contentContainerStyle={styles.buttonContent}
+                            onPress={handleAddToCart}
                         />
                     </View>
-                    <Button
-                        title="Add to Cart"
-                        color="#FFAF51"
-                        titleStyle={styles.buttonTitle}
-                        uppercase={false}
-                        contentContainerStyle={styles.buttonContent}
-                        onPress={handleAddToCart}
-                    />
                 </View>
             </View>
         </BottomSheetModal>
@@ -423,23 +545,13 @@ const styles = StyleSheet.create({
         height: 1,
         backgroundColor: '#f1f1f1',
     },
-    buttonContainer: {
-        width: '95%',
-        backgroundColor: 'white',
-        position: 'absolute',
-        alignItems: 'center',
-        justifyContent: 'space-around',
-        flexDirection: 'row',
-        bottom: '3%',
-        right: '2.5%',
-    },
     buttonTitle: {
         color: '#325962',
         fontSize: 12,
         fontWeight: '800',
     },
     buttonContent: {
-        width: '80%',
+        width: '100%',
         height: 40,
         alignSelf: 'center',
     },

@@ -1,5 +1,8 @@
+import React, { useEffect } from 'react';
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
+import { useSelector, useDispatch } from 'react-redux';
+import { GeneralAction } from '../actions';
 import {
     DataTrackingScreen,
     DetailsScreen,
@@ -36,6 +39,14 @@ const theme = {
 const Stack = createStackNavigator();
 
 const Navigators = () => {
+    const { isAppLoading, token, isFirstTimeUse } = useSelector(
+        state => state?.generalState,
+    );
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(GeneralAction.appStart());
+    }, []);
     return (
         <NavigationContainer theme={theme}>
             <Stack.Navigator
@@ -44,6 +55,7 @@ const Navigators = () => {
                 }}
                 initialRouteName="Main"
             >
+                <Stack.Screen name="Splash" component={SplashScreen} />
                 <Stack.Screen name="LocationDetail" component={LocationDetailScreen} />
                 <Stack.Screen name="LocationAccess" component={LocationAccessScreen} />
                 <Stack.Screen name="Location" component={LocationScreen} />
@@ -56,7 +68,6 @@ const Navigators = () => {
                 <Stack.Screen name="DishDetail" component={DishDetailScreen} />
                 <Stack.Screen name="DataTracking" component={DataTrackingScreen} />
                 <Stack.Screen name="Welcome" component={WelcomeScreen} />
-                <Stack.Screen name="Splash" component={SplashScreen} />
                 <Stack.Screen name="AccountNavigator">
                     {() => (
                         <Stack.Navigator
