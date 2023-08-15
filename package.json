@@ -36,6 +36,7 @@
     "expo-location": "~15.1.1",
     "expo-random": "~13.1.1",
     "expo-splash-screen": "~0.18.2",
+    "expo-sqlite": "~11.1.1",
     "expo-status-bar": "~1.4.4",
     "fluidbottomnavigation-rn": "^0.1.1",
     "install": "^0.13.0",
@@ -75,6 +76,8 @@
   "projectConfig": {
     "backendApiBaseUrl": "https://foodsnowdevapi.azurewebsites.net"
   },
-  "projectName": {"name": "FoodsNow"},
+  "projectName": {
+    "name": "FoodsNow"
+  },
   "private": true
 }

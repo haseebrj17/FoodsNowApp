@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View, Dimensions, ImageBackground, TouchableOpacity, Image, Keyboard, Alert } from 'react-native'
-import React, { useState } from 'react'
+import { StyleSheet, Text, View, Dimensions, ImageBackground, TouchableOpacity, Image, Keyboard, Alert, Platform } from 'react-native'
+import React, { useState, useEffect } from 'react'
 import { TextInput } from 'react-native-paper'
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { FormControl, Stack, WarningOutlineIcon, Box, Center, NativeBaseProvider, Icon } from "native-base";
@@ -27,17 +27,24 @@ const RegistrationScreen = ({ navigation }) => {
         redirectUri,
     });
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (responseGoogle?.type === 'success') {
             const { authentication } = responseGoogle;
             StorageService.setToken(authentication.accessToken);
             StorageService.setGoogleUser(authentication.user);
             StorageService.setGoogleUser("true");
-
-            // navigation.navigate('AddPhoneNumber');
+            setOAuthSignUp({
+                creds: {
+                    token: authentication.accessToken,
+                    user: authentication.user
+                },
+                provider: 'Apple'
+            })
+            navigation.navigate('AddPhoneNumber', { oAuthSignUp });
         }
     }, [responseGoogle]);
 
+    ///// Apple OAuth /////
     const handleAppleLogin = async () => {
         try {
             const credential = await AppleAuthentication.signInAsync({
@@ -46,9 +53,11 @@ const RegistrationScreen = ({ navigation }) => {
                     AppleAuthentication.AppleAuthenticationScope.EMAIL,
                 ],
             });
-            AsyncStorage.setItem('appleUser', JSON.stringify(credential));
-            AsyncStorage.setItem('loginMethod', 'apple');
-            // navigation.navigate('AddPhoneNumber');
+            setOAuthSignUp({
+                creds: JSON.stringify(credential),
+                provider: 'Apple'
+            })
+            navigation.navigate('AddPhoneNumber', { oAuthSignUp });
         } catch (e) {
             if (e.code === 'ERR_CANCELED') {
                 Alert.alert(
@@ -65,19 +74,19 @@ const RegistrationScreen = ({ navigation }) => {
         }
     };
 
-    const register = () => {
-        setLoading(true);
-        setTimeout(() => {
-            try {
-                setLoading(false);
-                StorageService.setUserData(inputs);
-                StorageService.setToken('email');
-                navigation.navigate('Login');
-            } catch (error) {
-                Alert.alert('Error', 'Something went wrong');
-            }
-        }, 3000);
-    };
+    // const register = () => {
+    //     setLoading(true);
+    //     setTimeout(() => {
+    //         try {
+    //             setLoading(false);
+    //             StorageService.setUserData(inputs);
+    //             StorageService.setToken('email');
+    //             navigation.navigate('Login');
+    //         } catch (error) {
+    //             Alert.alert('Error', 'Something went wrong');
+    //         }
+    //     }, 3000);
+    // };
 
     const [inputs, setInputs] = React.useState({
         email: '',
@@ -85,6 +94,19 @@ const RegistrationScreen = ({ navigation }) => {
         phone: '',
         password: '',
     });
+
+
+    const initialCreds = {};
+
+    const [oAuthSignUp, setOAuthSignUp] = useState({
+        creds: initialCreds,
+        provider: ''
+    })
+
+    const register = () => {
+        navigation.navigate('Verification', {inputs})
+    };
+
     const [errors, setErrors] = React.useState({});
     const [loading, setLoading] = React.useState(false);
 
@@ -293,34 +315,53 @@ const RegistrationScreen = ({ navigation }) => {
                             justifyContent: 'space-evenly'
                         }}
                     >
-                        <TouchableOpacity onPress={() => promptAsyncGoogle()}>
-                            <View
-                                style={{
-                                    width: 50,
-                                    height: 50,
-                                    borderRadius: '50%',
-                                    backgroundColor: '#f1f1f1',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                }}
-                            >
-                                <GoogleIcon size={25} />
-                            </View>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={handleAppleLogin}>
-                            <View
-                                style={{
-                                    width: 50,
-                                    height: 50,
-                                    borderRadius: '50%',
-                                    backgroundColor: '#f1f1f1',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                }}
-                            >
-                                <AppleIcon size={25} />
-                            </View>
-                        </TouchableOpacity>
+                        {Platform.OS === 'ios' ? (
+                            <>
+                                <TouchableOpacity onPress={() => promptAsyncGoogle()}>
+                                    <View
+                                        style={{
+                                            width: 50,
+                                            height: 50,
+                                            borderRadius: '50%',
+                                            backgroundColor: '#f1f1f1',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                        }}
+                                    >
+                                        <GoogleIcon size={25} />
+                                    </View>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={handleAppleLogin}>
+                                    <View
+                                        style={{
+                                            width: 50,
+                                            height: 50,
+                                            borderRadius: '50%',
+                                            backgroundColor: '#f1f1f1',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                        }}
+                                    >
+                                        <AppleIcon size={25} />
+                                    </View>
+                                </TouchableOpacity>
+                            </>
+                        ) : (
+                            <TouchableOpacity onPress={() => promptAsyncGoogle()}>
+                                <View
+                                    style={{
+                                        width: 50,
+                                        height: 50,
+                                        borderRadius: '50%',
+                                        backgroundColor: '#f1f1f1',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                    }}
+                                >
+                                    <GoogleIcon size={25} />
+                                </View>
+                            </TouchableOpacity>
+                        )}
                     </View>
                     <View
                         style={{

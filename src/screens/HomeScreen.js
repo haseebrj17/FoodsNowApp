@@ -18,6 +18,8 @@ import Tabbar from "../navigators/Tabbar";
 import { useEffect, useState } from "react";
 import { RestaurantService, StorageService } from "../services";
 import { clientData } from '../shared/ClientData';
+import { useDispatch, useSelector } from "react-redux";
+import { fetchBrands } from "../actions/BrandAction";
 
 const config = require('../../package.json').projectName;
 const CLIENT_NAME = config.name;
@@ -32,33 +34,14 @@ const HomeScreen = () => {
     });
 
     const [brand, setBrand] = useState(null);
-    const [banner, setBanner] = useState(null);
-
-    const Client = clientData.find((client) => client.name === CLIENT_NAME);
-    const clientId = Client.clientId;
-    
-    // useEffect(() => {
-    //     const location = StorageService.getLocation();
-    //     const { FranchiseId } = location;
-    //     console.log(location);
-    //     RestaurantService.getDashboard({ FranchiseId }).then(response => {
-    //         if (response?.status) {
-    //             setBrand(response?.data?.brands);
-    //             setBanner(response?.data?.banners);
-    //         } else {
-    //             console.log(`${response.message} Error Status False`); 
-    //         }
-    //     })
-    //         .catch(error => {
-    //             console.error(`${error} Error unexpected`);
-    //         });
-    // }, []);
+    const [deliveryParams, setDeliveryParams] = useState(null);
 
     useEffect(() => {
         const fetchLocationAndDashboard = async () => {
             try {
                 const location = await StorageService.getLocation();
-                const { FranchiseId } = location;
+                const { FranchiseId, DeliveryParams} = location;
+                setDeliveryParams(DeliveryParams)
                 console.log(location);
 
                 RestaurantService.getDashboard({ FranchiseId }).then(response => {
@@ -78,7 +61,32 @@ const HomeScreen = () => {
         };
 
         fetchLocationAndDashboard();
-    }, []);    
+    }, []);
+
+    // const dispatch = useDispatch();
+
+    // const { brand, loadingBrands, error } = useSelector(
+    //     (state) => state.brandState
+    // );
+
+    // useEffect(() => {
+    //     const fetchLocationAndDashboard = async () => {
+    //         try {
+    //             const location = await StorageService.getLocation(); // Adjust as needed
+    //             const { FranchiseId } = location;
+    //             if (FranchiseId) {
+    //                 // Dispatch the fetchBrands action with the FranchiseId
+    //                 dispatch(fetchBrands(FranchiseId));
+    //             } else {
+    //                 console.error('Franchise ID not found');
+    //             }
+    //         } catch (error) {
+    //             console.error(`Error fetching location: ${error}`);
+    //         }
+    //     };
+
+    //     fetchLocationAndDashboard();
+    // }, [dispatch]);
 
     const navigation = useNavigation();
     return (
@@ -158,7 +166,7 @@ const HomeScreen = () => {
                 leading
             />
             <View style={{ width: "100%", height: "0.5%", backgroundColor: "#f1f1f1", marginTop: "3%", marginBottom: 10 }}></View>
-            <BrandCardsHome brand={brand} />
+            <BrandCardsHome brand={brand} deliveryParams={deliveryParams} />
             <View style={{ width: "100%", height: "0.5%", backgroundColor: "#f1f1f1", marginTop: "3%", marginBottom: 5 }}></View>
             <View
                 style={[

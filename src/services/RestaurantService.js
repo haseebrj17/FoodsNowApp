@@ -41,11 +41,11 @@ const getFranchises = async ({ clientId }) => {
     }
 }
 
-const getDashboard = async ({ franchiseId }) => {
+const getDashboard = async ({ FranchiseId }) => {
     console.log(`DashboardService | getDashboard`);
     try {
         const requestBody = {
-            Id: franchiseId
+            Id: FranchiseId
         };
 
         const headers = {

@@ -7,6 +7,8 @@ import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Display } from '../utils';
 import Skeleton from './Skeleton';
+import { useDispatch, useSelector } from "react-redux";
+import { fetchBrands } from "../actions/BrandAction";
 
 const column = 3;
 
@@ -22,13 +24,13 @@ const formatData = (brands, column) => {
     return brands;
 }
 
-const BrandCardsHome = ({ brand }) => {
+const BrandCardsHome = ({ brand, deliveryParams }) => {
     const [showAllBrands, setShowAllBrands] = useState(false);
     const [imagesLoaded, setImagesLoaded] = useState(0);
     // const [HEIGHT, setHEIGHT] = useState(Display.setHeight(39));
     const [scroll, setScroll] = useState(false);
     const navigation = useNavigation();
-    const [brands, setBrand] = useState(brand);
+    const [brands, setBrand] = useState(null);
     const [loading, setLoading] = useState(true);
 
     const handleImageLoad = () => {
@@ -153,7 +155,7 @@ const BrandCardsHome = ({ brand }) => {
             }
         );
         return (
-            <TouchableWithoutFeedback onPress={() => navigation.navigate('Details', { brand: brand.Id })}>
+            <TouchableWithoutFeedback onPress={() => navigation.navigate('Details', { brand: brand, deliveryParams: deliveryParams})}>
                 <View
                     style={{
                         width: width * 0.27,
@@ -332,7 +334,7 @@ const BrandCardsHome = ({ brand }) => {
                         <FlatList
                             scrollEnabled={scroll}
                             aria-expanded="false"
-                            data={formatData(brands, column)}
+                            data={brands ? formatData(brands, column) : null}
                             // data={formatData(showAllBrands ? brands : brands.slice(0, 6), column)}
                             renderItem={renderItem}
                             numColumns={column}

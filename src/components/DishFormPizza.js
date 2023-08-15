@@ -58,9 +58,9 @@ const DishFormPizza = ({ dish, extras, dips }) => {
                 }}
             >
                 <Checkbox
-                    value={extra.name}
-                    isChecked={selectedExtras[extra.name]}
-                    onChange={() => handleExtraToggle(extra.name)}
+                    value={extra.Name}
+                    isChecked={selectedExtras[extra.Name]}
+                    onChange={() => handleExtraToggle(extra.Name)}
                     size={'lg'}
                     style={{
                         borderRadius: "50%",
@@ -74,7 +74,7 @@ const DishFormPizza = ({ dish, extras, dips }) => {
                             marginTop: Display.setHeight(0.5),
                             marginLeft: 10,
                         }}
-                    >{extra.name}</Text>
+                    >{extra.Name}</Text>
                 </Checkbox>
                 <Text
                     style={{

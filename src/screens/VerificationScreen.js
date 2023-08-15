@@ -1,26 +1,43 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, Alert, StyleSheet, TouchableOpacity, Dimensions, Image, FlatList, Keyboard } from 'react-native';
 import axios from 'axios';
 import FlagItem from '../components/FlagItem';
 import Button from '../components/Button';
 import Input from '../components/Input';
-import { StaticImageService } from '../services';
+import { AuthenicationService, StaticImageService, StorageService } from '../services';
 import { CountryCode } from '../assets/constants'
 import { Display } from '../utils';
 import { MaterialIcons, Ionicons } from '@expo/vector-icons';
+import Skeleton from '../components/Skeleton';
 
 const getDropdownStyle = y => ({ ...styles.countryDropdown, top: y + 60 });
 
 const { width, height } = Dimensions.get('screen');
 
-const VerificationScreen = ({ navigation }) => {
-    const [selectedCountry, setSelectedCountry] = useState(
-        CountryCode.find(country => country.name === 'Germany'),
-    );
+const VerificationScreen = ({ navigation, oAuthSignUp, inputs }) => {
+
+    const [login, setLogin] = useState(false);
+    const [country, setCountry] = useState('');
+    const [selectedCountry, setSelectedCountry] = useState(null);
+
+    useEffect(() => {
+        StorageService.getLocation().then(response => {
+            console.log(response)
+            setCountry(response.Country)
+        })
+    }, [])
+
+    useEffect(() => {
+        if (country) {
+            setSelectedCountry(CountryCode.find(countryItem => countryItem.name === country));
+        }
+    }, [country]);
+
     const [inputsContainerY, setInputsContainerY] = useState(0);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [dropdownLayout, setDropdownLayout] = useState({});
     const [phoneNumber, setPhoneNumber] = useState('');
+    const [codeSent, setCodeSent] = useState(false);
 
     const closeDropdown = (pageX, pageY) => {
         if (isDropdownOpen) {
@@ -35,26 +52,27 @@ const VerificationScreen = ({ navigation }) => {
         }
     };
 
-    const [inputs, setInputs] = React.useState({
+    const [phoneInputs, setPhoneInputs] = React.useState({
         phone: ''
     });
     const [errors, setErrors] = React.useState({});
 
     const handleOnchange = (text, input) => {
-        setInputs(prevState => ({ ...prevState, [input]: text }));
+        setPhoneInputs(prevState => ({ ...prevState, [input]: text }));
     };
     const handleError = (error, input) => {
         setErrors(prevState => ({ ...prevState, [input]: error }));
     };
 
-    let color = '#FFAF51';
+    let color = '#325964';
+    let Name = 'block'
     let reqPhone = 'Please enter your Phone number for verification';
 
     const validate = () => {
         Keyboard.dismiss();
         let isValid = true;
 
-        if (!inputs.phone) {
+        if (!phoneInputs.phone) {
             handleError('Please input phone number', 'phone');
             isValid = false;
         }
@@ -67,13 +85,40 @@ const VerificationScreen = ({ navigation }) => {
 
     const handlePhoneVerification = async () => {
         try {
-            // Send the phone number to your server
-            await axios.post('https://backendapi/phone-verification', { phoneNumber });
-            setVerificationMethod('phone');
-            reqPhone = 'Code sent to your phone number'
-            color = '#FFAF51'
+            await AuthenicationService.phoneVerification({ phoneInputs, selectedCountry }).then(response => {
+                if (response?.status) {
+                    reqPhone = 'Code sent to your phone number, plase enter the code'
+                    Name = 'outbox'
+                    color = '#FFAF51'
+                    setCodeSent(true)
+                } else {
+                    Alert.alert('Error', 'Unable to send verification code.');
+                }
+            })
         } catch (error) {
             Alert.alert('Error', 'Unable to send verification code.');
+        }
+    };
+
+    const register = () => {
+        if (inputs) {
+            setLoading(true);
+            AuthenicationService.register(inputs).then(response => {
+                setLoading(false);
+                if (!response?.status) {
+                    setErrorMessage(response?.message);
+                }
+            });
+            navigation.navigate('Login');
+        } if (oAuthSignUp) {
+            setLoading(true);
+            AuthenicationService.register(oAuthSignUp,).then(response => {
+                setLoading(false);
+                if (!response?.status) {
+                    setErrorMessage(response?.message);
+                }
+            });
+            navigation.navigate('Login');
         }
     };
 
@@ -98,7 +143,6 @@ const VerificationScreen = ({ navigation }) => {
                         height: width / 4,
                         backgroundColor: '#f1f1f1',
                         overflow: 'hidden',
-
                     }}
                 >
                     <Image
@@ -168,7 +212,7 @@ const VerificationScreen = ({ navigation }) => {
                                     height: 80
                                 }}
                             />
-                            <MaterialIcons name="done" size={30} color={color}
+                            <MaterialIcons name={Name} size={30} color={color}
                                 style={{
                                     position: 'absolute'
                                 }}
@@ -176,88 +220,163 @@ const VerificationScreen = ({ navigation }) => {
                         </View>
                         <Text
                             style={{
-                                fontSize: 15,
-                                fontWeight: "400",
+                                fontSize: 16,
+                                fontWeight: "600",
                                 color: "#000",
                                 margin: 20
                             }}
                         >{reqPhone}</Text>
-                        <View
-                            style={styles.inputsContainer}
-                            onLayout={({
-                                nativeEvent: {
-                                    layout: { y },
-                                },
-                            }) => setInputsContainerY(y)}>
-                            <TouchableOpacity
-                                style={styles.countryListContainer}
-                                onPress={() => setIsDropdownOpen(!isDropdownOpen)}>
-                                <Image
-                                    source={{ uri: StaticImageService.getFlagIcon(selectedCountry.code) }}
-                                    style={styles.flatIcon}
-                                />
-                                <Text style={styles.countryCodeText}>
-                                    {selectedCountry.dial_code}
-                                </Text>
-                                <MaterialIcons name="keyboard-arrow-down" size={18} />
-                            </TouchableOpacity>
-                            <View style={styles.phoneInputContainer}>
-                                <Input
-                                    keyboardType="numeric"
-                                    // onChangeText={text => {
-                                    //     setPhoneNumber(selectedCountry?.dial_code + text),
-                                    //         handleOnchange(text, 'phone')
-                                    // }
-                                    // }
-                                    onChangeText={text => handleOnchange(text, 'phone')}
-                                    onFocus={() => {
-                                        handleError(null, 'phone'),
-                                            setIsDropdownOpen(false)
-                                    }
-                                    }
-                                    style={styles.inputText}
-                                    iconName="phone-outline"
-                                    placeholder="Enter your phone number"
-                                    error={errors.phone}
-                                />
-                            </View>
-                        </View>
-                        <View
-                            width={width}
-                        >
-                            <TouchableOpacity
-                                style={styles.signinButton}
-                                activeOpacity={0.8}
-                                onPress={validate}>
-                                <Text style={styles.signinButtonText}>Contiue</Text>
-                            </TouchableOpacity>
-                        </View>
-                        {isDropdownOpen && (
-                            <View
-                                style={getDropdownStyle(inputsContainerY)}
-                                onLayout={({
-                                    nativeEvent: {
-                                        layout: { x, y, height, width },
-                                    },
-                                }) => setDropdownLayout({ x, y, height, width })}>
-                                <FlatList
-                                    style={{
-                                        height: 50
-                                    }}
-                                    data={CountryCode}
-                                    keyExtractor={item => item.code}
-                                    renderItem={({ item }) => (
-                                        <FlagItem
-                                            {...item}
-                                            onPress={country => {
-                                                setSelectedCountry(country);
-                                                setIsDropdownOpen(false);
-                                            }}
-                                        />
+                        {
+                            codeSent ? (
+                                <View>
+                                    <View
+                                        style={styles.inputsContainer}
+                                    >
+                                        <View style={styles.phoneInputContainer}>
+                                            <Input
+                                                keyboardType="numeric"
+                                                // onChangeText={text => {
+                                                //     setPhoneNumber(selectedCountry?.dial_code + text),
+                                                //         handleOnchange(text, 'phone')
+                                                // }
+                                                // }
+                                                onChangeText={text => handleOnchange(text, 'phone')}
+                                                onFocus={
+                                                    handleError(null, 'phone')
+                                                }
+                                                style={styles.inputText}
+                                                iconName="phone-outline"
+                                                placeholder="Enter your phone number"
+                                                error={errors.phone}
+                                            />
+                                        </View>
+                                    </View>
+                                    <View
+                                        width={width}
+                                    >
+                                        <TouchableOpacity
+                                            style={styles.signinButton}
+                                            activeOpacity={0.8}
+                                            onPress={validate}>
+                                            <Text style={styles.signinButtonText}>Contiue</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                    {isDropdownOpen && (
+                                        <View
+                                            style={getDropdownStyle(inputsContainerY)}
+                                            onLayout={({
+                                                nativeEvent: {
+                                                    layout: { x, y, height, width },
+                                                },
+                                            }) => setDropdownLayout({ x, y, height, width })}>
+                                            <FlatList
+                                                style={{
+                                                    height: 50
+                                                }}
+                                                data={CountryCode}
+                                                keyExtractor={item => item.code}
+                                                renderItem={({ item }) => (
+                                                    <FlagItem
+                                                        {...item}
+                                                        onPress={country => {
+                                                            setSelectedCountry(country);
+                                                            setIsDropdownOpen(false);
+                                                        }}
+                                                    />
+                                                )}
+                                            />
+                                        </View>
                                     )}
-                                />
-                            </View>
-                        )}
+                                </View>
+                            ) : (
+                                <View>
+                                    <View
+                                        style={styles.inputsContainer}
+                                        onLayout={({
+                                            nativeEvent: {
+                                                layout: { y },
+                                            },
+                                        }) => setInputsContainerY(y)}>
+                                        <TouchableOpacity disabled
+                                            style={styles.countryListContainer}
+                                            onPress={() => setIsDropdownOpen(!isDropdownOpen)}>
+                                            {
+                                                selectedCountry ? (
+                                                    <>
+                                                        <Image
+                                                            source={{ uri: StaticImageService.getFlagIcon(selectedCountry.code) }}
+                                                            style={styles.flatIcon}
+                                                        />
+                                                        <Text style={styles.countryCodeText}>
+                                                            {selectedCountry.dial_code}
+                                                        </Text>
+                                                    </>
+                                                ) : (
+                                                    <Skeleton height={height * 0.05} width={Display.setWidth(11.5)} style={{ borderRadius: Display.setHeight(0.5) }} />
+                                                )
+                                            }
+                                            <MaterialIcons name="keyboard-arrow-down" size={18} />
+                                        </TouchableOpacity>
+                                        <View style={styles.phoneInputContainer}>
+                                            <Input
+                                                keyboardType="numeric"
+                                                // onChangeText={text => {
+                                                //     setPhoneNumber(selectedCountry?.dial_code + text),
+                                                //         handleOnchange(text, 'phone')
+                                                // }
+                                                // }
+                                                onChangeText={text => handleOnchange(text, 'phone')}
+                                                onFocus={() => {
+                                                    handleError(null, 'phone'),
+                                                        setIsDropdownOpen(false)
+                                                }
+                                                }
+                                                style={styles.inputText}
+                                                iconName="phone-outline"
+                                                placeholder="Enter your phone number"
+                                                error={errors.phone}
+                                            />
+                                        </View>
+                                    </View>
+                                    <View
+                                        width={width}
+                                    >
+                                        <TouchableOpacity
+                                            style={styles.signinButton}
+                                            activeOpacity={0.8}
+                                            onPress={validate}>
+                                            <Text style={styles.signinButtonText}>Contiue</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                    {isDropdownOpen && (
+                                        <View
+                                            style={getDropdownStyle(inputsContainerY)}
+                                            onLayout={({
+                                                nativeEvent: {
+                                                    layout: { x, y, height, width },
+                                                },
+                                            }) => setDropdownLayout({ x, y, height, width })}>
+                                            <FlatList
+                                                style={{
+                                                    height: 50
+                                                }}
+                                                data={CountryCode}
+                                                keyExtractor={item => item.code}
+                                                renderItem={({ item }) => (
+                                                    <FlagItem
+                                                        {...item}
+                                                        onPress={country => {
+                                                            setSelectedCountry(country);
+                                                            setIsDropdownOpen(false);
+                                                        }}
+                                                    />
+                                                )}
+                                            />
+                                        </View>
+                                    )}
+                                </View>
+                            )
+                        }
                     </View>
                 </View>
             </View>

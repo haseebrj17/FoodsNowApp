@@ -1218,7 +1218,7 @@ export const Dips = [
     {
         _id: 0,
         name: 'Signature Dip',
-        desc: 'made with fresh organic ingredients and hand picked by our chefs.',
+        desc: 'Süße, pikante und scharfe Sauce auf Mayonnaisebasis, gemischt mit verschiedenen hausgemachten Gurken.',
         price32: 2,
         price48: 4
     },

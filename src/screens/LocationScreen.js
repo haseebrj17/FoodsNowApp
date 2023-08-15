@@ -50,9 +50,12 @@ const LocationScreen = ({ navigation }) => {
                 return;
             }
             let location = await Location.getCurrentPositionAsync({});
+            let geocodeResults = await Location.reverseGeocodeAsync({ latitude: location.coords.latitude, longitude: location.coords.longitude })
+            let country = geocodeResults[0].country;
             setLocationUser({
                 Latitude: location.coords.latitude,
                 Longitude: location.coords.longitude,
+                Country: country
             });
         })();
     }, []);
@@ -105,7 +108,8 @@ const LocationScreen = ({ navigation }) => {
                             Franchise: closestFranchise.Title,
                             FranchiseId: closestFranchise.Id,
                             UserDistanceFromFranchise: minDistance,
-                            DeliveryParams: Client.distanceRange.fourKm
+                            DeliveryParams: Client.distanceRange.fourKm,
+                            Country: locationUser.Country
                         });
                         console.log('Data to store:', fourKM);
                         StorageService.setLocation(fourKM).then(
@@ -114,8 +118,10 @@ const LocationScreen = ({ navigation }) => {
                     } else if (minDistance > 4000 && minDistance <= 6000) {
                         setSixKM({
                             Franchise: closestFranchise.Title,
+                            FranchiseId: closestFranchise.Id,
                             UserDistanceFromFranchise: minDistance,
-                            DeliveryParams: Client.distanceRange.sixKm
+                            DeliveryParams: Client.distanceRange.sixKm,
+                            Country: locationUser.Country
                         });
                         console.log(sixKM)
                         StorageService.setLocation(sixKM).then(
@@ -124,8 +130,10 @@ const LocationScreen = ({ navigation }) => {
                     } else if (minDistance > 6000 && minDistance <= 10000) {
                         setTenKM({
                             Franchise: closestFranchise.Title,
+                            FranchiseId: closestFranchise.Id,
                             UserDistanceFromFranchise: minDistance,
-                            DeliveryParams: Client.distanceRange.tenKm
+                            DeliveryParams: Client.distanceRange.tenKm,
+                            Country: locationUser.Country
                         });
                         console.log(tenKM)
                         StorageService.setLocation(tenKM).then(

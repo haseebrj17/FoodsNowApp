@@ -5,7 +5,7 @@ import {
 } from '../actions/BrandAction';
 
 const initialState = {
-    brands: null,
+    brand: null,
     loadingBrands: false,
     error: null,
 };
@@ -21,7 +21,7 @@ const BrandReducer = (state = initialState, action) => {
             return {
                 ...state,
                 loadingBrands: false,
-                brands: action.payload,
+                brand: action.payload,
             };
         case FETCH_BRANDS_FAILURE:
             return {

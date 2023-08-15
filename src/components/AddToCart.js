@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TouchableOpacity, Image, Dimensions, ScrollView
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { Button } from '@react-native-material/core';
 import { RadioButton } from 'react-native-paper';
-import { FontAwesome, MaterialCommunityIcons, AntDesign } from '@expo/vector-icons';
+import { FontAwesome, MaterialCommunityIcons, AntDesign, Entypo } from '@expo/vector-icons';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import { Input, NativeBaseProvider } from 'native-base';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -20,7 +20,7 @@ import Separator from './Separator';
 const { width, height } = Dimensions.get('window')
 
 const DeliveryPrice = ({ price }) => {
-    if (price >= 20) {
+    if (price === 0) {
         return <View
             style={{
                 flexDirection: 'row',
@@ -50,7 +50,7 @@ const DeliveryPrice = ({ price }) => {
             fontWeight: '500',
             color: '#325962'
         }}
-    > € 10</Text></View>
+    > € {price}</Text></View>
 }
 
 const AddToCartModal = forwardRef((props, ref) => {
@@ -62,6 +62,8 @@ const AddToCartModal = forwardRef((props, ref) => {
     const extras = props.extras
 
     const dips = props.dips
+
+    const deliveryParams = props.deliveryParams
 
     const sectionListRef = React.useRef(null);
 
@@ -105,8 +107,8 @@ const AddToCartModal = forwardRef((props, ref) => {
                         fontSize: 18,
                         fontWeight: 'bold',
                         color: '#000',
-                        marginLeft: 10,
-                        marginTop: 10,
+                        marginLeft: Display.setHeight(1),
+                        marginTop: Display.setHeight(2),
                     }}
                 >Description</Text>
                 <Text
@@ -115,19 +117,19 @@ const AddToCartModal = forwardRef((props, ref) => {
                         fontWeight: '400',
                         color: '#000',
                         marginLeft: 10,
-                        marginTop: 5,
-                        marginBottom: 10,
+                        marginTop: Display.setHeight(0.5),
+                        marginBottom: Display.setHeight(1),
                     }}
                 >
-                    {dish.description}
+                    {dish.Detail}
                 </Text>
                 <Text
                     style={{
                         fontSize: 18,
                         fontWeight: 'bold',
                         color: '#000',
-                        marginLeft: 10,
-                        marginTop: 10,
+                        marginLeft: Display.setHeight(1),
+                        marginTop: Display.setHeight(2),
                     }}
                 >Ingredients</Text>
                 <Text
@@ -135,12 +137,51 @@ const AddToCartModal = forwardRef((props, ref) => {
                         fontSize: 12,
                         fontWeight: '400',
                         color: '#000',
-                        marginLeft: 10,
-                        marginTop: 5,
+                        marginLeft: Display.setHeight(1),
+                        marginTop: Display.setHeight(0.5),
                     }}
                 >
-                    {dish.ingredient}
+                    {dish.IngredientDetail}
                 </Text>
+                <Text
+                    style={{
+                        fontSize: 18,
+                        fontWeight: 'bold',
+                        color: '#000',
+                        marginLeft: Display.setHeight(1),
+                        marginTop: Display.setHeight(2),
+                    }}
+                >Allergien</Text>
+                {
+                    dish.Allergies.map((allergyItem, index) => {
+                        return (
+                            <View
+                                style={{
+                                    flexDirection: 'row',
+                                    margin: Display.setHeight(0.5)
+                                }}
+                            >
+                                <Entypo name="dot-single" size={24} color="black" 
+                                    style={{
+                                        marginLeft: Display.setHeight(1),
+                                    }}
+                                />
+                                <Text
+                                    style={{
+                                        fontSize: 14,
+                                        fontWeight: '600',
+                                        color: '#000',
+                                        marginLeft: Display.setHeight(0),
+                                        marginTop: Display.setHeight(0.5),
+                                    }}
+                                    key={index}
+                                >
+                                    {allergyItem.Allergy.Description}
+                                </Text>
+                            </View>
+                        )
+                    })
+                }
             </View>
         </View>
     );
@@ -148,44 +189,44 @@ const AddToCartModal = forwardRef((props, ref) => {
     const [expanded, setExpanded] = useState(false);
     const renderComment = ({ item: comment }) => {
 
-        const seed = comment.comment ? comment.comment : comment.star
+        // const seed = comment.comment ? comment.comment : comment.star
 
-        const avatar = createAvatar(thumbs, {
-            seed: seed,
-            backgroundColor: ["b6e3f4", "c0aede", "d1d4f9", "ffd5dc", "ffdfbf"],
-            backgroundType: [
-                "gradientLinear",
-                "solid"
-            ],
-            mouth: [
-                "variant01",
-                "variant05",
-                "variant06",
-                "variant12",
-                "variant15",
-                "variant16",
-                "variant17",
-                "variant18",
-                "variant20",
-                "variant21",
-                "variant23",
-                "variant24",
-                "variant25",
-                "variant26",
-                "variant27",
-                "variant28",
-                "variant29",
-                "variant30",
-                "variant19"
-            ],
-            skinolor: [
-                "ecad80",
-                "f2d3b1",
-                "9e5622"
-            ],
-            radius: 50
-            // ... other options
-        }).toString();
+        // const avatar = createAvatar(thumbs, {
+        //     seed: seed,
+        //     backgroundColor: ["b6e3f4", "c0aede", "d1d4f9", "ffd5dc", "ffdfbf"],
+        //     backgroundType: [
+        //         "gradientLinear",
+        //         "solid"
+        //     ],
+        //     mouth: [
+        //         "variant01",
+        //         "variant05",
+        //         "variant06",
+        //         "variant12",
+        //         "variant15",
+        //         "variant16",
+        //         "variant17",
+        //         "variant18",
+        //         "variant20",
+        //         "variant21",
+        //         "variant23",
+        //         "variant24",
+        //         "variant25",
+        //         "variant26",
+        //         "variant27",
+        //         "variant28",
+        //         "variant29",
+        //         "variant30",
+        //         "variant19"
+        //     ],
+        //     skinolor: [
+        //         "ecad80",
+        //         "f2d3b1",
+        //         "9e5622"
+        //     ],
+        //     radius: 50
+        //     // ... other options
+        // }).toString();
 
         const toggleExpansion = () => {
             setExpanded(!expanded);
@@ -227,7 +268,7 @@ const AddToCartModal = forwardRef((props, ref) => {
                         backgroundColor: '#fff',
                     }}
                 >
-                    <SvgXml xml={avatar} />
+                    <FontAwesome name="user" size={24} color="black" />
                 </View>
                 <View style={{ flex: 1 }}>
                     <Text
@@ -263,8 +304,8 @@ const AddToCartModal = forwardRef((props, ref) => {
     );
 
     const ListPrices = () => {
-        if (dish.restaurant === 'come a napoli') {
-            return <Text style={styles.SubTextPrice}>€{dish.price32}</Text>
+        if (dish.restaurant === 'Come A Napoli') {
+            return <Text style={styles.SubTextPrice}>€{dish.Prices[0].price}</Text>
         } else {
             return (
                 <Text style={[styles.SubTextPrice, { marginTop: 5 }]}>€{dish.price}</Text>
@@ -301,24 +342,24 @@ const AddToCartModal = forwardRef((props, ref) => {
         >
             <View style={styles.contentContainer}>
                 <Image
-                    source={dish ? dish.image : ''}
+                    source={{ uri: dish ? dish.Image : '' }}
                     style={styles.image}
                 />
                 <View style={styles.modalContent}>
                     <View style={styles.infoContainer}>
-                        <Text style={styles.dishName}>{dish ? dish.name : ''}</Text>
+                        <Text style={styles.dishName}>{dish ? dish.Name : ''}</Text>
                         <ListPrices />
                     </View>
                     <View style={styles.reviewContainer}>
                         <View style={styles.reviewItem}>
                             <FontAwesome name="star" size={22} color="#FFAF51" />
-                            <Text style={styles.reviewText}>{StarMean(starArray)} ({dish ? dish.reviewComment.length : ''})</Text>
+                            <Text style={styles.reviewText}>{StarMean(starArray)} ({dish ? dish?.reviewComment?.length : ''})</Text>
                         </View>
                         <View style={styles.reviewItem}>
                             <MaterialCommunityIcons name="clock-fast" size={24} color="#325962" />
-                            <Text style={styles.reviewText}>{dish ? dish.deliverytime : ''} mins</Text>
+                            <Text style={styles.reviewText}>{dish ? dish.EstimatedDeliveryTime : ''} mins</Text>
                         </View>
-                        <DeliveryPrice price={dish ? dish.price : ''} />
+                        <DeliveryPrice price={deliveryParams ? deliveryParams.deliverCharges : ''} />
                     </View>
                     <View style={styles.divider} />
                     <SectionList
@@ -354,7 +395,7 @@ const AddToCartModal = forwardRef((props, ref) => {
                                     </View>
                                 ]
                             },
-                            { title: "Customize", data: [<DishFormPizza key="customize" dish={dish ? dish : ''} extras={extras} dips={dips} />] }
+                            { title: "Customize", data: [<DishFormPizza key="customize" dish={dish ? dish.Prices : ''} extras={extras} dips={dips} />] }
                         ]}
                         ref={sectionListRef}
                         renderItem={({ item }) => item}
