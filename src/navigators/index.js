@@ -25,7 +25,8 @@ import {
     MoreScreen,
     LocationAccessScreen,
     LocationDetailScreen,
-    Auth
+    Auth,
+    CartScreen
 } from "../screens";
 import BottomTabBar from "./BottomTabBar";
 

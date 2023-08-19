@@ -32,7 +32,7 @@ import { Icon } from "@rneui/base";
 import { BottomSheetModal, BottomSheetModalProvider, BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 import { useRef, useCallback } from "react";
 import Animated from "react-native-reanimated";
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons, AntDesign } from '@expo/vector-icons';
 import CustomBackdrop from "../components/CustomBackdrop";
 import UseModal from "../components/UseModal";
 import AddToCart from "../components/AddToCart";
@@ -74,7 +74,7 @@ const DetailsScreen = ({ route }) => {
         (state) => state.productState
     );
     const categoryId = route.params.brand.Id;
-    console.log(categoryId)
+    // console.log(categoryId)
 
     useEffect(() => {
         dispatch(fetchProducts(categoryId));
@@ -543,14 +543,14 @@ const DetailsScreen = ({ route }) => {
                         zIndex: 9999
                     }}
                 >
-                    <MaterialIcons
-                        name="keyboard-arrow-left"
-                        size={50}
-                        color="#325962"
+                    <AntDesign 
+                        name="leftcircle" 
+                        size={28} 
+                        color="#325964" 
                         style={{
                             position: "absolute",
-                            margin: 30,
-                            marginLeft: 0,
+                            margin: Display.setHeight(3.2),
+                            marginLeft: Display.setHeight(2),
                         }}
                     />
                 </TouchableOpacity>
@@ -628,6 +628,7 @@ const DetailsScreen = ({ route }) => {
                         renderItem={renderItem}
                         numColumns={column}
                         keyExtractor={(item) => item.Id}
+                        backgroundColor='#fff'
                     />
                 </View>
                 {/* </ScrollView> */}
@@ -637,6 +638,7 @@ const DetailsScreen = ({ route }) => {
                     extras={Extras(selectedDish)}
                     dips={Dips(selectedDish)}
                     deliveryParams={deliveryParams}
+                    brandId={route.params.brand.Id}
                 />
             </NativeBaseProvider>
         </BottomSheetModalProvider>

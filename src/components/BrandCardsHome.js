@@ -155,7 +155,7 @@ const BrandCardsHome = ({ brand, deliveryParams }) => {
             }
         );
         return (
-            <TouchableWithoutFeedback onPress={() => navigation.navigate('Details', { brand: brand, deliveryParams: deliveryParams})}>
+            <TouchableWithoutFeedback onPress={() => navigation.navigate('Details', { brand: brand, deliveryParams: deliveryParams })}>
                 <View
                     style={{
                         width: width * 0.27,
@@ -170,68 +170,23 @@ const BrandCardsHome = ({ brand, deliveryParams }) => {
                         marginBottom: Display.setHeight(1.3),
                     }}
                 >
-                    <LinearGradient
-                        colors={[colors.color1, colors.color0]}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 1 }}
+                    <View
                         style={{
+                            overflow: 'hidden',
                             width: '100%',
                             height: '85%',
-                            borderTopLeftRadius: 8,
-                            borderTopRightRadius: 8,
                             alignItems: 'center',
                         }}
                     >
-                        <View
+                        <Image source={{ uri: brand.Thumbnail }}
+                            onLoad={handleImageLoad}
                             style={{
-                                width: '100%',
-                                height: '90%',
-                                borderRadius: 8,
-                                alignItems: 'center',
-                                justifyContent: 'flex-start',
+                                height: '100%',
+                                resizeMode: "contain",
+                                aspectRatio: imgAspect,
                             }}
-                        >
-                            <View
-                                style={{
-                                    width: '100%',
-                                    height: '55%',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    alignSelf: 'center',
-                                }}
-                            >
-                                <Image source={{ uri: brand.Logo }}
-                                    style={{
-                                        width: "55%",
-                                        height: undefined,
-                                        resizeMode: 'contain',
-                                        aspectRatio: imgAspect,
-                                        margin: Display.setHeight(1)
-                                    }}
-                                />
-                            </View>
-                            <View
-                                style={{
-                                    overflow: 'hidden',
-                                    width: '100%',
-                                    height: '60%',
-                                    alignItems: 'center',
-                                    justifyContent: 'space-between',
-                                }}
-                            >
-                                <Image source={{ uri: brand.Thumbnail }}
-                                    onLoad={handleImageLoad}
-                                    style={{
-                                        width: '100%',
-                                        height: undefined,
-                                        resizeMode: "contain",
-                                        aspectRatio: imgAspect,
-                                        margin: Display.setHeight(1)
-                                    }}
-                                />
-                            </View>
-                        </View>
-                    </LinearGradient>
+                        />
+                    </View>
                     <View
                         style={{
                             width: '100%',
@@ -257,6 +212,108 @@ const BrandCardsHome = ({ brand, deliveryParams }) => {
                     </View>
                 </View>
             </TouchableWithoutFeedback>
+            // <TouchableWithoutFeedback onPress={() => navigation.navigate('Details', { brand: brand, deliveryParams: deliveryParams})}>
+            //     <View
+            //         style={{
+            //             width: width * 0.27,
+            //             flexDirection: "column",
+            //             justifyContent: "flex-start",
+            //             alignItems: "center",
+            //             borderRadius: 8,
+            //             backgroundColor: '#d9d9d9',
+            //             flex: 1,
+            //             margin: Display.setHeight(1),
+            //             height: width * 0.35,
+            //             marginBottom: Display.setHeight(1.3),
+            //         }}
+            //     >
+            //         <LinearGradient
+            //             colors={[colors.color1, colors.color0]}
+            //             start={{ x: 0, y: 0 }}
+            //             end={{ x: 1, y: 1 }}
+            //             style={{
+            //                 width: '100%',
+            //                 height: '85%',
+            //                 borderTopLeftRadius: 8,
+            //                 borderTopRightRadius: 8,
+            //                 alignItems: 'center',
+            //             }}
+            //         >
+            //             <View
+            //                 style={{
+            //                     width: '100%',
+            //                     height: '90%',
+            //                     borderRadius: 8,
+            //                     alignItems: 'center',
+            //                     justifyContent: 'flex-start',
+            //                 }}
+            //             >
+            //                 <View
+            //                     style={{
+            //                         width: '100%',
+            //                         height: '55%',
+            //                         alignItems: 'center',
+            //                         justifyContent: 'center',
+            //                         alignSelf: 'center',
+            //                     }}
+            //                 >
+            //                     <Image source={{ uri: brand.Logo }}
+            //                         style={{
+            //                             width: "55%",
+            //                             height: undefined,
+            //                             resizeMode: 'contain',
+            //                             aspectRatio: imgAspect,
+            //                             margin: Display.setHeight(1)
+            //                         }}
+            //                     />
+            //                 </View>
+            //                 <View
+            //                     style={{
+            //                         overflow: 'hidden',
+            //                         width: '100%',
+            //                         height: '60%',
+            //                         alignItems: 'center',
+            //                         justifyContent: 'space-between',
+            //                     }}
+            //                 >
+            //                     <Image source={{ uri: brand.Thumbnail }}
+            //                         onLoad={handleImageLoad}
+            //                         style={{
+            //                             width: '100%',
+            //                             height: undefined,
+            //                             resizeMode: "contain",
+            //                             aspectRatio: imgAspect,
+            //                             margin: Display.setHeight(1)
+            //                         }}
+            //                     />
+            //                 </View>
+            //             </View>
+            //         </LinearGradient>
+            //         <View
+            //             style={{
+            //                 width: '100%',
+            //                 height: '15%',
+            //                 alignItems: "center",
+            //                 justifyContent: "center",
+            //                 backgroundColor: "white",
+            //                 shadowColor: '#000000',
+            //                 shadowOffset: {
+            //                     width: 0,
+            //                     height: 5,
+            //                 },
+            //                 shadowOpacity: 0.4,
+            //                 shadowRadius: 5,
+            //                 elevation: 10,
+            //                 borderBottomRightRadius: 8,
+            //                 borderBottomLeftRadius: 8,
+            //             }}
+            //         >
+            //             <Text
+            //                 style={styles.itemText}
+            //             >{brand.Name}</Text>
+            //         </View>
+            //     </View>
+            // </TouchableWithoutFeedback>
         );
     }
 

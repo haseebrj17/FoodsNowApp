@@ -1,199 +1,3 @@
-// import { CartService } from '../services';
-
-// const types = {
-//     GET_CART_ITEMS: 'GET_CART_ITEMS',
-//     SET_IS_LOADING: 'SET_IS_LOADING',
-// };
-
-// const addToCart = ({ foodId }) => {
-//     return dispatch => {
-//         dispatch({
-//             type: types.SET_IS_LOADING,
-//             payload: true,
-//         });
-//         CartService.addToCart({ foodId })
-//             .then(cartResponse => {
-//                 dispatch({
-//                     type: types.GET_CART_ITEMS,
-//                     payload: cartResponse?.data,
-//                 });
-//                 dispatch({
-//                     type: types.SET_IS_LOADING,
-//                     payload: false,
-//                 });
-//             })
-//             .catch(() => {
-//                 dispatch({
-//                     type: types.SET_IS_LOADING,
-//                     payload: false,
-//                 });
-//             });
-//     };
-// };
-
-// const removeFromCart = ({ foodId }) => {
-//     return dispatch => {
-//         dispatch({
-//             type: types.SET_IS_LOADING,
-//             payload: true,
-//         });
-//         CartService.removeFromCart({ foodId })
-//             .then(cartResponse => {
-//                 dispatch({
-//                     type: types.GET_CART_ITEMS,
-//                     payload: cartResponse?.data,
-//                 });
-//                 dispatch({
-//                     type: types.SET_IS_LOADING,
-//                     payload: false,
-//                 });
-//             })
-//             .catch(() => {
-//                 dispatch({
-//                     type: types.SET_IS_LOADING,
-//                     payload: false,
-//                 });
-//             });
-//     };
-// };
-
-// const getCartItems = () => {
-//     return dispatch => {
-//         dispatch({
-//             type: types.SET_IS_LOADING,
-//             payload: true,
-//         });
-//         CartService.getCartItems()
-//             .then(cartResponse => {
-//                 dispatch({
-//                     type: types.GET_CART_ITEMS,
-//                     payload: cartResponse?.data,
-//                 });
-//                 dispatch({
-//                     type: types.SET_IS_LOADING,
-//                     payload: false,
-//                 });
-//             })
-//             .catch(() => {
-//                 dispatch({
-//                     type: types.SET_IS_LOADING,
-//                     payload: false,
-//                 });
-//             });
-//     };
-// };
-
-// export default { types, addToCart, removeFromCart, getCartItems };
-
-
-// import Realm from 'realm';
-
-// const CartSchema = {
-//     name: 'Cart',
-//     primaryKey: 'foodId',
-//     properties: {
-//         foodId: 'string',
-//     },
-// };
-
-// const types = {
-//     GET_CART_ITEMS: 'GET_CART_ITEMS',
-//     SET_IS_LOADING: 'SET_IS_LOADING',
-// };
-
-// const addToCart = ({ foodId }) => {
-//     return dispatch => {
-//         dispatch({
-//             type: types.SET_IS_LOADING,
-//             payload: true,
-//         });
-//         Realm.open({ schema: [CartSchema] })
-//             .then(realm => {
-//                 realm.write(() => {
-//                     realm.create('Cart', { foodId });
-//                 });
-//                 const cartItems = realm.objects('Cart');
-//                 dispatch({
-//                     type: types.GET_CART_ITEMS,
-//                     payload: cartItems,
-//                 });
-//                 dispatch({
-//                     type: types.SET_IS_LOADING,
-//                     payload: false,
-//                 });
-//             })
-//             .catch(error => {
-//                 console.error(error);
-//                 dispatch({
-//                     type: types.SET_IS_LOADING,
-//                     payload: false,
-//                 });
-//             });
-//     };
-// };
-
-// const removeFromCart = ({ foodId }) => {
-//     return dispatch => {
-//         dispatch({
-//             type: types.SET_IS_LOADING,
-//             payload: true,
-//         });
-//         Realm.open({ schema: [CartSchema] })
-//             .then(realm => {
-//                 const itemToRemove = realm.objects('Cart').filtered('foodId = $0', foodId);
-//                 realm.write(() => {
-//                     realm.delete(itemToRemove);
-//                 });
-//                 const cartItems = realm.objects('Cart');
-//                 dispatch({
-//                     type: types.GET_CART_ITEMS,
-//                     payload: cartItems,
-//                 });
-//                 dispatch({
-//                     type: types.SET_IS_LOADING,
-//                     payload: false,
-//                 });
-//             })
-//             .catch(error => {
-//                 console.error(error);
-//                 dispatch({
-//                     type: types.SET_IS_LOADING,
-//                     payload: false,
-//                 });
-//             });
-//     };
-// };
-
-// const getCartItems = () => {
-//     return dispatch => {
-//         dispatch({
-//             type: types.SET_IS_LOADING,
-//             payload: true,
-//         });
-//         Realm.open({ schema: [CartSchema] })
-//             .then(realm => {
-//                 const cartItems = realm.objects('Cart');
-//                 dispatch({
-//                     type: types.GET_CART_ITEMS,
-//                     payload: cartItems,
-//                 });
-//                 dispatch({
-//                     type: types.SET_IS_LOADING,
-//                     payload: false,
-//                 });
-//             })
-//             .catch(error => {
-//                 console.error(error);
-//                 dispatch({
-//                     type: types.SET_IS_LOADING,
-//                     payload: false,
-//                 });
-//             });
-//     };
-// };
-
-// export default { types, addToCart, removeFromCart, getCartItems };
-
 import { db } from "../SqlLiteDB";
 
 const types = {
@@ -201,30 +5,68 @@ const types = {
     SET_IS_LOADING: 'SET_IS_LOADING',
 };
 
-const addToCart = (foodId, quantity) => (dispatch) => {
-    db.transaction(
-        (tx) => {
-            tx.executeSql('INSERT INTO cart (foodId, quantity) VALUES (?, ?, ?);', [foodId, quantity, price]);
-        },
-        null,
-        () => dispatch(getCartItems()) // Reload cart items after adding
-    );
+const addToCart = (dishId, selectedSize, selectedToppings, selectedDippings, quantity) => (dispatch) => {
+    return new Promise((resolve, reject) => { // Wrap the code inside a Promise
+        // Construct the product object
+        const product = {
+            dishId: dishId,
+            selectedSize: selectedSize,
+            selectedToppings: selectedToppings,
+            selectedDippings: selectedDippings
+        };
+
+        // Serialize the product object
+        const serializedProduct = JSON.stringify(product);
+
+        db.transaction(
+            (tx) => {
+                tx.executeSql(
+                    'INSERT INTO cart (product_id, quantity) VALUES (?, ?);',
+                    [serializedProduct, quantity],
+                    null,
+                    (_, error) => {
+                        console.log("Database error:", error);
+                        reject(error); // Reject the promise if there's an error
+                    }
+                );
+            },
+            null,
+            () => {
+                dispatch(getCartItems());
+                resolve('OK'); // Resolve the promise with 'OK' if successful
+            }
+        );
+    });
 };
 
-const removeFromCart = (id) => (dispatch) => {
+const removeFromCart = (cartItemId) => (dispatch) => {
     db.transaction(
         (tx) => {
-            tx.executeSql('DELETE FROM cart WHERE id = ?;', [id]);
+            tx.executeSql('DELETE FROM cart WHERE id = ?;', [cartItemId]);
         },
         null,
-        () => dispatch(getCartItems()) // Reload cart items after removing
+        () => dispatch(getCartItems())
     );
 };
 
 const getCartItems = () => (dispatch) => {
     db.transaction((tx) => {
         tx.executeSql('SELECT * FROM cart;', [], (_, { rows }) => {
-            dispatch({ type: types.GET_CART_ITEMS, payload: rows._array });
+            const cartItems = rows._array.map(item => {
+                // Parse the product_id field
+                const product = JSON.parse(item.product_id);
+
+                // Return a new object with the desired format
+                return {
+                    id: item.id,
+                    dishId: product.dishId,
+                    selectedSize: product.selectedSize,
+                    selectedToppings: product.selectedToppings,
+                    selectedDippings: product.selectedDippings,
+                    quantity: item.quantity
+                };
+            });
+            dispatch({ type: types.GET_CART_ITEMS, payload: cartItems });
         });
     });
 };

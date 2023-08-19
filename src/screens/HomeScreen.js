@@ -20,6 +20,7 @@ import { RestaurantService, StorageService } from "../services";
 import { clientData } from '../shared/ClientData';
 import { useDispatch, useSelector } from "react-redux";
 import { fetchBrands } from "../actions/BrandAction";
+import { db } from "../SqlLiteDB";
 
 const config = require('../../package.json').projectName;
 const CLIENT_NAME = config.name;
@@ -33,6 +34,29 @@ const HomeScreen = () => {
         Fonts
     });
 
+    // useEffect(() => {
+    //     const resetDatabase = () => {
+    //         return new Promise((resolve, reject) => {
+    //             db.transaction((tx) => {
+    //                 tx.executeSql('DROP TABLE IF EXISTS brands');
+    //                 tx.executeSql('DROP TABLE IF EXISTS cart');
+    //                 tx.executeSql('DROP TABLE IF EXISTS dishes');
+    //                 tx.executeSql('DROP TABLE IF EXISTS dishSizes');
+    //                 tx.executeSql('DROP TABLE IF EXISTS extraTroppings');
+    //                 tx.executeSql('DROP TABLE IF EXISTS extraDippings');
+    //             }, reject, resolve);
+    //         });
+    //     };
+
+    //     resetDatabase()
+    //         .then(() => {
+    //             console.log('Database reset successfully');
+    //         })
+    //         .catch((error) => {
+    //             console.error('Error resetting the database:', error);
+    //         });
+    // }, []);
+
     const [brand, setBrand] = useState(null);
     const [deliveryParams, setDeliveryParams] = useState(null);
 
@@ -40,21 +64,24 @@ const HomeScreen = () => {
         const fetchLocationAndDashboard = async () => {
             try {
                 const location = await StorageService.getLocation();
-                const { FranchiseId, DeliveryParams} = location;
+                const { FranchiseId, DeliveryParams } = location;
                 setDeliveryParams(DeliveryParams)
                 console.log(location);
 
                 RestaurantService.getDashboard({ FranchiseId }).then(response => {
                     if (response?.status) {
+                        const brandsData = response?.data?.brands;
                         setBrand(response?.data?.brands);
                         setBanner(response?.data?.banners);
+                        // insertBrands(brandsData);
+                        // fetchBrandsFromDatabase();
                     } else {
                         console.log(`${response.message} Error Status False`);
                     }
                 })
-                .catch(error => {
-                    console.error(`${error} Error unexpected`);
-                });
+                    .catch(error => {
+                        console.error(`${error} Error unexpected`);
+                    });
             } catch (error) {
                 console.error(`Error fetching location: ${error}`);
             }
@@ -62,6 +89,8 @@ const HomeScreen = () => {
 
         fetchLocationAndDashboard();
     }, []);
+
+
 
     // const dispatch = useDispatch();
 

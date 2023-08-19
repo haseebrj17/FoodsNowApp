@@ -16,6 +16,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Display } from '../utils';
 import DishFormPizza from './DishFormPizza';
 import Separator from './Separator';
+import { CartAction } from '../actions';
+import { useNavigation } from '@react-navigation/native';
+import { db } from '../SqlLiteDB';
 
 const { width, height } = Dimensions.get('window')
 
@@ -55,6 +58,8 @@ const DeliveryPrice = ({ price }) => {
 
 const AddToCartModal = forwardRef((props, ref) => {
 
+    const navigation = useNavigation();
+
     const modalRef = useRef();
 
     const dish = props.dish
@@ -64,6 +69,8 @@ const AddToCartModal = forwardRef((props, ref) => {
     const dips = props.dips
 
     const deliveryParams = props.deliveryParams
+
+    const brandId = props.brandId
 
     const sectionListRef = React.useRef(null);
 
@@ -87,9 +94,67 @@ const AddToCartModal = forwardRef((props, ref) => {
         },
     }));
 
-    const handleAddToCart = () => {
-        console.log('Adding to cart');
+    ///////////// Cart Management /////////////
+
+    const [selectedSize, setSelectedSize] = useState("Normal");
+    const [selectedToppings, setSelectedToppings] = useState({});
+    const [selectedDippings, setSelectedDippings] = useState({});
+
+    const [quantity, setQuantity] = useState(1);
+
+    const incrementQuantity = () => {
+        setQuantity(prevQuantity => prevQuantity + 1);
     };
+
+    const decrementQuantity = () => {
+        setQuantity(prevQuantity => (prevQuantity > 1 ? prevQuantity - 1 : 1));
+    };
+
+    const handleSizeChange = (size) => {
+        setSelectedSize(size);
+    };
+
+    // const handleToppingsChange = (toppings) => {
+    //     setSelectedToppings(toppings);
+    // };
+
+    // const handleDippingsChange = (dippings) => {
+    //     setSelectedDippings(dippings);
+    // };
+
+    const handleDippingsChange = (dippings) => {
+        console.log("Received dippings from child:", dippings);
+        setSelectedDippings(dippings);
+    };
+
+    const handleToppingsChange = (toppings) => {
+        console.log("Received toppings from child:", toppings);
+        setSelectedToppings(toppings);
+    };
+
+    const dishId = dish?.Id;
+
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(CartAction.getCartItems());
+    }, [dispatch]);
+
+    const addToCart = (dishId, selectedSize, selectedToppings, selectedDippings, quantity) => {
+        console.log("Adding to cart...");
+        dispatch(CartAction.addToCart({ dishId, selectedSize, selectedToppings, selectedDippings, quantity }))
+        .then((result) => {
+            if (result === 'OK') {
+                setQuantity(1)
+                modalRef.current.dismiss();
+            }
+        })
+        .catch((error) => {
+            console.error('Error adding to cart:', error);
+        })
+    };
+
+    ///////////// BottomSheet Handler /////////////
 
     const snapPoints = ["100%"]
 
@@ -160,8 +225,9 @@ const AddToCartModal = forwardRef((props, ref) => {
                                     flexDirection: 'row',
                                     margin: Display.setHeight(0.5)
                                 }}
+                                key={index}
                             >
-                                <Entypo name="dot-single" size={24} color="black" 
+                                <Entypo name="dot-single" size={24} color="black"
                                     style={{
                                         marginLeft: Display.setHeight(1),
                                     }}
@@ -395,7 +461,20 @@ const AddToCartModal = forwardRef((props, ref) => {
                                     </View>
                                 ]
                             },
-                            { title: "Customize", data: [<DishFormPizza key="customize" dish={dish ? dish.Prices : ''} extras={extras} dips={dips} />] }
+                            {
+                                title: "Customize",
+                                data: [
+                                    <DishFormPizza
+                                        key="customize"
+                                        dish={dish ? dish.Prices : ''}
+                                        extras={extras}
+                                        dips={dips}
+                                        onSizeChange={handleSizeChange}
+                                        onToppingsChange={handleToppingsChange}
+                                        onDippingsChange={handleDippingsChange}
+                                    />
+                                ]
+                            }
                         ]}
                         ref={sectionListRef}
                         renderItem={({ item }) => item}
@@ -463,9 +542,9 @@ const AddToCartModal = forwardRef((props, ref) => {
                                 style={{
                                     marginRight: 10
                                 }}
-                            // onPress={() => removeFromCart(id)}
+                                onPress={decrementQuantity}
                             />
-                            <Text style={styles.itemCountText}>0</Text>
+                            <Text style={styles.itemCountText}>{quantity}</Text>
                             <AntDesign
                                 name="plus"
                                 color='#FFAF51'
@@ -473,7 +552,7 @@ const AddToCartModal = forwardRef((props, ref) => {
                                 style={{
                                     marginLeft: 10
                                 }}
-                            // onPress={() => addToCart(id)}
+                                onPress={incrementQuantity}
                             />
                         </View>
                         <Button
@@ -485,7 +564,7 @@ const AddToCartModal = forwardRef((props, ref) => {
                             titleStyle={styles.buttonTitle}
                             uppercase={false}
                             contentContainerStyle={styles.buttonContent}
-                            onPress={handleAddToCart}
+                            onPress={() => addToCart(dishId, selectedSize, selectedToppings, selectedDippings, quantity)}
                         />
                     </View>
                 </View>

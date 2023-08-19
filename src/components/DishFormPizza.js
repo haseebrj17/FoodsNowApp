@@ -8,43 +8,83 @@ import Separator from './Separator';
 
 const { width, height } = Dimensions.get('window');
 
-const DishFormPizza = ({ dish, extras, dips }) => {
+const DishFormPizza = ({ dish, extras, dips, onSizeChange, onToppingsChange, onDippingsChange }) => {
 
-    const [value, setValue] = useState("32cm");
+    const [value, setValue] = useState("Normal");
 
     const [valid, setValid] = useState(true);
 
+    const sortedPrices = [...dish].sort((a, b) => (a.Description === "Normal" ? -1 : 1));
+
+    ////////////////// Cart Management //////////////////
+
+    useEffect(() => {
+        onSizeChange(value);
+    }, [value]);
+
+    // useEffect(() => {
+    //     onDippingsChange(selectedDips);
+    // }, [selectedDips]);
+
+    // useEffect(() => {
+    //     onToppingsChange(selectedExtras);
+    // }, [selectedExtras]);
+
+    useEffect(() => {
+        console.log("Sending selectedDips to parent:", selectedDips);
+        onDippingsChange(selectedDips);
+    }, [selectedDips]);
+    
+    useEffect(() => {
+        console.log("Sending selectedExtras to parent:", selectedExtras);
+        onToppingsChange(selectedExtras);
+    }, [selectedExtras]);
+    
+
     ////////////////// Extra Management //////////////////
 
+    // const initialExtrasState = extras.reduce((acc, extra) => {
+    //     acc[extra.Name] = false; // Using extra.Name instead of extra.name
+    //     return acc;
+    // }, {});
     const initialExtrasState = extras.reduce((acc, extra) => {
-        acc[extra.name] = false;
+        // console.log("Initial Extras State - Extra:", extra);
+        acc[extra.Name] = false;
         return acc;
     }, {});
 
     const [selectedExtras, setSelectedExtras] = useState(initialExtrasState);
 
-    console.log(selectedExtras)
+    // const handleExtraToggle = (extraName) => {
+    //     console.log("Extra toggled:", extraName); // Add this
+    //     setSelectedExtras(prevState => ({
+    //         ...prevState,
+    //         [extraName]: !prevState[extraName]
+    //     }));
+    // };
 
     const handleExtraToggle = (extraName) => {
-        setSelectedExtras(prevState => ({
-            ...prevState,
-            [extraName]: !prevState[extraName]
-        }));
+        // console.log("Toggling Extra:", extraName);
+        setSelectedExtras(prevState => {
+            // console.log("Previous Extra State:", prevState);
+            return {
+                ...prevState,
+                [extraName]: !prevState[extraName]
+            };
+        });
     };
 
     const renderItemExtras = ({ item: extra }) => {
 
         const price = (extra) => {
             if (value === "") {
-                return extra.price32
-            } else {
-                if (value === "32cm") {
-                    return extra.price32
-                } else if (value === "48cm") {
-                    return extra.price48
-                }
+                return extra.Prices.find(p => p.Description === "Price32").Price;
+            } else if (value === "Normal") {
+                return extra.Prices.find(p => p.Description === "Price32").Price;
+            } else if (value === "Party") {
+                return extra.Prices.find(p => p.Description === "Price48").Price;
             }
-        }
+        };
 
         return (
             <View
@@ -90,34 +130,42 @@ const DishFormPizza = ({ dish, extras, dips }) => {
     ////////////////// Dip Management //////////////////
 
     const initialDipsState = dips.reduce((acc, dip) => {
-        acc[dip.name] = false;
+        // console.log("Initial Dips State - Dip:", dip);
+        acc[dip.Name] = false;
         return acc;
     }, {});
 
     const [selectedDips, setSelectedDips] = useState(initialDipsState);
 
-    console.log(selectedDips)
+    // const handleDipToggle = (dipName) => {
+    //     setSelectedDips(prevState => ({
+    //         ...prevState,
+    //         [dipName]: !prevState[dipName]
+    //     }));
+    // };
 
     const handleDipToggle = (dipName) => {
-        setSelectedDips(prevState => ({
-            ...prevState,
-            [dipName]: !prevState[dipName]
-        }));
+        // console.log("Toggling Dip:", dipName);
+        setSelectedDips(prevState => {
+            // console.log("Previous Dip State:", prevState);
+            return {
+                ...prevState,
+                [dipName]: !prevState[dipName]
+            };
+        });
     };
 
     const renderItemDips = ({ item: dip }) => {
 
         const price = (dip) => {
             if (value === "") {
-                return dip.price32
-            } else {
-                if (value === "32cm") {
-                    return dip.price32
-                } else if (value === "48cm") {
-                    return dip.price48
-                }
+                return dip.Prices.find(p => p.Description === "PriceSm").Price;
+            } else if (value === "Normal") {
+                return dip.Prices.find(p => p.Description === "PriceSm").Price;
+            } else if (value === "Party") {
+                return dip.Prices.find(p => p.Description === "PriceXl").Price;
             }
-        }
+        };
 
         return (
             <View
@@ -131,9 +179,9 @@ const DishFormPizza = ({ dish, extras, dips }) => {
                 }}
             >
                 <Checkbox
-                    value={dip.name}
-                    isChecked={selectedDips[dip.name]}
-                    onChange={() => handleDipToggle(dip.name)}
+                    value={dip.Name}
+                    isChecked={selectedDips[dip.Name]}
+                    onChange={() => handleDipToggle(dip.Name)}
                     size={'lg'}
                     style={{
                         borderRadius: "50%",
@@ -147,7 +195,7 @@ const DishFormPizza = ({ dish, extras, dips }) => {
                             marginTop: Display.setHeight(0.5),
                             marginLeft: 10,
                         }}
-                    >{dip.name}</Text>
+                    >{dip.Name}</Text>
                 </Checkbox>
                 <Text
                     style={{
@@ -270,74 +318,43 @@ const DishFormPizza = ({ dish, extras, dips }) => {
                                 alignItems: 'center',
                             }}
                         >
-                            <TouchableOpacity
-                                onPress={() => {
-                                    setValue("32cm")
-                                }}
-                                style={{
-                                    width: width * 0.90,
-                                    flexDirection: 'row',
-                                    alignItems: 'center',
-                                    justifyContent: 'space-between',
-                                    margin: Display.setHeight(1),
-                                }}
-                            >
-                                <View>
-                                    <Radio value="32cm" size="lg" accessibilityLabel='32 centimeters'
-                                        _checked={{ backgroundColor: '#324859', color: '#325964' }}
-                                    >
-                                        <Text
-                                            style={{
-                                                fontSize: 18,
-                                                fontWeight: '600',
-                                                marginTop: Display.setHeight(0.5),
-                                                marginLeft: 10,
-                                            }}
-                                        >Normal (32 cm)</Text>
-                                    </Radio>
-                                </View>
-                                <Text
-                                    style={{
-                                        fontSize: 18,
-                                        fontWeight: '600',
-                                        marginTop: Display.setHeight(0.5),
+                            {sortedPrices.map((item, index) => (
+                                <TouchableOpacity
+                                    key={index.toString()}
+                                    onPress={() => {
+                                        setValue(item.Description)
                                     }}
-                                >€{dish ? dish.price32 : ''}</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    setValue("48cm")
-                                }}
-                                style={{
-                                    width: width * 0.90,
-                                    flexDirection: 'row',
-                                    alignItems: 'center',
-                                    justifyContent: 'space-between',
-                                    margin: Display.setHeight(1),
-                                }}
-                            >
-                                <View>
-                                    <Radio value="48cm" size="lg" accessibilityLabel='48 centimeters'
-                                        _checked={{ backgroundColor: '#324859' }}
-                                    >
-                                        <Text
-                                            style={{
-                                                fontSize: 18,
-                                                fontWeight: '600',
-                                                marginTop: Display.setHeight(0.5),
-                                                marginLeft: 10,
-                                            }}
-                                        >Party (48 cm)</Text>
-                                    </Radio>
-                                </View>
-                                <Text
                                     style={{
-                                        fontSize: 18,
-                                        fontWeight: '600',
-                                        marginTop: Display.setHeight(0.5),
+                                        width: width * 0.90,
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                        justifyContent: 'space-between',
+                                        margin: Display.setHeight(1),
                                     }}
-                                >€{dish ? dish.price48 : ''}</Text>
-                            </TouchableOpacity>
+                                >
+                                    <View>
+                                        <Radio value={item.Description} size="lg" accessibilityLabel={`${item.Description}`}
+                                            _checked={{ backgroundColor: '#324859', color: '#325964' }}
+                                        >
+                                            <Text
+                                                style={{
+                                                    fontSize: 18,
+                                                    fontWeight: '600',
+                                                    marginTop: Display.setHeight(0.5),
+                                                    marginLeft: 10,
+                                                }}
+                                            >{item.Description}</Text>
+                                        </Radio>
+                                    </View>
+                                    <Text
+                                        style={{
+                                            fontSize: 18,
+                                            fontWeight: '600',
+                                            marginTop: Display.setHeight(0.5),
+                                        }}
+                                    >€{item.Price}</Text>
+                                </TouchableOpacity>
+                            ))}
                         </Radio.Group>
                         <Separator width={width} height={Display.setHeight(0.1)} marginTop={10} />
                         <View
@@ -427,7 +444,7 @@ const DishFormPizza = ({ dish, extras, dips }) => {
                             >
                                 <FlatList
                                     data={extras}
-                                    keyExtractor={(item) => (item._id)}
+                                    keyExtractor={(_, index) => index.toString()}
                                     renderItem={renderItemExtras}
                                 />
                             </View>
@@ -520,7 +537,7 @@ const DishFormPizza = ({ dish, extras, dips }) => {
                             >
                                 <FlatList
                                     data={dips}
-                                    keyExtractor={(item) => (item._id)}
+                                    keyExtractor={(_, index) => index.toString()}
                                     renderItem={renderItemDips}
                                 />
                             </View>
