@@ -38,12 +38,7 @@ const HomeScreen = () => {
     //     const resetDatabase = () => {
     //         return new Promise((resolve, reject) => {
     //             db.transaction((tx) => {
-    //                 tx.executeSql('DROP TABLE IF EXISTS brands');
     //                 tx.executeSql('DROP TABLE IF EXISTS cart');
-    //                 tx.executeSql('DROP TABLE IF EXISTS dishes');
-    //                 tx.executeSql('DROP TABLE IF EXISTS dishSizes');
-    //                 tx.executeSql('DROP TABLE IF EXISTS extraTroppings');
-    //                 tx.executeSql('DROP TABLE IF EXISTS extraDippings');
     //             }, reject, resolve);
     //         });
     //     };
@@ -185,15 +180,6 @@ const HomeScreen = () => {
                     pagination={true}
                 />
             </View>
-            <View style={{ width: "100%", height: "0.5%", backgroundColor: "#f1f1f1" }} />
-            <Button
-                title={customTitleDorm}
-                style={styles.ButtonDorm}
-                color="rgba(50, 89, 98, 0.2)"
-                disableElevation={true}
-                uppercase={false}
-                leading
-            />
             <View style={{ width: "100%", height: "0.5%", backgroundColor: "#f1f1f1", marginTop: "3%", marginBottom: 10 }}></View>
             <BrandCardsHome brand={brand} deliveryParams={deliveryParams} />
             <View style={{ width: "100%", height: "0.5%", backgroundColor: "#f1f1f1", marginTop: "3%", marginBottom: 5 }}></View>
@@ -265,42 +251,6 @@ const custonTitleGeneral = () => {
                 // marginTop: 2,
             }}
         >Explore Buy 1 Get 1 Offer</Text>
-    )
-}
-
-const customTitleDorm = () => {
-    return (
-        <View style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            alignContent: 'center',
-            width: "100%",
-            height: "100%",
-            top: "5%",
-        }}>
-            <Image source={require('../assets/icons/DormUniHome.png')} style={{ width: 50, height: 50, marginTop: "2%" }} />
-            <View style={{
-                flexDirection: "column",
-                position: "absolute",
-                top: "15%",
-                left: "18%",
-            }}
-            >
-                <Text style={{ fontWeight: 'bold', fontSize: 12, color: "#325962" }}>Essen ins Wohnheim liefern lassen</Text>
-                <Text style={{ fontSize: 9, color: "#325962", marginTop: 2, }}>Essen, das Sie lieben, direkt ans Bett geliefert</Text>
-            </View>
-            <SimpleLineIcons
-                name="arrow-right"
-                size={15}
-                color="#325962"
-                style={{
-                    position: "absolute",
-                    top: "37%",
-                    right: "1%",
-                }}
-            />
-        </View>
     )
 }
 

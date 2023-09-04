@@ -11,7 +11,7 @@ const size = 24;
 
 const accountData = [
     {
-        "name": "Personal Detials",
+        "name": "Personal Details",
         "navigator": "PersonalDetials",
         "iconname": <FontAwesome name="user" size={size} color={color} />
     },

@@ -144,7 +144,18 @@ const LocationScreen = ({ navigation }) => {
                     }
                 } else {
                     console.log('We have not reached here yet');
-                    setOutOfRange(true);
+                    // setOutOfRange(true);
+                    setTenKM({
+                        Franchise: closestFranchise.Title,
+                        FranchiseId: closestFranchise.Id,
+                        UserDistanceFromFranchise: minDistance,
+                        DeliveryParams: Client.distanceRange.tenKm,
+                        Country: locationUser.Country
+                    });
+                    console.log(tenKM)
+                    StorageService.setLocation(tenKM).then(
+                        navigation.navigate('Main')
+                    )
                 }
             } else {
                 console.log('No franchises available');

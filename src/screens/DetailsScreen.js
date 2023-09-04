@@ -40,6 +40,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchProducts } from '../actions/ProductActions';
 import { Display } from "../utils";
 import { Separator } from "../components";
+import Skeleton from "../components/Skeleton";
 import { GetImageAspectRatio } from "../utils/ImageAspect";
 
 const { width, height } = Dimensions.get('screen');
@@ -89,6 +90,7 @@ const DetailsScreen = ({ route }) => {
 
     useEffect(() => {
         if (products) {
+            console.log(loadingProducts)
             setDish(products.Products)
             setDips(products.ProductExtraDippings)
             setExtras(products.ProductExtraTroppings)
@@ -360,7 +362,7 @@ const DetailsScreen = ({ route }) => {
         return <Image source={{ uri: cover }} style={styles.bannerImage} />
     }
 
-    const colorObject = JSON.parse(route.params.brand?.Color?.replace(/'/g, "\"")); // Replace single quotes with double quotes for JSON parsing
+    const colorObject = JSON.parse(route.params.brand?.Color?.replace(/'/g, "\""));
     const color1 = colorObject.color1;
 
     const RenderLogoBox = (props) => {
@@ -386,262 +388,418 @@ const DetailsScreen = ({ route }) => {
         </View>
     }
 
-    return (
-        <BottomSheetModalProvider>
-            <NativeBaseProvider>
-                <BottomSheetModal
-                    ref={bottomSheetModalRef}
-                    snapPoints={snapPoints}
-                    backdropComponent={renderBackdrop}
-                    onAnimate={handleSheetChanges}
-                    index={0}
-                    enablePanDownToClose={true}
-                    onClose={() => setIsOpen(false)}
-                    backgroundStyle={{
-                        borderRadius: 30
-                    }}
-                    animateOnMount={true}
-                >
-                    <View style={{
-                        width: '100%',
-                        height: '100%',
-                        justifyContent: 'start',
-                        alignItems: 'center'
-                    }}>
+    const SkeletonRender = () => {
+        return (
+            <View
+            style={{
+                backgroundColor: '#fff'
+            }}
+        >
+            <Skeleton height={Display.setHeight(30)} width={Display.setWidth(100)} style={{ alignSelf: 'center', borderRadius: 6 }} />
+            <View
+                style={{
+                    width: '100%',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginTop: Display.setHeight(0.2)
+                }}
+            >
+                <View>
+                    <Skeleton height={Display.setHeight(8)} width={Display.setWidth(100)} style={{ borderRadius: 2 }} />
+                    <View
+                        style={{
+                            width: Display.setHeight(5),
+                            height: Display.setHeight(5),
+                            borderRadius: 2,
+                            position: 'absolute',
+                            left: '5%',
+                            top: '-70%',
+                        }}
+                    >
+                        <Skeleton height={Display.setHeight(9)} width={Display.setHeight(9)} style={{ borderRadius: 2 }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                        <Skeleton height={Display.setHeight(3)} width={Display.setHeight(30)} style={{ borderRadius: 5, marginTop: Display.setHeight(1) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                    </View>
+                </View>
+                <View>
+                    <Skeleton height={Display.setHeight(6)} width={Display.setWidth(100)} style={{ borderRadius: 2, marginTop: Display.setHeight(0.2) }} />
+                    <View
+                        style={{
+                            width: Display.setWidth(90),
+                            position: 'absolute',
+                            alignSelf: 'center',
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                            alignItems: 'center'
+                        }}
+                    >
+                        <Skeleton height={Display.setHeight(3)} width={Display.setHeight(10)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                        <Skeleton height={Display.setHeight(3)} width={Display.setHeight(10)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                    </View>
+                </View>
+                <View>
+                    <View
+                        style={{
+                            width: Display.setWidth(100),
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'space-evenly',
+                            margin: Display.setHeight(1)
+                        }}
+                    >
                         <View>
-                            <Text style={{
-                                fontSize: 22,
-                                fontWeight: 'bold',
-                                alignSelf: 'center',
-                                margin: 10,
-                                color: '#325962'
-                            }}>
-                                Sort and Filter
-                            </Text>
+                            <Skeleton height={Display.setHeight(35)} width={Display.setWidth(45)} style={{ borderRadius: 2, marginTop: Display.setHeight(0.2) }} />
+                            <View
+                                style={{
+                                    position: 'absolute',
+                                    bottom: '0%',
+                                    alignSelf: 'center',
+                                    justifyContent: 'flex-start',
+                                    alignItems: 'flex-start',
+                                    width: Display.setWidth(40),
+                                    marginBottom: Display.setHeight(1)
+                                }}
+                            >
+                                <Skeleton height={Display.setHeight(3)} width={Display.setWidth(34)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                                <Skeleton height={Display.setHeight(4)} width={Display.setWidth(40)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                                <Skeleton height={Display.setHeight(3)} width={Display.setWidth(8)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                                <Skeleton height={Display.setHeight(4)} width={Display.setWidth(40)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                            </View>
                         </View>
-                        <View style={{
-                            width: '90%',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            flexDirection: 'row',
-                            margin: 10
-                        }}>
-                            <Text style={{
-                                fontSize: 15,
-                                fontWeight: '500',
-                                color: '#325962'
-                            }}>
-                                Sort by name
-                            </Text>
-                            <Switch
-                                trackColor={{ false: '#767577', true: '#325962' }}
-                                thumbColor={isEnabled ? '#f4f3f4' : '#f4f3f4'}
-                                ios_backgroundColor="#3e3e3e"
-                                onValueChange={() => toggleSwitch("name")}
-                                value={sortByName}
-                            />
-                        </View>
-                        <View style={{
-                            width: '90%',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            flexDirection: 'row',
-                            margin: 10
-                        }}>
-                            <Text style={{
-                                fontSize: 15,
-                                fontWeight: '500',
-                                color: '#325962'
-                            }}>
-                                Low to High Price
-                            </Text>
-                            <Switch
-                                trackColor={{ false: '#767577', true: '#325962' }}
-                                thumbColor={isEnabled ? '#f4f3f4' : '#f4f3f4'}
-                                ios_backgroundColor="#3e3e3e"
-                                onValueChange={() => toggleSwitch("priceLowHigh")}
-                                value={sortByPriceLowHigh}
-                            />
-                        </View>
-                        <View style={{
-                            width: '90%',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            flexDirection: 'row',
-                            margin: 10
-                        }}>
-                            <Text style={{
-                                fontSize: 15,
-                                fontWeight: '500',
-                                color: '#325962'
-                            }}>
-                                High to Low Price
-                            </Text>
-                            <Switch
-                                trackColor={{ false: '#767577', true: '#325962' }}
-                                thumbColor={isEnabled ? '#f4f3f4' : '#f4f3f4'}
-                                ios_backgroundColor="#3e3e3e"
-                                onValueChange={() => toggleSwitch("priceHighLow")}
-                                value={sortByPriceHighLow}
-                            />
-                        </View>
-                        <View style={{
-                            width: '90%',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            flexDirection: 'row',
-                            margin: 10
-                        }}>
-                            <Text style={{
-                                fontSize: 15,
-                                fontWeight: '500',
-                                color: '#325962'
-                            }}>
-                                Low to High Spice
-                            </Text>
-                            <Switch
-                                trackColor={{ false: '#767577', true: '#325962' }}
-                                thumbColor={isEnabled ? '#f4f3f4' : '#f4f3f4'}
-                                ios_backgroundColor="#3e3e3e"
-                                onValueChange={() => toggleSwitch("spiceLowHigh")}
-                                value={sortBySpiceLowHigh}
-                            />
-                        </View>
-                        <View style={{
-                            width: '90%',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            flexDirection: 'row',
-                            margin: 10
-                        }}>
-                            <Text style={{
-                                fontSize: 15,
-                                fontWeight: '500',
-                                color: '#325962'
-                            }}>
-                                High to Low Spice
-                            </Text>
-                            <Switch
-                                trackColor={{ false: '#767577', true: '#325962' }}
-                                thumbColor={isEnabled ? '#f4f3f4' : '#f4f3f4'}
-                                ios_backgroundColor="#3e3e3e"
-                                onValueChange={() => toggleSwitch("spiceHighLow")}
-                                value={sortBySpiceHighLow}
-                            />
+                        <View>
+                            <Skeleton height={Display.setHeight(35)} width={Display.setWidth(45)} style={{ borderRadius: 2, marginTop: Display.setHeight(0.2) }} />
+                            <View
+                                style={{
+                                    position: 'absolute',
+                                    bottom: '0%',
+                                    alignSelf: 'center',
+                                    justifyContent: 'flex-start',
+                                    alignItems: 'flex-start',
+                                    width: Display.setWidth(40),
+                                    marginBottom: Display.setHeight(1)
+                                }}
+                            >
+                                <Skeleton height={Display.setHeight(3)} width={Display.setWidth(34)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                                <Skeleton height={Display.setHeight(4)} width={Display.setWidth(40)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                                <Skeleton height={Display.setHeight(3)} width={Display.setWidth(8)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                                <Skeleton height={Display.setHeight(4)} width={Display.setWidth(40)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                            </View>
                         </View>
                     </View>
-                </BottomSheetModal>
-                <TouchableOpacity
-                    onPress={() => {
-                        if (navigation.canGoBack()) {
-                            navigation.goBack();
-                        } else {
-                            navigation.navigate('Home');
-                        }
-                    }}
-                    style={{
-                        zIndex: 9999
-                    }}
-                >
-                    <AntDesign 
-                        name="leftcircle" 
-                        size={28} 
-                        color="#325964" 
+                    <View
                         style={{
-                            position: "absolute",
-                            margin: Display.setHeight(3.2),
-                            marginLeft: Display.setHeight(2),
+                            width: Display.setWidth(100),
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'space-evenly',
+                            margin: Display.setHeight(1)
                         }}
-                    />
-                </TouchableOpacity>
-                <View
-                    style={{
-                        backgroundColor: '#fff'
-                    }}
-                >
-                    <FlatList
-                        ListHeaderComponent={
-                            <>
-                                <View
-                                    style={{
-                                        width,
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                    }}
-                                >
-                                    <View style={{ height: width / 1.3 }}>
-                                        <RenderImage cover={route.params.brand.Cover} />
-                                        <RenderLogoBox logo={route.params.brand.Logo} />
-                                    </View>
-                                    <View
-                                        style={{
-                                            width,
-                                            alignItems: 'flex-start',
-                                            justifyContent: 'flex-start'
-                                        }}
-                                    >
-                                        <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#325962', marginLeft: Display.setHeight(2), marginBottom: Display.setHeight(1.5), marginTop: Display.setHeight(1.2), letterSpacing: 1, }}>{route.params.brand.Name.toUpperCase()}
-                                        </Text>
-                                        <Text style={{ lineHeight: 15, fontSize: 12, fontWeight: 'bold', color: '#325962', letterSpacing: 0.5, marginLeft: Display.setHeight(2), marginBottom: Display.setHeight(0.5) }}>{route.params.brand.Description ? route.params.brand.Description : null}
-                                        </Text>
-                                    </View>
-                                    <Separator height={Display.setHeight(1)} width={'100%'} />
-                                    <View
-                                        style={{
-                                            width: "100%",
-                                            height: Display.setHeight(4),
-                                            flexDirection: 'row',
-                                            justifyContent: 'space-between',
-                                            alignItems: 'center',
-                                            marginBottom: 5,
-                                        }}
-                                    >
-                                        <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', left: '4%' }}
-                                            onPress={handlePresentModal}
-                                        >
-                                            <Text style={{ marginRight: 3, color: '#325962', opacity: 0.6 }}>Sort/Filter</Text>
-                                            <Icon
-                                                name="sliders"
-                                                type="font-awesome"
-                                                color="#325962"
-                                                size={18}
-                                            />
-                                        </TouchableOpacity>
-                                        <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', right: '5%' }}
-                                            onPress={handleOpenModal}
-                                        >
-                                            <Text style={{ marginRight: 3, color: '#325962', opacity: 0.6 }}>Search</Text>
-                                            <Icon
-                                                name="search"
-                                                type="font-awesome"
-                                                color="#325962"
-                                                size={18}
-                                            />
-                                        </TouchableOpacity>
-                                    </View>
-                                    <Separator height={Display.setHeight(1)} width={'100%'} />
-                                </View>
-                            </>
-                        }
-                        data={formatData(sortedDishes, column)}
-                        contentContainerStyle={styles.container}
-                        renderItem={renderItem}
-                        numColumns={column}
-                        keyExtractor={(item) => item.Id}
-                        backgroundColor='#fff'
-                    />
+                    >
+                        <View>
+                            <Skeleton height={Display.setHeight(35)} width={Display.setWidth(45)} style={{ borderRadius: 2, marginTop: Display.setHeight(0.2) }} />
+                            <View
+                                style={{
+                                    position: 'absolute',
+                                    bottom: '0%',
+                                    alignSelf: 'center',
+                                    justifyContent: 'flex-start',
+                                    alignItems: 'flex-start',
+                                    width: Display.setWidth(40),
+                                    marginBottom: Display.setHeight(1)
+                                }}
+                            >
+                                <Skeleton height={Display.setHeight(3)} width={Display.setWidth(34)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                                <Skeleton height={Display.setHeight(4)} width={Display.setWidth(40)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                                <Skeleton height={Display.setHeight(3)} width={Display.setWidth(8)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                                <Skeleton height={Display.setHeight(4)} width={Display.setWidth(40)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                            </View>
+                        </View>
+                        <View>
+                            <Skeleton height={Display.setHeight(35)} width={Display.setWidth(45)} style={{ borderRadius: 2, marginTop: Display.setHeight(0.2) }} />
+                            <View
+                                style={{
+                                    position: 'absolute',
+                                    bottom: '0%',
+                                    alignSelf: 'center',
+                                    justifyContent: 'flex-start',
+                                    alignItems: 'flex-start',
+                                    width: Display.setWidth(40),
+                                    marginBottom: Display.setHeight(1)
+                                }}
+                            >
+                                <Skeleton height={Display.setHeight(3)} width={Display.setWidth(34)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                                <Skeleton height={Display.setHeight(4)} width={Display.setWidth(40)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                                <Skeleton height={Display.setHeight(3)} width={Display.setWidth(8)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                                <Skeleton height={Display.setHeight(4)} width={Display.setWidth(40)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                            </View>
+                        </View>
+                    </View>
                 </View>
-                {/* </ScrollView> */}
-                <AddToCart
-                    ref={modalRef}
-                    dish={selectedDish}
-                    extras={Extras(selectedDish)}
-                    dips={Dips(selectedDish)}
-                    deliveryParams={deliveryParams}
-                    brandId={route.params.brand.Id}
-                />
-            </NativeBaseProvider>
-        </BottomSheetModalProvider>
+            </View>
+        </View>
+        )
+    }
+
+    return (
+        <>
+            {loadingProducts ? (
+                <SkeletonRender />
+            ) : (
+                <BottomSheetModalProvider>
+                    <NativeBaseProvider>
+                        <BottomSheetModal
+                            ref={bottomSheetModalRef}
+                            snapPoints={snapPoints}
+                            backdropComponent={renderBackdrop}
+                            onAnimate={handleSheetChanges}
+                            index={0}
+                            enablePanDownToClose={true}
+                            onClose={() => setIsOpen(false)}
+                            backgroundStyle={{
+                                borderRadius: 30
+                            }}
+                            animateOnMount={true}
+                        >
+                            <View style={{
+                                width: '100%',
+                                height: '100%',
+                                justifyContent: 'start',
+                                alignItems: 'center'
+                            }}>
+                                <View>
+                                    <Text style={{
+                                        fontSize: 22,
+                                        fontWeight: 'bold',
+                                        alignSelf: 'center',
+                                        margin: 10,
+                                        color: '#325962'
+                                    }}>
+                                        Sort and Filter
+                                    </Text>
+                                </View>
+                                <View style={{
+                                    width: '90%',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    flexDirection: 'row',
+                                    margin: 10
+                                }}>
+                                    <Text style={{
+                                        fontSize: 15,
+                                        fontWeight: '500',
+                                        color: '#325962'
+                                    }}>
+                                        Low to High Price
+                                    </Text>
+                                    <Switch
+                                        trackColor={{ false: '#767577', true: '#325962' }}
+                                        thumbColor={isEnabled ? '#f4f3f4' : '#f4f3f4'}
+                                        ios_backgroundColor="#3e3e3e"
+                                        onValueChange={() => toggleSwitch("priceLowHigh")}
+                                        value={sortByPriceLowHigh}
+                                    />
+                                </View>
+                                <View style={{
+                                    width: '90%',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    flexDirection: 'row',
+                                    margin: 10
+                                }}>
+                                    <Text style={{
+                                        fontSize: 15,
+                                        fontWeight: '500',
+                                        color: '#325962'
+                                    }}>
+                                        High to Low Price
+                                    </Text>
+                                    <Switch
+                                        trackColor={{ false: '#767577', true: '#325962' }}
+                                        thumbColor={isEnabled ? '#f4f3f4' : '#f4f3f4'}
+                                        ios_backgroundColor="#3e3e3e"
+                                        onValueChange={() => toggleSwitch("priceHighLow")}
+                                        value={sortByPriceHighLow}
+                                    />
+                                </View>
+                                <View style={{
+                                    width: '90%',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    flexDirection: 'row',
+                                    margin: 10
+                                }}>
+                                    <Text style={{
+                                        fontSize: 15,
+                                        fontWeight: '500',
+                                        color: '#325962'
+                                    }}>
+                                        Low to High Spice
+                                    </Text>
+                                    <Switch
+                                        trackColor={{ false: '#767577', true: '#325962' }}
+                                        thumbColor={isEnabled ? '#f4f3f4' : '#f4f3f4'}
+                                        ios_backgroundColor="#3e3e3e"
+                                        onValueChange={() => toggleSwitch("spiceLowHigh")}
+                                        value={sortBySpiceLowHigh}
+                                    />
+                                </View>
+                                <View style={{
+                                    width: '90%',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    flexDirection: 'row',
+                                    margin: 10
+                                }}>
+                                    <Text style={{
+                                        fontSize: 15,
+                                        fontWeight: '500',
+                                        color: '#325962'
+                                    }}>
+                                        High to Low Spice
+                                    </Text>
+                                    <Switch
+                                        trackColor={{ false: '#767577', true: '#325962' }}
+                                        thumbColor={isEnabled ? '#f4f3f4' : '#f4f3f4'}
+                                        ios_backgroundColor="#3e3e3e"
+                                        onValueChange={() => toggleSwitch("spiceHighLow")}
+                                        value={sortBySpiceHighLow}
+                                    />
+                                </View>
+                                <View style={{
+                                    width: '90%',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    flexDirection: 'row',
+                                    margin: 10
+                                }}>
+                                    <Text style={{
+                                        fontSize: 15,
+                                        fontWeight: '500',
+                                        color: '#325962'
+                                    }}>
+                                        Sort by name
+                                    </Text>
+                                    <Switch
+                                        trackColor={{ false: '#767577', true: '#325962' }}
+                                        thumbColor={isEnabled ? '#f4f3f4' : '#f4f3f4'}
+                                        ios_backgroundColor="#3e3e3e"
+                                        onValueChange={() => toggleSwitch("name")}
+                                        value={sortByName}
+                                    />
+                                </View>
+                            </View>
+                        </BottomSheetModal>
+                        <TouchableOpacity
+                            onPress={() => {
+                                if (navigation.canGoBack()) {
+                                    navigation.goBack();
+                                } else {
+                                    navigation.navigate('Home');
+                                }
+                            }}
+                            style={{
+                                zIndex: 9999
+                            }}
+                        >
+                            <AntDesign
+                                name="leftcircle"
+                                size={28}
+                                color="#325964"
+                                style={{
+                                    position: "absolute",
+                                    margin: Display.setHeight(4),
+                                    marginLeft: Display.setHeight(2),
+                                }}
+                            />
+                        </TouchableOpacity>
+                        <View
+                            style={{
+                                backgroundColor: '#fff'
+                            }}
+                        >
+                            <FlatList
+                                ListHeaderComponent={
+                                    <>
+                                        <View
+                                            style={{
+                                                width,
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                            }}
+                                        >
+                                            <View style={{ height: width / 1.3 }}>
+                                                <RenderImage cover={route.params.brand.Cover} />
+                                                <RenderLogoBox logo={route.params.brand.Logo} />
+                                            </View>
+                                            <View
+                                                style={{
+                                                    width,
+                                                    alignItems: 'flex-start',
+                                                    justifyContent: 'flex-start'
+                                                }}
+                                            >
+                                                <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#325962', marginLeft: Display.setHeight(2), marginBottom: Display.setHeight(1.5), marginTop: Display.setHeight(1.2), letterSpacing: 1, }}>{route.params.brand.Name.toUpperCase()}
+                                                </Text>
+                                                <Text style={{ lineHeight: 15, fontSize: 12, fontWeight: 'bold', color: '#325962', letterSpacing: 0.5, marginLeft: Display.setHeight(2), marginBottom: Display.setHeight(0.5) }}>{route.params.brand.Description ? route.params.brand.Description : null}
+                                                </Text>
+                                            </View>
+                                            <Separator height={Display.setHeight(1)} width={'100%'} />
+                                            <View
+                                                style={{
+                                                    width: "100%",
+                                                    height: Display.setHeight(4),
+                                                    flexDirection: 'row',
+                                                    justifyContent: 'space-between',
+                                                    alignItems: 'center',
+                                                    marginBottom: 5,
+                                                }}
+                                            >
+                                                <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', left: '4%' }}
+                                                    onPress={handlePresentModal}
+                                                >
+                                                    <Text style={{ marginRight: 3, color: '#325962', opacity: 0.6 }}>Sort/Filter</Text>
+                                                    <Icon
+                                                        name="sliders"
+                                                        type="font-awesome"
+                                                        color="#325962"
+                                                        size={18}
+                                                    />
+                                                </TouchableOpacity>
+                                                <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', right: '5%' }}
+                                                    onPress={handleOpenModal}
+                                                >
+                                                    <Text style={{ marginRight: 3, color: '#325962', opacity: 0.6 }}>Search</Text>
+                                                    <Icon
+                                                        name="search"
+                                                        type="font-awesome"
+                                                        color="#325962"
+                                                        size={18}
+                                                    />
+                                                </TouchableOpacity>
+                                            </View>
+                                            <Separator height={Display.setHeight(1)} width={'100%'} />
+                                        </View>
+                                    </>
+                                }
+                                data={formatData(sortedDishes, column)}
+                                contentContainerStyle={styles.container}
+                                renderItem={renderItem}
+                                numColumns={column}
+                                keyExtractor={(item) => item.Id}
+                                backgroundColor='#fff'
+                            />
+                        </View>
+                        <AddToCart
+                            ref={modalRef}
+                            dish={selectedDish}
+                            extras={Extras(selectedDish)}
+                            dips={Dips(selectedDish)}
+                            deliveryParams={deliveryParams}
+                            brandId={route.params.brand.Id}
+                        />
+                    </NativeBaseProvider>
+                </BottomSheetModalProvider>
+            )}
+        </>
     )
 }
 
@@ -711,6 +869,7 @@ const styles = StyleSheet.create({
     },
     Text: {
         paddingRight: Display.setHeight(1),
+        lineHeight: 25,
         fontSize: 13,
         color: '#325962',
         fontWeight: "bold",

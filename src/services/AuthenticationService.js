@@ -7,19 +7,20 @@ const AuthRequest = axios.create({
 });
 
 const register = async user => {
-    if (!user?.username || !user?.email || !user?.password || !user?.phone) {
+    if (!user?.FullName || !user?.EmailAdress || !user?.ContactNumber || !user?.Password) {
         return { status: false, message: 'Please fill up all fields' };
     }
     try {
         let requestBody = {
-            username: user?.username,
-            email: user?.email,
-            password: user?.password,
-            phone: user?.phone,
+            Id: null,
+            FullName: user?.FullName,
+            EmailAdress: user?.EmailAdress,
+            ContactNumber: user?.ContactNumber,
+            Password: user?.Password
         };
         let registerResponse = await AuthRequest.post(
             ApiContants.BACKEND_API.REGISTER,
-            requestBody,
+            { requestBody },
         );
         return registerResponse?.data;
     } catch (error) {
@@ -34,12 +35,12 @@ const login = async user => {
     }
     try {
         let requestBody = {
-            username: user?.username,
+            emial: user?.username,
             password: user?.password,
         };
         let loginResponse = await AuthRequest.post(
             ApiContants.BACKEND_API.LOGIN,
-            requestBody,
+            { requestBody },
         );
         return loginResponse?.data;
     } catch (error) {

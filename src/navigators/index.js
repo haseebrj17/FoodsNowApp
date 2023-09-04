@@ -26,7 +26,8 @@ import {
     LocationAccessScreen,
     LocationDetailScreen,
     Auth,
-    CartScreen
+    CartScreen,
+    CheckoutScreen,
 } from "../screens";
 import BottomTabBar from "./BottomTabBar";
 
@@ -83,6 +84,17 @@ const Navigators = () => {
                             <Stack.Screen name="OrderReordering" component={OrderReoderingScreen} />
                             <Stack.Screen name="Settings" component={SettingsScreen} />
                             <Stack.Screen name="More" component={MoreScreen} />
+                        </Stack.Navigator>
+                    )}
+                </Stack.Screen>
+                <Stack.Screen name="CartNavigator">
+                    {() => (
+                        <Stack.Navigator
+                            screenOptions={{
+                                headerShown: false,
+                            }}
+                        >
+                            <Stack.Screen name="Checkout" component={CheckoutScreen} />
                         </Stack.Navigator>
                     )}
                 </Stack.Screen>

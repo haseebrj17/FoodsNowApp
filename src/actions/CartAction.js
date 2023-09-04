@@ -1,74 +1,185 @@
 import { db } from "../SqlLiteDB";
 
-const types = {
-    GET_CART_ITEMS: 'GET_CART_ITEMS',
-    SET_IS_LOADING: 'SET_IS_LOADING',
-};
+export const GET_CART_ITEMS = 'GET_CART_ITEMS';
+export const SET_IS_LOADING = 'SET_IS_LOADING';
+export const ADD_TO_CART_START = 'ADD_TO_CART_START';
+export const ADD_TO_CART_SUCCESS = 'ADD_TO_CART_SUCCESS';
+export const ADD_TO_CART_FAILURE = 'ADD_TO_CART_FAILURE';
 
-const addToCart = (dishId, selectedSize, selectedToppings, selectedDippings, quantity) => (dispatch) => {
-    return new Promise((resolve, reject) => { // Wrap the code inside a Promise
-        // Construct the product object
+export const addToCartStart = () => ({
+    type: ADD_TO_CART_START,
+});
+
+export const addToCartSuccess = (cartItem) => ({
+    type: ADD_TO_CART_SUCCESS,
+    payload: cartItem,
+});
+
+export const addToCartFailure = (error) => ({
+    type: ADD_TO_CART_FAILURE,
+    payload: error,
+});
+
+export const addToCart = ({ dishId, selectedSize, selectedExtras, selectedDips, quantity }) => (dispatch) => {
+    dispatch(addToCartStart());
+    return new Promise((resolve, reject) => {
         const product = {
             dishId: dishId,
             selectedSize: selectedSize,
-            selectedToppings: selectedToppings,
-            selectedDippings: selectedDippings
+            selectedToppings: selectedExtras,
+            selectedDippings: selectedDips,
         };
 
-        // Serialize the product object
         const serializedProduct = JSON.stringify(product);
 
+        console.log("Serialized Product:", serializedProduct);
+        console.log("Quantity:", quantity);
+
+        // Ensure that serializedProduct goes to product_id column and quantity goes to quantity column
         db.transaction(
             (tx) => {
                 tx.executeSql(
                     'INSERT INTO cart (product_id, quantity) VALUES (?, ?);',
-                    [serializedProduct, quantity],
-                    null,
+                    [serializedProduct, quantity], // Make sure the order is correct
+                    (_, resultSet) => {
+                        const cartItem = {
+                            product: {
+                                dishId: dishId,
+                                selectedSize: selectedSize,
+                                selectedExtras: selectedExtras,
+                                selectedDips: selectedDips,
+                            },
+                            quantity: quantity,
+                        };
+                        dispatch(addToCartSuccess(cartItem));
+                        resolve('OK');
+                    },
                     (_, error) => {
                         console.log("Database error:", error);
-                        reject(error); // Reject the promise if there's an error
+                        dispatch(addToCartFailure(error));
+                        reject(error);
+                        return true;
                     }
                 );
             },
-            null,
+            (error) => {
+                console.log("Transaction error:", error);
+                reject(error);
+            },
             () => {
-                dispatch(getCartItems());
-                resolve('OK'); // Resolve the promise with 'OK' if successful
+                resolve('OK');
             }
         );
     });
 };
 
-const removeFromCart = (cartItemId) => (dispatch) => {
+export const removeFromCart = (cartItemId) => (dispatch) => {
     db.transaction(
         (tx) => {
-            tx.executeSql('DELETE FROM cart WHERE id = ?;', [cartItemId]);
+            tx.executeSql(
+                'DELETE FROM cart WHERE id = ?;',
+                [cartItemId],
+                null,
+                (_, error) => {
+                    // Handle error here, if needed
+                    console.log("Database error while removing cart item:", error);
+                    return true; // Stop the transaction if an error occurs
+                }
+            );
         },
-        null,
-        () => dispatch(getCartItems())
+        (error) => {
+            // Handle transaction error here, if needed
+            console.log("Transaction error while removing cart item:", error);
+        },
+        () => {
+            // Refresh the cart items after successful removal
+            dispatch(getCartItems());
+        }
     );
 };
 
-const getCartItems = () => (dispatch) => {
-    db.transaction((tx) => {
-        tx.executeSql('SELECT * FROM cart;', [], (_, { rows }) => {
-            const cartItems = rows._array.map(item => {
-                // Parse the product_id field
-                const product = JSON.parse(item.product_id);
-
-                // Return a new object with the desired format
-                return {
-                    id: item.id,
-                    dishId: product.dishId,
-                    selectedSize: product.selectedSize,
-                    selectedToppings: product.selectedToppings,
-                    selectedDippings: product.selectedDippings,
-                    quantity: item.quantity
-                };
-            });
-            dispatch({ type: types.GET_CART_ITEMS, payload: cartItems });
-        });
-    });
+export const getCartItems = () => (dispatch) => {
+    db.transaction(
+        (tx) => {
+            tx.executeSql(
+                'SELECT * FROM cart;',
+                [],
+                (_, { rows }) => {
+                    const cartItems = rows._array.map(item => {
+                        return {
+                            id: item.id,
+                            product_id: item.product_id, // directly use product_id without parsing
+                            quantity: item.quantity
+                        };
+                    });
+                    dispatch({ type: GET_CART_ITEMS, payload: cartItems });
+                },
+                (_, error) => {
+                    // Handle error here, if needed
+                    console.log("Database error while getting cart items:", error);
+                    return true; // Stop the transaction if an error occurs
+                }
+            );
+        },
+        (error) => {
+            // Handle transaction error here, if needed
+            console.log("Transaction error while getting cart items:", error);
+        }
+    );
 };
 
-export default { types, addToCart, removeFromCart, getCartItems };
+export const incrementQuantity = (cartItemId) => (dispatch) => {
+    db.transaction(
+        (tx) => {
+            tx.executeSql(
+                'UPDATE cart SET quantity = quantity + 1 WHERE id = ?;',
+                [cartItemId],
+                (_, resultSet) => {
+                    dispatch(getCartItems());  // Refresh the cart items after successful increment
+                },
+                (_, error) => {
+                    console.log("Database error while incrementing quantity:", error);
+                    return true;
+                }
+            );
+        },
+        (error) => {
+            console.log("Transaction error while incrementing quantity:", error);
+        }
+    );
+};
+
+export const decrementQuantity = (cartItemId) => (dispatch) => {
+    db.transaction(
+        (tx) => {
+            tx.executeSql(
+                'SELECT quantity FROM cart WHERE id = ?;',
+                [cartItemId],
+                (_, { rows }) => {
+                    if (rows._array[0].quantity === 1) {
+                        dispatch(removeFromCart(cartItemId));  // If quantity is 1, remove item from cart
+                    } else {
+                        tx.executeSql(
+                            'UPDATE cart SET quantity = quantity - 1 WHERE id = ?;',
+                            [cartItemId],
+                            (_, resultSet) => {
+                                dispatch(getCartItems());  // Refresh the cart items after successful decrement
+                            },
+                            (_, error) => {
+                                console.log("Database error while decrementing quantity:", error);
+                                return true;
+                            }
+                        );
+                    }
+                },
+                (_, error) => {
+                    console.log("Database error while checking item quantity:", error);
+                    return true;
+                }
+            );
+        },
+        (error) => {
+            console.log("Transaction error while decrementing quantity:", error);
+        }
+    );
+};

@@ -52,7 +52,7 @@ const VerificationScreen = ({ navigation, oAuthSignUp, inputs }) => {
         }
     };
 
-    const [phoneInputs, setPhoneInputs] = React.useState({
+    const [phoneInputs, setPhoneInputs] = useState({
         phone: ''
     });
     const [errors, setErrors] = React.useState({});

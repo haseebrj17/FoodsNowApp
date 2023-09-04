@@ -1,11 +1,627 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View, Image, ScrollView, Dimensions, FlatList, SectionList } from 'react-native'
 import React from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { useEffect, useState } from 'react'
+import { Display } from '../utils'
+import { StatusBar } from 'native-base'
+import { RestaurantService } from '../services'
+import Skeleton from '../components/Skeleton'
+import { CountryCode } from '../assets/constants'
+import { StorageService } from '../services'
+import { FontAwesome, MaterialCommunityIcons, AntDesign, Entypo } from '@expo/vector-icons';
+import { getCartItems, incrementQuantity, decrementQuantity } from '../actions/CartAction'
+import { Separator } from '../components'
+import Button from '../components/Button'
+import empty from '../assets/icons/emptycart.png'
 
-const CartScreen = () => {
+const { width, height } = Dimensions.get('window');
+
+const CartScreen = ({ navigation }) => {
+
+    const dispatch = useDispatch()
+
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        dispatch(getCartItems());
+    }, [dispatch]);
+
+    const cartItems = useSelector(state => state.cartState.cart);
+
+    const [grandTotal, setGrandTotal] = useState(null);
+
+    const [itemTotal, setItemTotal] = useState(null);
+
+    const [cartData, setCartDate] = useState(null);
+
+    const [vatRate, setVatRate] = useState(null);
+
+    const [vatApplied, setVatApplied] = useState(null);
+
+    const [locationData, setLocationData] = useState(null)
+
+    useEffect(() => {
+        console.log(locationData)
+    }, [locationData])
+
+    useEffect(() => {
+        if (vatRate && grandTotal) {
+            const itemTotal = grandTotal / vatRate;
+            setItemTotal(itemTotal.toFixed(2));
+            const vatCalc = grandTotal - itemTotal;
+            setVatApplied(vatCalc.toFixed(2));
+            setLoading(false);
+        }
+    }, [vatRate, grandTotal])
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const location = await StorageService.getLocation();
+                if (location && location.Country) {
+                    setLocationData(location);
+                    const rate = await fetchVATRateForCountry(location.Country);
+                    if (rate !== null) {
+                        setVatRate((rate / 100) + 1);
+                    }
+                }
+
+                await calculateTotalPrice(cartItems).then(response => {
+                    setGrandTotal(response.grandTotal)
+                    setCartDate(response.productDetailsArray)
+                });
+
+            } catch (error) {
+                console.error("Error while fetching data:", error);
+                setLoading(false);  // You might want to set loading to false even in case of error, so the user isn't left with an indefinite loading state
+            }
+        };
+
+        fetchData();
+    }, [cartItems]);
+
+    const fetchVATRateForCountry = async (countryCode) => {
+        try {
+            const response = await fetch('https://euvatrates.com/rates.json');
+            const data = await response.json();
+            if (data && data.rates) {
+                // Finding the correct country code based on country name
+                const vatCountryCode = Object.keys(data.rates).find(code => data.rates[code].country === countryCode);
+                if (vatCountryCode) {
+                    return data.rates[vatCountryCode].reduced_rate;
+                } else {
+                    throw new Error('Country code not found or data structure changed');
+                }
+            }
+        } catch (error) {
+            console.error("Failed to fetch VAT rate:", error);
+            return null;
+        }
+    }
+
+    const calculateTotalPrice = async (cartItems) => {
+        let grandTotal = 0;
+        const productDetailsArray = [];
+
+        // Iterate over cartItems to fetch product details
+        const productPromises = cartItems?.map(async item => {
+            try {
+                const parsedProductId = JSON.parse(item.product_id);
+                if (parsedProductId && parsedProductId.dishId) {
+                    const productDetails = await RestaurantService.getProductById(parsedProductId.dishId);
+                    return productDetails;
+                }
+                return null;
+            } catch (error) {
+                console.error("Error in productPromises map:", error);
+                return null;
+            }
+        });
+
+        const allProductDetails = await Promise.all(productPromises);
+
+        allProductDetails.forEach((productDetails, index) => {
+            if (!productDetails) return;
+
+            const cartItem = cartItems[index];
+            const productId = JSON.parse(cartItem.product_id);
+            const quantity = JSON.parse(cartItem.quantity)
+
+            let itemTotal = 0;
+
+            const basePrice = productDetails.data.Product.Prices.find(price => price.Description === productId.selectedSize)?.Price || 0;
+            itemTotal += basePrice;
+
+            const isEmpty = (obj) => {
+                return Object.keys(obj).length === 0;
+            }
+
+            if (productDetails.data.ProductExtraTroppings && !isEmpty(productId.selectedToppings)) {
+                productDetails.data.ProductExtraTroppings.forEach(extra => {
+                    const selectedExtra = productId.selectedToppings[extra.Name];
+                    if (selectedExtra && selectedExtra.selected) {
+                        const extraPrice = extra.Prices.find(price => price.Description === selectedExtra.priceDescription)?.Price || 0;
+                        console.log("Extra Price for", extra.Name, ":", extraPrice);
+                        itemTotal += extraPrice;
+                    }
+                });
+            }
+
+            if (productDetails.data.ProductExtraDippings && !isEmpty(productId.selectedDippings)) {
+                productDetails.data.ProductExtraDippings.forEach(dip => {
+                    const selectedDip = productId.selectedDippings[dip.Name];
+                    if (selectedDip && selectedDip.selected) {
+                        const dipPrice = dip.Prices.find(price => price.Description === selectedDip.priceDescription)?.Price || 0;
+                        console.log("Dip Price for", dip.Name, ":", dipPrice);
+                        itemTotal += dipPrice;
+                    }
+                });
+            }
+
+            itemTotal *= quantity;
+
+            grandTotal += itemTotal;
+
+            const selectedDips = productDetails.data.ProductExtraDippings && !isEmpty(productId.selectedDippings)
+                ? productDetails.data.ProductExtraDippings.filter(dip => productId.selectedDippings[dip.Name])
+                : [];
+
+            const selectedToppings = productDetails.data.ProductExtraTroppings && !isEmpty(productId.selectedToppings)
+                ? productDetails.data.ProductExtraTroppings.filter(topping => productId.selectedToppings[topping.Name])
+                : [];
+
+            productDetailsArray.push({
+                id: cartItem.id,
+                Product: productDetails.data.Product,
+                ProductExtraDippings: selectedDips,
+                ProductExtraTroppings: selectedToppings,
+                itemTotal,
+                quantity: quantity
+            });
+        });
+
+        return {
+            grandTotal,
+            productDetailsArray
+        };
+    }
+
+    const RenderItem = ({ item }) => {
+        return (
+            <View
+                style={{
+                    width: width * 0.9,
+                    height: Display.setHeight(12),
+                    backgroundColor: '#f1f1f1',
+                    borderRadius: 15,
+                    marginTop: Display.setHeight(0.8),
+                    alignSelf: 'center',
+                    flexDirection: 'row',
+                }}
+            >
+                <View
+                    style={{
+                        flex: 2,
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                    }}
+                >
+                    <Image source={{ uri: item.Product.Image }}
+                        style={{
+                            width: '80%',
+                            height: '65%',
+                            resizeMode: 'cover',
+                            borderRadius: 12,
+                        }}
+                    />
+                </View>
+                <View
+                    style={{
+                        flex: 4,
+                    }}
+                >
+                    <Text
+                        style={{
+                            fontSize: 15,
+                            fontWeight: '700',
+                            color: '#325964',
+                            marginTop: Display.setHeight(2)
+                        }}
+                    >{item.Product.Name}</Text>
+                    <View
+                        style={{
+                            width: '95%',
+                            height: Display.setHeight(4),
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            marginTop: Display.setHeight(1.5),
+                            position: 'absolute',
+                            bottom: '15%'
+                        }}
+                    >
+                        <View
+                            style={{
+                                alignItems: 'center',
+                                paddingVertical: Display.setHeight(1),
+                                paddingHorizontal: Display.setHeight(1),
+                            }}
+                        >
+                            <Text
+                                style={{
+                                    fontSize: 16,
+                                    fontWeight: '600',
+                                    color: '#325964',
+                                }}
+                            >€ {item.itemTotal}</Text>
+                        </View>
+                        <View style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            backgroundColor: "#d9d9d9",
+                            paddingVertical: Display.setHeight(1),
+                            paddingHorizontal: Display.setHeight(1),
+                            borderRadius: 8,
+                        }}>
+                            <AntDesign
+                                name="minus"
+                                color='#FFAF51'
+                                size={18}
+                                style={{
+                                    marginRight: Display.setHeight(1)
+                                }}
+                                onPress={() => dispatch(decrementQuantity(item.id))}
+                            />
+                            <Text style={{
+                                color: '#325962',
+                                fontSize: 18,
+                                lineHeight: Display.setHeight(2),
+                                marginHorizontal: 8,
+                            }}>{item.quantity}</Text>
+                            <AntDesign
+                                name="plus"
+                                color='#FFAF51'
+                                size={18}
+                                style={{
+                                    marginLeft: Display.setHeight(1)
+                                }}
+                                onPress={() => dispatch(incrementQuantity(item.id))}
+                            />
+                        </View>
+                    </View>
+                </View>
+            </View>
+        )
+    }
+
     return (
-        <View>
-            <Text>CartScreen</Text>
-        </View>
+        <>
+            {
+                cartItems.length === 0 ? (
+                    <View>
+                        <View
+                            style={{
+                                width,
+                                height: Display.setHeight(12),
+                                backgroundColor: '#F4E4CD',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                flexDirection: 'row',
+                            }}
+                        >
+                            <Text
+                                style={{
+                                    fontSize: 20,
+                                    fontWeight: 'bold',
+                                    marginTop: 35,
+                                    color: "#325962",
+                                }}
+                            >My Cart</Text>
+                        </View>
+                        <View
+                            style={{
+                                width,
+                                height: height - Display.setHeight(35),
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                flexDirection: 'column',
+                            }}
+                        >
+                            <Image source={empty}
+                                style={{
+                                    width: width * 0.5,
+                                    height: width * 0.5
+                                }}
+                            />
+                            <Text
+                                style={{
+                                    fontSize: Display.setHeight(2.4),
+                                    fontWeight: 'bold',
+                                    color: '#325964',
+                                }}
+                            >Your cart is empty</Text>
+                            <View
+                                style={{
+                                    width: width * 0.8,
+                                    alignSelf: 'center',
+                                    marginTop: Display.setHeight(4)
+                                }}
+                            >
+                                <Button
+                                    title='Add Something'
+                                    onPress={() => navigation.navigate('Home')}
+                                />
+                            </View>
+                        </View>
+                    </View>
+                ) : (
+                    <>
+                        {
+                            loading ?
+                                (
+                                    <View>
+                                        <View
+                                            style={{
+                                                width,
+                                                height: Display.setHeight(12),
+                                                backgroundColor: '#F4E4CD',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                flexDirection: 'row'
+                                            }}
+                                        >
+                                            <Text
+                                                style={{
+                                                    fontSize: 20,
+                                                    fontWeight: 'bold',
+                                                    marginTop: 35,
+                                                    color: "#325962",
+                                                }}
+                                            >My Cart</Text>
+                                        </View>
+                                        <View>
+                                            <Skeleton height={Display.setHeight(15)} width={Display.setWidth(90)} style={{ borderRadius: 12, alignSelf: 'center', marginTop: Display.setHeight(1.5) }} />
+                                            <View
+                                                style={{
+                                                    width: Display.setHeight(5),
+                                                    height: Display.setHeight(5),
+                                                    borderRadius: 2,
+                                                    flexDirection: 'row',
+                                                    position: 'absolute',
+                                                    left: '10%',
+                                                    top: '15%',
+                                                }}
+                                            >
+                                                <Skeleton height={Display.setHeight(10)} width={Display.setHeight(10)} style={{ borderRadius: 2, marginTop: Display.setHeight(1) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                                                <View
+                                                    style={{
+                                                        padding: 10
+                                                    }}
+                                                >
+                                                    <Skeleton height={Display.setHeight(3)} width={Display.setHeight(18)} style={{ borderRadius: 5, marginTop: Display.setHeight(0.5) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                                                    <Skeleton height={Display.setHeight(2)} width={Display.setHeight(27)} style={{ borderRadius: 5, marginTop: Display.setHeight(0.5) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                                                    <View
+                                                        style={{
+                                                            flexDirection: 'row',
+                                                            padding: 10,
+                                                            alignItems: 'center',
+                                                            justifyContent: 'space-between',
+                                                        }}
+                                                    >
+                                                        <Skeleton height={Display.setHeight(3)} width={Display.setHeight(7)} style={{ borderRadius: 5, marginTop: Display.setHeight(0.5) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                                                        <Skeleton height={Display.setHeight(3)} width={Display.setHeight(10)} style={{ borderRadius: 5, marginTop: Display.setHeight(0.5) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                                                    </View>
+                                                </View>
+                                            </View>
+                                        </View>
+                                        <View>
+                                            <Skeleton height={Display.setHeight(15)} width={Display.setWidth(90)} style={{ borderRadius: 12, alignSelf: 'center', marginTop: Display.setHeight(1.5) }} />
+                                            <View
+                                                style={{
+                                                    width: Display.setHeight(5),
+                                                    height: Display.setHeight(5),
+                                                    borderRadius: 2,
+                                                    flexDirection: 'row',
+                                                    position: 'absolute',
+                                                    left: '10%',
+                                                    top: '15%',
+                                                }}
+                                            >
+                                                <Skeleton height={Display.setHeight(10)} width={Display.setHeight(10)} style={{ borderRadius: 2, marginTop: Display.setHeight(1) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                                                <View
+                                                    style={{
+                                                        padding: 10
+                                                    }}
+                                                >
+                                                    <Skeleton height={Display.setHeight(3)} width={Display.setHeight(18)} style={{ borderRadius: 5, marginTop: Display.setHeight(0.5) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                                                    <Skeleton height={Display.setHeight(2)} width={Display.setHeight(27)} style={{ borderRadius: 5, marginTop: Display.setHeight(0.5) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                                                    <View
+                                                        style={{
+                                                            flexDirection: 'row',
+                                                            padding: 10,
+                                                            alignItems: 'center',
+                                                            justifyContent: 'space-between',
+                                                        }}
+                                                    >
+                                                        <Skeleton height={Display.setHeight(3)} width={Display.setHeight(7)} style={{ borderRadius: 5, marginTop: Display.setHeight(0.5) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                                                        <Skeleton height={Display.setHeight(3)} width={Display.setHeight(10)} style={{ borderRadius: 5, marginTop: Display.setHeight(0.5) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                                                    </View>
+                                                </View>
+                                            </View>
+                                        </View>
+                                    </View>
+                                ) : (
+                                    <>
+                                        <SectionList
+                                            sections={[{ title: 'My Cart', data: cartData }]}
+                                            keyExtractor={(item) => item.id}
+                                            renderItem={({ item }) => <RenderItem item={item} />}
+                                            ListHeaderComponent={
+                                                <View
+                                                    style={{
+                                                        width,
+                                                        height: Display.setHeight(12),
+                                                        backgroundColor: '#F4E4CD',
+                                                        alignItems: 'center',
+                                                        justifyContent: 'center',
+                                                        flexDirection: 'row',
+                                                    }}
+                                                >
+                                                    <Text
+                                                        style={{
+                                                            fontSize: 20,
+                                                            fontWeight: 'bold',
+                                                            marginTop: 35,
+                                                            color: "#325962",
+                                                        }}
+                                                    >My Cart</Text>
+                                                </View>
+                                            }
+                                            ListFooterComponent={
+                                                <View>
+                                                    <Separator width={'100%'} height={Display.setHeight(0.1)} />
+                                                    <View>
+                                                        <View
+                                                            style={{
+                                                                width,
+                                                                alignItems: 'center',
+                                                                justifyContent: 'center',
+                                                                alignSelf: 'center',
+                                                                marginTop: Display.setHeight(2),
+                                                                marginBottom: Display.setHeight(2)
+                                                            }}
+                                                        >
+                                                            <View
+                                                                style={{
+                                                                    width: width * 0.9,
+                                                                    alignItems: 'center',
+                                                                    justifyContent: 'space-between',
+                                                                    flexDirection: 'row',
+                                                                    margin: Display.setHeight(0.5)
+                                                                }}
+                                                            >
+                                                                <Text
+                                                                    style={{
+                                                                        fontSize: 16,
+                                                                        fontWeight: '600',
+                                                                        color: '#325964'
+                                                                    }}
+                                                                >Items Total</Text>
+                                                                <Text
+                                                                    style={{
+                                                                        fontSize: 16,
+                                                                        fontWeight: '600',
+                                                                        color: '#325964'
+                                                                    }}
+                                                                >€ {itemTotal}</Text>
+                                                            </View>
+                                                            <View
+                                                                style={{
+                                                                    width: width * 0.9,
+                                                                    alignItems: 'center',
+                                                                    justifyContent: 'space-between',
+                                                                    flexDirection: 'row',
+                                                                    margin: Display.setHeight(0.5)
+                                                                }}
+                                                            >
+                                                                <Text
+                                                                    style={{
+                                                                        fontSize: 16,
+                                                                        fontWeight: '600',
+                                                                        color: '#325964',
+                                                                    }}
+                                                                >VAT Applied {((vatRate - 1) * 100).toFixed(1)} %</Text>
+                                                                <Text
+                                                                    style={{
+                                                                        fontSize: 16,
+                                                                        fontWeight: '600',
+                                                                        color: '#325964',
+                                                                    }}
+                                                                >€ {vatApplied}</Text>
+                                                            </View>
+                                                            <View
+                                                                style={{
+                                                                    width: width * 0.9,
+                                                                    alignItems: 'center',
+                                                                    justifyContent: 'space-between',
+                                                                    flexDirection: 'row',
+                                                                    margin: Display.setHeight(0.5)
+                                                                }}
+                                                            >
+                                                                <Text
+                                                                    style={{
+                                                                        fontSize: 16,
+                                                                        fontWeight: '600',
+                                                                        color: '#325964',
+                                                                    }}
+                                                                >Delivery Charges</Text>
+                                                                <Text
+                                                                    style={{
+                                                                        fontSize: 16,
+                                                                        fontWeight: '600',
+                                                                        color: '#325964',
+                                                                    }}
+                                                                >{locationData.DeliveryParams.deliverCharges === 0 ? 'Free' : `€ ${locationData.DeliveryParams.deliverCharges}`}</Text>
+                                                            </View>
+                                                        </View>
+                                                        <Separator width={'100%'} height={Display.setHeight(0.1)} />
+                                                        <View
+                                                            style={{
+                                                                width,
+                                                                alignItems: 'center',
+                                                                justifyContent: 'center',
+                                                                alignSelf: 'center',
+                                                                marginTop: Display.setHeight(2),
+                                                                marginBottom: Display.setHeight(2)
+                                                            }}
+                                                        >
+                                                            <View
+                                                                style={{
+                                                                    width: width * 0.9,
+                                                                    alignItems: 'center',
+                                                                    justifyContent: 'space-between',
+                                                                    flexDirection: 'row',
+                                                                    margin: Display.setHeight(0.5)
+                                                                }}
+                                                            >
+                                                                <Text
+                                                                    style={{
+                                                                        fontSize: 20,
+                                                                        fontWeight: 'bold',
+                                                                        color: '#325964'
+                                                                    }}
+                                                                >Grand Total</Text>
+                                                                <Text
+                                                                    style={{
+                                                                        fontSize: 20,
+                                                                        fontWeight: 'bold',
+                                                                        color: '#325964'
+                                                                    }}
+                                                                >€ {grandTotal}</Text>
+                                                            </View>
+                                                        </View>
+                                                        <Separator width={'100%'} height={Display.setHeight(0.1)} />
+                                                        <View
+                                                            style={{
+                                                                width: width * 0.8,
+                                                                alignSelf: 'center',
+                                                            }}
+                                                        >
+                                                            <Button
+                                                                title='Proceed To Checkout'
+                                                                onPress={() => navigation.navigate('CartNavigator', { screen: 'Checkout' })}
+                                                            />
+                                                        </View>
+                                                    </View>
+                                                </View>
+                                            }
+                                        />
+                                    </>
+                                )
+                        }
+                    </>
+                )}
+        </>
     )
 }
 

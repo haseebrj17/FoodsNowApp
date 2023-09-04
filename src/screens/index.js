@@ -20,6 +20,7 @@ import SettingsScreen from "./SettingsScreen";
 import MoreScreen from "./MoreScreen";
 import LocationAccessScreen from "./LocationAccessScreen";
 import LocationDetailScreen from "./LocationDetailScreen";
+import CheckoutScreen from "./CheckoutScreen";
 
 export {
     DataTrackingScreen,
@@ -44,4 +45,5 @@ export {
     MoreScreen,
     LocationAccessScreen,
     LocationDetailScreen,
+    CheckoutScreen,
 }

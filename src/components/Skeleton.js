@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
 import { Display } from '../utils'
 
-const Skeleton = ({ width, height, style }) => {
+const Skeleton = ({ width, height, style, backgroundColor }) => {
     const translateX = useRef(new Animated.Value(-width)).current;
 
     useEffect(() => {
@@ -21,7 +21,7 @@ const Skeleton = ({ width, height, style }) => {
         <View
             style={
                 StyleSheet.flatten([
-                    { width: width, height: height, backgroundColor: "rgba(0, 0, 0, 0.12)", overflow: 'hidden' },
+                    { width: width, height: height, backgroundColor: backgroundColor ? backgroundColor : "rgba(0, 0, 0, 0.12)", overflow: 'hidden' },
                     style
                 ])
             }

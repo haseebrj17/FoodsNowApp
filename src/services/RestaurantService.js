@@ -115,38 +115,44 @@ const getProducts = async ({ categoryId }) => {
     }
 };
 
-// const getDashboardById = async brandIdId => {
-//     console.log(`DashboardService | getDashboardById`);
-//     try {
-//         let dashboardResponse = await axios.get(
-//             `${ApiContants.BACKEND_API.BASE_API_URL}${ApiContants.BACKEND_API.DASHBORAD}/${brandId}`,
-//             {
-//                 headers: authHeader(getToken()),
-//             },
-//         );
-//         if (dashboardResponse?.status === 200) {
-//             return {
-//                 status: true,
-//                 message: `Brand data fetched`,
-//                 data: dashboardResponse?.data?.data,
-//             };
-//         } else {
-//             return {
-//                 status: false,
-//                 message: `Brand data not found`,
-//             };
-//         }
-//     } catch (error) {
-//         return {
-//             status: false,
-//             message: `Brand data not found`,
-//         };
-//     }
-// };
+const getProductById = async dishId => {
+    console.log(`DashboardService | getProductById`);
+    console.log(dishId)
+    try {
+        const requestBody = {
+            Id: dishId
+        };
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+        let singleProductResponse = await axios.post(
+            `${ApiContants.BACKEND_API.BASE_API_URL}${ApiContants.BACKEND_API.PRODUCT}`,
+            requestBody,
+            { headers }
+        );
+        if (singleProductResponse?.status === 200) {
+            return {
+                status: true,
+                message: `Product data fetched`,
+                data: singleProductResponse?.data,
+            };
+        } else {
+            return {
+                status: false,
+                message: `Product data not found`,
+            };
+        }
+    } catch (error) {
+        return {
+            status: false,
+            message: `Product data not found`,
+        };
+    }
+};
 
 export default {
     getDashboard,
     getFranchises,
-    getProducts
-    // getDashboardById 
+    getProducts,
+    getProductById 
 };

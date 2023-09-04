@@ -14,6 +14,8 @@ import Input from '../components/Input';
 import Loader from '../components/Loader';
 import Button from '../components/Button';
 import { StorageService } from '../services';
+import { Dispatch } from 'react';
+import { AuthenticationService } from '../services';
 
 const { width, height } = Dimensions.get('screen')
 
@@ -88,6 +90,23 @@ const RegistrationScreen = ({ navigation }) => {
     //     }, 3000);
     // };
 
+    const register = () => {
+        let user = {
+            FullName: inputs.fullname,
+            EmailAdress: inputs.email,
+            ContactNumber: inputs.phone,
+            Password: inputs.password
+        };
+        setIsLoading(true);
+        AuthenicationService.register(user).then(response => {
+            setIsLoading(false);
+            if (!response?.status) {
+                setErrorMessage(response?.message);
+            }
+        });
+        navigation.navigate('Verification', { phone: inputs.phone })
+    };
+
     const [inputs, setInputs] = React.useState({
         email: '',
         fullname: '',
@@ -95,17 +114,12 @@ const RegistrationScreen = ({ navigation }) => {
         password: '',
     });
 
-
     const initialCreds = {};
 
     const [oAuthSignUp, setOAuthSignUp] = useState({
         creds: initialCreds,
         provider: ''
     })
-
-    const register = () => {
-        navigation.navigate('Verification', {inputs})
-    };
 
     const [errors, setErrors] = React.useState({});
     const [loading, setLoading] = React.useState(false);

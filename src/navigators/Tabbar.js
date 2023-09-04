@@ -56,7 +56,38 @@ const getPath = () => {
     return `${left} ${tab} ${right}`;
 };
 
+
 const d = getPath();
+
+// const getPath = (index) => {
+//     const start = width * index;
+
+//     const left = shape.line().x(d => d.x).y(d => d.y)([
+//         { x: 0, y: 0 },
+//         { x: start, y: 0 },
+//     ]);
+//     const tab = shape.line().x(d => d.x).y(d => d.y).curve(shape.curveBasis)([
+//         { x: start, y: 0 },
+//         { x: start + 5, y: 0 },
+//         { x: start + 10, y: 10 },
+//         { x: start + 15, y: height  * 0.8},
+//         { x: start + tabWidth - 15, y: height * 0.8 },
+//         { x: start + tabWidth - 10, y: 10 },
+//         { x: start + tabWidth - 5, y: 0 },
+//         { x: start + tabWidth, y: 0 },
+//     ]);
+//     const right = shape.line().x(d => d.x).y(d => d.y)([
+//         { x: start + tabWidth, y: 0 },
+//         { x: width * 2, y: 0 },
+//         { x: width * 2, y: height },
+//         { x: 0, y: height },
+//         { x: 0, y: 0 },
+//     ]);
+//     return `${left} ${tab} ${right}`;
+// };
+
+// const activeIndex = Math.floor(value._value / tabWidth);
+// const d = getPath(activeIndex);
 
 const Tabbar = ({ navigation }) => {
     const value = useRef(new Animated.Value(0)).current;

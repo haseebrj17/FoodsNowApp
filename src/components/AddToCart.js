@@ -1,5 +1,5 @@
 import React, { forwardRef, useImperativeHandle, useRef, useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image, Dimensions, ScrollView, FlatList, SectionList } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image, Dimensions, ScrollView, FlatList, SectionList, Animated, Easing } from 'react-native';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { Button } from '@react-native-material/core';
 import { RadioButton } from 'react-native-paper';
@@ -16,9 +16,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Display } from '../utils';
 import DishFormPizza from './DishFormPizza';
 import Separator from './Separator';
-import { CartAction } from '../actions';
+import { addToCart } from '../actions/CartAction';
 import { useNavigation } from '@react-navigation/native';
 import { db } from '../SqlLiteDB';
+import { RestaurantService } from '../services';
 
 const { width, height } = Dimensions.get('window')
 
@@ -72,6 +73,56 @@ const AddToCartModal = forwardRef((props, ref) => {
 
     const brandId = props.brandId
 
+    ////////// Cart Icon Animation //////////
+
+    // Define the height and margin of your button
+    const buttonHeight = 50;
+    const buttonRightMargin = 20;
+    const buttonBottomMargin = 20;
+
+    // Define the position of the cart icon
+    const cartIconPositionY = -800; // Adjust based on your layout
+
+    const buttonPositionX = width - buttonRightMargin;
+    const buttonPositionY = height - buttonHeight - buttonBottomMargin;
+    const cartIconPositionX = buttonPositionX;
+
+    const dotPosition = useRef(new Animated.Value(0)).current;
+
+    const cartIconOpacity = useRef(new Animated.Value(0)).current;
+
+    const AnimatedDot = () => {
+        const dotStyle = {
+            width: 10,
+            height: 10,
+            borderRadius: 5,
+            backgroundColor: '#FFAF51',
+            position: 'absolute',
+            marginLeft: -30,
+            top: dotPosition.interpolate({
+                inputRange: [0, 1],
+                outputRange: [buttonPositionY, cartIconPositionY], // Set these values
+            }),
+            left: dotPosition.interpolate({
+                inputRange: [0, 1],
+                outputRange: [buttonPositionX, cartIconPositionX], // Set these values
+            }),
+        };
+
+        return <Animated.View style={dotStyle} />;
+    };
+
+    const AnimatedCartIcon = () => {
+        return (
+            <Animated.Image
+                source={require('../assets/icons/cart.png')} // Provide your cart icon here
+                style={{ width: 30, height: 30, position: 'absolute', top: '5%', zIndex: 99, right: '5%', opacity: cartIconOpacity }}
+            />
+        );
+    };
+
+    ////////// Review and Star Mean //////////
+
     const sectionListRef = React.useRef(null);
 
     let starArray = dish?.reviewComment?.map(item => item.star);
@@ -96,9 +147,35 @@ const AddToCartModal = forwardRef((props, ref) => {
 
     ///////////// Cart Management /////////////
 
+    useEffect(() => {
+        db.transaction((tx) => {
+            tx.executeSql('SELECT * FROM cart;', [], (_, { rows }) => {
+                console.log(rows)
+            });
+        });
+    })
+
     const [selectedSize, setSelectedSize] = useState("Normal");
-    const [selectedToppings, setSelectedToppings] = useState({});
-    const [selectedDippings, setSelectedDippings] = useState({});
+
+    const initialExtrasState = extras && extras.length > 0
+        ? extras.reduce((acc, extra) => {
+            acc[extra.Name] = false;
+            return acc;
+        }, {})
+        : {};
+
+    const [selectedExtras, setSelectedExtras] = useState(initialExtrasState);
+
+    const initialDipsState = dips && dips.length > 0
+        ? dips.reduce((acc, dip) => {
+            acc[dip.Name] = false;
+            return acc;
+        }, {})
+        : {};
+
+    const [selectedDips, setSelectedDips] = useState(initialDipsState);
+
+    console.log(selectedDips, selectedExtras, selectedSize)
 
     const [quantity, setQuantity] = useState(1);
 
@@ -114,44 +191,43 @@ const AddToCartModal = forwardRef((props, ref) => {
         setSelectedSize(size);
     };
 
-    // const handleToppingsChange = (toppings) => {
-    //     setSelectedToppings(toppings);
-    // };
-
-    // const handleDippingsChange = (dippings) => {
-    //     setSelectedDippings(dippings);
-    // };
-
     const handleDippingsChange = (dippings) => {
-        console.log("Received dippings from child:", dippings);
-        setSelectedDippings(dippings);
+        setSelectedDips(dippings); // Change to setSelectedDips
     };
 
     const handleToppingsChange = (toppings) => {
-        console.log("Received toppings from child:", toppings);
-        setSelectedToppings(toppings);
+        setSelectedExtras(toppings);
     };
 
     const dishId = dish?.Id;
 
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        dispatch(CartAction.getCartItems());
-    }, [dispatch]);
-
-    const addToCart = (dishId, selectedSize, selectedToppings, selectedDippings, quantity) => {
-        console.log("Adding to cart...");
-        dispatch(CartAction.addToCart({ dishId, selectedSize, selectedToppings, selectedDippings, quantity }))
-        .then((result) => {
-            if (result === 'OK') {
-                setQuantity(1)
-                modalRef.current.dismiss();
-            }
-        })
-        .catch((error) => {
-            console.error('Error adding to cart:', error);
-        })
+    const handleAddToCart = (dishId, selectedSize, selectedExtras, selectedDips, quantity) => {
+        console.log(dishId, selectedSize, selectedExtras, selectedDips, quantity);
+        dispatch(addToCart({ dishId, selectedSize, selectedExtras, selectedDips, quantity }))
+            .then((result) => {
+                if (result === 'OK') {
+                    setQuantity(1)
+                    Animated.parallel([
+                        Animated.timing(dotPosition, {
+                            toValue: 1,
+                            duration: 1000,
+                            easing: Easing.inOut(Easing.quad),
+                            useNativeDriver: false,
+                        }),
+                        Animated.timing(cartIconOpacity, {
+                            toValue: 1,
+                            duration: 1000,
+                            useNativeDriver: false,
+                        }),
+                    ]).start();
+                    modalRef.current.dismiss();
+                }
+            })
+            .catch((error) => {
+                console.error('Error adding to cart:', error);
+            })
     };
 
     ///////////// BottomSheet Handler /////////////
@@ -370,13 +446,15 @@ const AddToCartModal = forwardRef((props, ref) => {
     );
 
     const ListPrices = () => {
-        if (dish.restaurant === 'Come A Napoli') {
-            return <Text style={styles.SubTextPrice}>€{dish.Prices[0].price}</Text>
-        } else {
-            return (
-                <Text style={[styles.SubTextPrice, { marginTop: 5 }]}>€{dish.price}</Text>
-            )
-        }
+        const sortedPrices = [...dish.Prices].sort((a, b) => {
+            return a.Description === 'Normal' ? -1 : 1;
+        });
+        const normalPrice = sortedPrices.find(price => price.Description === selectedSize);
+        return (
+            <Text style={[styles.SubTextPrice, { marginTop: 5 }]}>
+                €{normalPrice ? normalPrice.Price : 'N/A'}
+            </Text>
+        );
     }
 
     const scrollToSection = (sectionTitle) => {
@@ -407,6 +485,7 @@ const AddToCartModal = forwardRef((props, ref) => {
             handleIndicatorStyle={{ backgroundColor: '#fff' }}
         >
             <View style={styles.contentContainer}>
+                <AnimatedCartIcon />
                 <Image
                     source={{ uri: dish ? dish.Image : '' }}
                     style={styles.image}
@@ -466,12 +545,18 @@ const AddToCartModal = forwardRef((props, ref) => {
                                 data: [
                                     <DishFormPizza
                                         key="customize"
-                                        dish={dish ? dish.Prices : ''}
+                                        dish={dish ? dish : ''}
                                         extras={extras}
                                         dips={dips}
                                         onSizeChange={handleSizeChange}
                                         onToppingsChange={handleToppingsChange}
                                         onDippingsChange={handleDippingsChange}
+                                        selectedSize={selectedSize}
+                                        setSelectedSize={setSelectedSize}
+                                        selectedExtras={selectedExtras}
+                                        setSelectedExtras={setSelectedExtras}
+                                        selectedDips={selectedDips}
+                                        setSelectedDips={setSelectedDips}
                                     />
                                 ]
                             }
@@ -564,8 +649,9 @@ const AddToCartModal = forwardRef((props, ref) => {
                             titleStyle={styles.buttonTitle}
                             uppercase={false}
                             contentContainerStyle={styles.buttonContent}
-                            onPress={() => addToCart(dishId, selectedSize, selectedToppings, selectedDippings, quantity)}
+                            onPress={() => handleAddToCart(dishId, selectedSize, selectedExtras, selectedDips, quantity)}
                         />
+                        <AnimatedDot />
                     </View>
                 </View>
             </View>
