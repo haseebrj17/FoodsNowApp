@@ -2,6 +2,7 @@
   "expo": {
     "name": "FoodsNowApp",
     "slug": "FoodsNowApp",
+    "scheme": "foodsnowapp",
     "updates": {
       "fallbackToCacheTimeout": 0
     },

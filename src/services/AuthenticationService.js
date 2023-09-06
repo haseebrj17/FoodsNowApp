@@ -20,7 +20,7 @@ const register = async user => {
         };
         let registerResponse = await AuthRequest.post(
             ApiContants.BACKEND_API.REGISTER,
-            { requestBody },
+            requestBody
         );
         return registerResponse?.data;
     } catch (error) {
@@ -30,17 +30,17 @@ const register = async user => {
 };
 
 const login = async user => {
-    if (!user?.username || !user?.password) {
+    if (!user?.EmailAdress || !user?.Password) {
         return { status: false, message: 'Please fill up all fields' };
     }
     try {
         let requestBody = {
-            emial: user?.username,
-            password: user?.password,
+            EmailAdress: user?.EmailAdress,
+            Password: user?.Password,
         };
         let loginResponse = await AuthRequest.post(
             ApiContants.BACKEND_API.LOGIN,
-            { requestBody },
+            requestBody
         );
         return loginResponse?.data;
     } catch (error) {
@@ -63,24 +63,27 @@ const checkUserExist = async (type, value) => {
     }
 };
 
-const phoneVerification = async (phoneInputs, selectedCountry) => {
+const phoneVerification = async codeData => {
 
-    if (!phoneInputs || !selectedCountry) {
+    if (!codeData.code) {
         return { status: false, message: 'Please fill up all fields' };
+    }
+    if (!codeData.id) {
+        return { status: false, message: 'Something went worng, try again.' };
     }
     try {
         let requestBody = {
-            phoneNumber: phoneInputs,
-            countryCode: selectedCountry
+            VerificationCode: codeData?.code,
+            Id: codeData?.id
         };
         let verificationResponse = await AuthRequest.post(
             ApiContants.BACKEND_API.VERIFICATION,
-            { requestBody }
+            requestBody
         );
         return verificationResponse?.data;
     } catch (error) {
         console.log(error);
-        return { status: false, message: 'Oops! Something went wrong' };
+        return { status: false, message: 'Something went wrong' };
     }
 }
 
@@ -100,4 +103,4 @@ const refreshToken = async () => {
     }
 };
 
-export default { register, login, checkUserExist, refreshToken };
+export default { register, login, phoneVerification, checkUserExist, refreshToken };

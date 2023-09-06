@@ -13,13 +13,18 @@ import AppleIcon from '../assets/icons/Apple';
 import Input from '../components/Input';
 import Loader from '../components/Loader';
 import Button from '../components/Button';
+import { useDispatch } from 'react-redux';
+import AuthenticationService from '../services/AuthenticationService';
 
 const { width, height } = Dimensions.get('screen')
 
 const LoginScreen = ({ navigation }) => {
     const [inputs, setInputs] = React.useState({ email: '', password: '' });
     const [errors, setErrors] = React.useState({});
-    const [loading, setLoading] = React.useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+
+    const dispatch = useDispatch();
 
     const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
         clientId: '<YOUR_CLIENT_ID>',
@@ -102,8 +107,6 @@ const LoginScreen = ({ navigation }) => {
         }
     };
 
-
-
     const validate = async () => {
         Keyboard.dismiss();
         let isValid = true;
@@ -116,33 +119,24 @@ const LoginScreen = ({ navigation }) => {
             isValid = false;
         }
         if (isValid) {
-            login();
+            Login();
         }
     };
 
-    const login = () => {
-        setLoading(true);
-        setTimeout(async () => {
-            setLoading(false);
-            let userData = await AsyncStorage.getItem('userData');
-            if (userData) {
-                userData = JSON.parse(userData);
-                if (
-                    inputs.email == userData.email &&
-                    inputs.password == userData.password
-                ) {
-                    navigation.navigate('Main');
-                    AsyncStorage.setItem(
-                        'userData',
-                        JSON.stringify({ ...userData, loggedIn: true }),
-                    );
-                } else {
-                    Alert.alert('Error', 'Invalid Details');
-                }
+    const Login = async () => {
+        setIsLoading(true);
+        let user = {
+            EmailAdress: inputs.email,
+            Password: inputs.password
+        };
+        AuthenticationService.login(user).then(response => {
+            setIsLoading(false);
+            if (response?.isSuccess) {
+                navigation.navigate('Main')
             } else {
-                Alert.alert('Error', 'User does not exist');
+                setErrorMessage(response?.message);
             }
-        }, 3000);
+        });
     };
 
     const handleOnchange = (text, input) => {

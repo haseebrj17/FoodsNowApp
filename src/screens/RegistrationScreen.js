@@ -15,11 +15,16 @@ import Loader from '../components/Loader';
 import Button from '../components/Button';
 import { StorageService } from '../services';
 import { Dispatch } from 'react';
-import { AuthenticationService } from '../services';
+import AuthenticationService from '../services/AuthenticationService';
 
 const { width, height } = Dimensions.get('screen')
 
 const RegistrationScreen = ({ navigation }) => {
+
+    const [isLoading, setIsLoading] = React.useState(false);
+    const [errors, setErrors] = React.useState({});
+    const [errorMessage, setErrorMessage] = React.useState({});
+
 
     ///// Google OAuth /////
     const redirectUri = AuthSession.makeRedirectUri({ useProxy: true });
@@ -36,13 +41,11 @@ const RegistrationScreen = ({ navigation }) => {
             StorageService.setGoogleUser(authentication.user);
             StorageService.setGoogleUser("true");
             setOAuthSignUp({
-                creds: {
-                    token: authentication.accessToken,
-                    user: authentication.user
-                },
-                provider: 'Apple'
+                email: authentication?.user?.email,
+                name: authentication?.user?.name,
+                provider: 'Google'
             })
-            navigation.navigate('AddPhoneNumber', { oAuthSignUp });
+            navigation.navigate('Verification', { oAuthSignUp });
         }
     }, [responseGoogle]);
 
@@ -56,10 +59,11 @@ const RegistrationScreen = ({ navigation }) => {
                 ],
             });
             setOAuthSignUp({
-                creds: JSON.stringify(credential),
+                email: credential?.email,
+                name: credential?.fullName,
                 provider: 'Apple'
             })
-            navigation.navigate('AddPhoneNumber', { oAuthSignUp });
+            navigation.navigate('Verification', { oAuthSignUp });
         } catch (e) {
             if (e.code === 'ERR_CANCELED') {
                 Alert.alert(
@@ -76,36 +80,7 @@ const RegistrationScreen = ({ navigation }) => {
         }
     };
 
-    // const register = () => {
-    //     setLoading(true);
-    //     setTimeout(() => {
-    //         try {
-    //             setLoading(false);
-    //             StorageService.setUserData(inputs);
-    //             StorageService.setToken('email');
-    //             navigation.navigate('Login');
-    //         } catch (error) {
-    //             Alert.alert('Error', 'Something went wrong');
-    //         }
-    //     }, 3000);
-    // };
-
-    const register = () => {
-        let user = {
-            FullName: inputs.fullname,
-            EmailAdress: inputs.email,
-            ContactNumber: inputs.phone,
-            Password: inputs.password
-        };
-        setIsLoading(true);
-        AuthenicationService.register(user).then(response => {
-            setIsLoading(false);
-            if (!response?.status) {
-                setErrorMessage(response?.message);
-            }
-        });
-        navigation.navigate('Verification', { phone: inputs.phone })
-    };
+    ///// Email Registration /////
 
     const [inputs, setInputs] = React.useState({
         email: '',
@@ -120,9 +95,6 @@ const RegistrationScreen = ({ navigation }) => {
         creds: initialCreds,
         provider: ''
     })
-
-    const [errors, setErrors] = React.useState({});
-    const [loading, setLoading] = React.useState(false);
 
     let margin = 50;
     if (!inputs.email && !inputs.fullname && !inputs.password) {
@@ -168,6 +140,24 @@ const RegistrationScreen = ({ navigation }) => {
         if (isValid) {
             register();
         }
+    };
+
+    const register = () => {
+        let user = {
+            FullName: inputs.fullname,
+            EmailAdress: inputs.email,
+            ContactNumber: inputs.phone,
+            Password: inputs.password
+        };
+        setIsLoading(true);
+        AuthenticationService.register(user).then(response => {
+            setIsLoading(false);
+            const userId = response.data.Id
+            navigation.navigate('CodeConfirmation', { userId })
+            if (!response?.status) {
+                setErrorMessage(response?.message);
+            }
+        });
     };
 
     const handleOnchange = (text, input) => {

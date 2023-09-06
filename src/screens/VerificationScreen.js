@@ -33,6 +33,48 @@ const VerificationScreen = ({ navigation, oAuthSignUp, inputs }) => {
         }
     }, [country]);
 
+    const register = () => {
+        let user = {
+            Id: null,
+            FullName: oAuthSignUp.name,
+            EmailAdress: oAuthSignUp.email,
+            Provider: oAuthSignUp.provider,
+            ContactNumber: phoneInputs.phone,
+            Password: null,
+        };
+        setIsLoading(true);
+        AuthenicationService.register(user).then(response => {
+            setIsLoading(false);
+            const userId = response.Id
+            if (!response?.status) {
+                setErrorMessage(response?.message);
+            }
+        });
+        navigation.navigate('CodeConfirmation', { userId })
+    };
+
+    // const register = () => {
+    //     if (inputs) {
+    //         setLoading(true);
+    //         AuthenicationService.register(inputs).then(response => {
+    //             setLoading(false);
+    //             if (!response?.status) {
+    //                 setErrorMessage(response?.message);
+    //             }
+    //         });
+    //         navigation.navigate('Login');
+    //     } if (oAuthSignUp) {
+    //         setLoading(true);
+    //         AuthenicationService.register(oAuthSignUp,).then(response => {
+    //             setLoading(false);
+    //             if (!response?.status) {
+    //                 setErrorMessage(response?.message);
+    //             }
+    //         });
+    //         navigation.navigate('Login');
+    //     }
+    // };
+
     const [inputsContainerY, setInputsContainerY] = useState(0);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [dropdownLayout, setDropdownLayout] = useState({});
@@ -97,28 +139,6 @@ const VerificationScreen = ({ navigation, oAuthSignUp, inputs }) => {
             })
         } catch (error) {
             Alert.alert('Error', 'Unable to send verification code.');
-        }
-    };
-
-    const register = () => {
-        if (inputs) {
-            setLoading(true);
-            AuthenicationService.register(inputs).then(response => {
-                setLoading(false);
-                if (!response?.status) {
-                    setErrorMessage(response?.message);
-                }
-            });
-            navigation.navigate('Login');
-        } if (oAuthSignUp) {
-            setLoading(true);
-            AuthenicationService.register(oAuthSignUp,).then(response => {
-                setLoading(false);
-                if (!response?.status) {
-                    setErrorMessage(response?.message);
-                }
-            });
-            navigation.navigate('Login');
         }
     };
 

@@ -1,38 +1,63 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, Alert, Dimensions, Image, StyleSheet } from 'react-native';
 import axios from 'axios';
 import FlagItem from '../components/FlagItem';
 import Button from '../components/Button';
 import Input from '../components/Input';
-import { StaticImageService } from '../services';
+import AuthenticationService from '../services/AuthenticationService';
 import { CountryCode } from '../assets/constants'
 import { Display } from '../utils';
-import { MaterialIcons, Octicons } from '@expo/vector-icons';
+import { MaterialIcons, Entypo, Octicons } from '@expo/vector-icons';
 
 const { width, height } = Dimensions.get('screen');
 
-const CodeConfirmationScreen = ({ route }) => {
+const CodeConfirmationScreen = ({ navigation, route }) => {
+    const { userId } = route.params;
     const [code, setCode] = useState('');
+    const [isLoading, setIsLoading] = useState(false)
+    const [errorMessage, setErrorMessage] = useState('')
+    const [codeData, setCodeDate] = useState(null)
+    useEffect(() => {
+        setCodeDate({
+            id: userId,
+            code: code,
+        })
+    }, [code])
+
+    const [animationData, setAnimationData] = useState({
+        reqCode: 'Enter the 5 digit code send to your phone',
+        codeDone: 'Code Confirmation',
+        color: '#325964',
+        name: 'cross',
+    })
 
     const handleConfirmCode = async () => {
         try {
-            const response = await axios.post('https://backendapi/confirm-code', {
-                code,
-            });
+            const response = await AuthenticationService.phoneVerification(codeData);
+            console.log(codeData, response)
+            setIsLoading(false);
 
-            if (response.data.success) {
-                Alert.alert('Success', 'Your account has been verified!');
+            if (response?.isSuccess) {
+                setAnimationData({
+                    reqCode: 'Phone number successfully verified',
+                    codeDone: 'Verified',
+                    color: '#FFAF51',
+                    name: 'check',
+                });
+                setTimeout(() => {
+                    navigation.navigate('Main')
+                }, 5000);
+                // Alert.alert('Success', 'Your account has been verified!');
             } else {
-                Alert.alert('Error', 'Invalid verification code.');
+                Alert.alert('Error', response?.message || 'Invalid verification code.');
             }
+
         } catch (error) {
+            console.log('Verification error:', error);
             Alert.alert('Error', 'Unable to verify code.');
         }
     };
 
-    let reqCode = 'Enter the 5 digit code send to your phone'
-    let codeDone = 'Verification Successfull'
-    let color = '#FFAF51'
 
     return (
         <View
@@ -99,7 +124,7 @@ const CodeConfirmationScreen = ({ route }) => {
                             position: 'absolute',
                             top: "0%",
                         }}
-                    >Code Confirmation</Text>
+                    >{animationData.codeDone}</Text>
                     <View
                         flex="0.7"
                         justifyContent='flex-end'
@@ -125,7 +150,7 @@ const CodeConfirmationScreen = ({ route }) => {
                                     height: 80
                                 }}
                             />
-                            <MaterialIcons name="done" size={40} color={color}
+                            <Entypo name={animationData.name} size={40} color={animationData.color}
                                 style={{
                                     position: 'absolute'
                                 }}
@@ -133,12 +158,12 @@ const CodeConfirmationScreen = ({ route }) => {
                         </View>
                         <Text
                             style={{
-                                fontSize: 15,
-                                fontWeight: "400",
-                                color: "#000",
+                                fontSize: 16,
+                                fontWeight: "600",
+                                color: "#6b7280",
                                 margin: 20
                             }}
-                        >{reqCode}</Text>
+                        >{animationData.reqCode}</Text>
                         <View
                             width={width * 0.9}
                             height='50%'
@@ -151,7 +176,7 @@ const CodeConfirmationScreen = ({ route }) => {
                                 placeholder="Verification Code"
                                 keyboardType="numeric"
                             />
-                            <Button title="Confirm" onPress={handleConfirmCode} />
+                            <Button title='Confirm' onPress={handleConfirmCode} />
                         </View>
                     </View>
                 </View>
@@ -168,9 +193,15 @@ const CodeConfirmationScreen = ({ route }) => {
                         justifyContent: 'center',
                         alignItems: 'center',
                         alignSelf: 'center',
-                        margin: 10,
+                        margin: Display.setHeight(7),
                     }}
                 >
+                    <Text
+                        style={{
+                            fontSize: Display.setHeight(2),
+                            color: '#FFAF51',
+                        }}
+                    >Terms and Coditions are applied</Text>
                 </View>
             </View>
         </View>

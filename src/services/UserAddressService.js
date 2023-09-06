@@ -103,4 +103,4 @@ const updateUserAddress = async () => {
     }
 };
 
-export default { addUserAddress };
+export default { addUserAddress, updateUserAddress };
