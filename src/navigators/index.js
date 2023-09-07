@@ -56,7 +56,7 @@ const Navigators = () => {
                 screenOptions={{
                     headerShown: false,
                 }}
-                initialRouteName="LocationAccess"
+                initialRouteName="Main"
             >
                 <Stack.Screen name="Splash" component={SplashScreen} />
                 <Stack.Screen name="LocationDetail" component={LocationDetailScreen} />

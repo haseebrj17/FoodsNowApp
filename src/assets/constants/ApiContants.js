@@ -25,6 +25,7 @@ const BACKEND_API = {
     VERIFICATION: '/VerifyPin',
     ADD_ADDRESS: '/CustomerAddAddress',
     UPDATE_ADDRESS: '/CustomerUpdateAddress',
+    GET_ADDRESS: '/CustomerGetAddress',
     USER: '/User',
     ORDER: '/PlaceOrder',
     USER_EXIST: '/User',
