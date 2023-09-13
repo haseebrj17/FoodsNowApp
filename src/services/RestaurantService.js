@@ -73,6 +73,7 @@ const getDashboard = async ({ FranchiseId }) => {
             };
         }
     } catch (error) {
+        console.log('Catch Error:', error);
         return {
             status: false,
             message: `Dashboard data not found. Catch Error Block`,

@@ -3,9 +3,7 @@
     "name": "FoodsNowApp",
     "slug": "FoodsNowApp",
     "scheme": "foodsnowapp",
-    "updates": {
-      "fallbackToCacheTimeout": 0
-    },
+    "owner": "foodsnowgmbh",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./src/assets/icon.png",
@@ -15,21 +13,36 @@
       "resizeMode": "contain",
       "backgroundColor": "#325964"
     },
+    "updates": {
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/6986621b-e55a-439e-8625-fe6e914a0658"
+    },
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.FoodsNowApp"
+      "bundleIdentifier": "com.anonymous.FoodsNowApp",
+      "runtimeVersion": {
+        "policy": "sdkVersion"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
+      },
+      "runtimeVersion": {
+        "policy": "sdkVersion"
       }
     },
     "web": {
       "favicon": "./src/assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "6986621b-e55a-439e-8625-fe6e914a0658"
+      }
     }
   }
 }

@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, Image, ScrollView, Dimensions, FlatList, SectionList } from 'react-native'
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { addListener, removeListener } from '@reduxjs/toolkit';
 import { useEffect, useState } from 'react'
 import { Display } from '../utils'
 import { StatusBar } from 'native-base'
@@ -13,6 +14,7 @@ import { getCartItems, incrementQuantity, decrementQuantity } from '../actions/C
 import { Separator } from '../components'
 import Button from '../components/Button'
 import empty from '../assets/icons/emptycart.png'
+import { Store } from '../Store';
 
 const { width, height } = Dimensions.get('window');
 
@@ -20,11 +22,20 @@ const CartScreen = ({ navigation }) => {
 
     const dispatch = useDispatch()
 
-    const [loading, setLoading] = useState(true)
-
     useEffect(() => {
         dispatch(getCartItems());
     }, [dispatch]);
+
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            // Fetch cart data whenever the screen comes into focus
+            dispatch(getCartItems());
+        });
+
+        return unsubscribe;
+    }, [navigation, dispatch]);
+
+    const [loading, setLoading] = useState(true)
 
     const cartItems = useSelector(state => state.cartState.cart);
 
@@ -40,9 +51,7 @@ const CartScreen = ({ navigation }) => {
 
     const [locationData, setLocationData] = useState(null)
 
-    useEffect(() => {
-        console.log(locationData)
-    }, [locationData])
+    const [minOrder, setMinOrder] = useState(null)
 
     useEffect(() => {
         if (vatRate && grandTotal) {
@@ -60,6 +69,7 @@ const CartScreen = ({ navigation }) => {
                 const location = await StorageService.getLocation();
                 if (location && location.Country) {
                     setLocationData(location);
+                    setMinOrder(location.DeliveryParams.minOrderValue)
                     const rate = await fetchVATRateForCountry(location.Country);
                     if (rate !== null) {
                         setVatRate((rate / 100) + 1);
@@ -194,7 +204,8 @@ const CartScreen = ({ navigation }) => {
                     height: Display.setHeight(12),
                     backgroundColor: '#f1f1f1',
                     borderRadius: 15,
-                    marginTop: Display.setHeight(0.8),
+                    marginTop: Display.setHeight(0.5),
+                    marginBottom: Display.setHeight(0.5),
                     alignSelf: 'center',
                     flexDirection: 'row',
                 }}
@@ -601,6 +612,41 @@ const CartScreen = ({ navigation }) => {
                                                             </View>
                                                         </View>
                                                         <Separator width={'100%'} height={Display.setHeight(0.1)} />
+                                                        {
+                                                            grandTotal >= minOrder ? (
+                                                                <></>
+                                                            ) : (
+                                                                <>
+                                                                    <View
+                                                                        style={{
+                                                                            width,
+                                                                            height: Display.setHeight(8),
+                                                                            justifyContent: 'center',
+                                                                            alignItems: 'center',
+                                                                        }}
+                                                                    >
+                                                                        <View
+                                                                            style={{
+                                                                                width: width * 0.8,
+                                                                                height: '80%',
+                                                                                backgroundColor: '#d9d9d9',
+                                                                                borderRadius: 12,
+                                                                                justifyContent: 'center',
+                                                                                alignItems: 'center',
+                                                                            }}
+                                                                        >
+                                                                            <Text
+                                                                                style={{
+                                                                                    fontSize: 14,
+                                                                                    color: '#000'
+                                                                                }}
+                                                                            >Please add more items to the cart to meet the minimum order value of € {minOrder}</Text>
+                                                                        </View>
+                                                                    </View>
+                                                                    <Separator width={'100%'} height={Display.setHeight(0.1)} />
+                                                                </>
+                                                            )
+                                                        }
                                                         <View
                                                             style={{
                                                                 width: width * 0.8,
@@ -608,6 +654,8 @@ const CartScreen = ({ navigation }) => {
                                                             }}
                                                         >
                                                             <Button
+                                                                disabled={grandTotal >= minOrder ? false : true}
+                                                                color={grandTotal >= minOrder ? null : '#d9d9d9'}
                                                                 title='Proceed To Checkout'
                                                                 onPress={() => navigation.navigate('CartNavigator', { screen: 'Checkout' })}
                                                             />

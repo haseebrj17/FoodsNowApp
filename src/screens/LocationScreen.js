@@ -113,7 +113,7 @@ const LocationScreen = ({ navigation }) => {
                         });
                         console.log('Data to store:', fourKM);
                         StorageService.setLocation(fourKM).then(
-                            navigation.navigate('Main')
+                            navigation.navigate('Main', { location: fourKM })
                         )
                     } else if (minDistance > 4000 && minDistance <= 6000) {
                         setSixKM({
@@ -125,7 +125,7 @@ const LocationScreen = ({ navigation }) => {
                         });
                         console.log(sixKM)
                         StorageService.setLocation(sixKM).then(
-                            navigation.navigate('Main')
+                            navigation.navigate('Main', { location: sixKM })
                         )
                     } else if (minDistance > 6000 && minDistance <= 10000) {
                         setTenKM({
@@ -137,14 +137,14 @@ const LocationScreen = ({ navigation }) => {
                         });
                         console.log(tenKM)
                         StorageService.setLocation(tenKM).then(
-                            navigation.navigate('Main')
+                            navigation.navigate('Main', { location: tenKM})
                         )
                     } else {
                         setOutOfRange(true);
                     }
                 } else {
                     console.log('We have not reached here yet');
-                    // setOutOfRange(true);
+                    setOutOfRange(true);
                     setTenKM({
                         Franchise: closestFranchise.Title,
                         FranchiseId: closestFranchise.Id,
@@ -154,7 +154,7 @@ const LocationScreen = ({ navigation }) => {
                     });
                     console.log(tenKM)
                     StorageService.setLocation(tenKM).then(
-                        navigation.navigate('Main')
+                        navigation.navigate('Main', { location: tenKM })
                     )
                 }
             } else {

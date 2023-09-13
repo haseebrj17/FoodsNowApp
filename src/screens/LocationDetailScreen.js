@@ -89,6 +89,8 @@ const LocationDetailScreen = ({ route, navigation }) => {
     const { address } = route.params;
     const { selectedLocation } = route.params;
 
+    console.log(selectedLocation)
+
     const [region, setRegion] = useState(null);
     const [newAddress, setNewAddress] = useState(null);
     const [showCallout, setShowCallout] = useState(true);
@@ -111,17 +113,22 @@ const LocationDetailScreen = ({ route, navigation }) => {
     }
 
     const [inputs, setInputs] = React.useState({
-        streetNumber: address.streetNumber,
-        street: address.street,
-        unitNumber: '',
-        floorNumber: '',
-        notes: '',
-        tag: '',
-        addressJson: address,
-        geoLocationData: selectedLocation
+        StreetAddress: address.street,
+        House: address.streetNumber,
+        District: address.district,
+        UnitNumber: '',
+        FloorNumber: '',
+        Notes: '',
+        Tag: '',
+        IsDefault: false,
+        Latitude: selectedLocation.latitude,
+        Longitude: selectedLocation.longitude,
+        CityName: address.city,
+        CustomerId: selectedLocation,
+        PostalCode: address.postalCode
     });
 
-    console.log(inputs)
+    // console.log(inputs)
 
     const handleOnchange = (text, input) => {
         if (input === 'tag') {
