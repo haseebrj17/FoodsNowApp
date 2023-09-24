@@ -1,15 +1,25 @@
-import { NativeBaseProvider } from "native-base";
-import { StatusBar } from "expo-status-bar";
 import React, { useState, useEffect, useRef } from "react";
-import { Animated, Text, FlatList, Image, View, StyleSheet, Dimensions } from "react-native"
+import {
+    Animated,
+    Text,
+    FlatList,
+    Image,
+    View,
+    StyleSheet,
+    Dimensions,
+    StatusBar
+} from "react-native";
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { SplashScreen } from '../assets/constants/Slider';
 import { useNavigation } from "@react-navigation/native";
+import { SplashScreen } from '../assets/constants/Slider';
 import { bgs } from "../assets/constants";
 import Button from "../components/Button";
 import { Display } from "../utils";
-const { width, height } = Dimensions.get('screen');
+import { useDispatch } from "react-redux";
+import { setIsFirstTimeUse } from "../actions/GeneralAction";
+import { StorageService } from "../services";
 
+const { width, height } = Dimensions.get('screen');
 const Indicator = ({ scrollX }) => {
     return (
         <View
@@ -32,7 +42,7 @@ const Indicator = ({ scrollX }) => {
                     extrapolate: 'clamp'
                 })
                 return <Animated.View
-                    key={`indicator-${i}`}
+                    key={i.toString()}
                     style={{
                         height: 10,
                         width: 10,
@@ -108,8 +118,8 @@ const WelcomeScreen = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const flatListRef = useRef(null);
     const navigation = useNavigation();
-    const scrollX = React.useRef(new Animated.Value(0)).current
-    const [splash, setSplash] = useState(SplashScreen);
+    const scrollX = useRef(new Animated.Value(0)).current
+    const [splashData, setSplashData] = useState(SplashScreen);
 
     useEffect(() => {
         // Set up the interval to move to the next item every 2000 ms
@@ -133,7 +143,10 @@ const WelcomeScreen = () => {
 
     const renderItem = ({ item, index }) => {
         return (
-            <View style={{ width, alignItems: 'center', paddingBottom: 20 }}>
+            <View
+                key={index.toString()}
+                style={{ width, alignItems: 'center', paddingBottom: 20 }}
+            >
                 <View style={{ flex: 0.7, justifyContent: 'center ' }}>
                     <Image source={item.image} style={{ width: width / 2, height: height / 2, resizeMode: 'contain' }} />
                 </View>
@@ -141,7 +154,7 @@ const WelcomeScreen = () => {
                     <Text style={{ fontWeight: '800', fontSize: 28, marginBottom: 10, color: 'white', marginTop: 30, }}>{item.title}</Text>
                     <Text style={{ fontWeight: '300', color: 'white' }}>{item.description}</Text>
                 </View>
-                {index === splash.length - 1 && (
+                {index === splashData.length - 1 && (
                     <View
                         style={{
                             width: '60%',
@@ -152,10 +165,10 @@ const WelcomeScreen = () => {
                             justifyContent: 'center',
                         }}
                     >
-                        <Button 
-                            title={'Set your location'}
+                        <Button
+                            title={'Read Policy'}
                             color={'#FFAF51'}
-                            onPress={() => navigation.navigate('Location')}
+                            onPress={() => navigation.navigate('DataTracking')}
                         />
                     </View>
                 )}
@@ -169,8 +182,8 @@ const WelcomeScreen = () => {
             <Square scrollX={scrollX} />
             <Animated.FlatList
                 ref={flatListRef}
-                data={splash}
-                keyExtractor={item => item.key}
+                data={splashData}
+                keyExtractor={(_, index) => index.toString()}
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 renderItem={renderItem}

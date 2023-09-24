@@ -7,7 +7,7 @@
 //     console.log(`UserService | getUserData`);
 //     try {
 //         let userResponse = await axios.get(
-//             `${ApiContants.BACKEND_API.BASE_API_URL}${ApiContants.BACKEND_API.USER}/get-user`,
+//             `${ApiContants.BACKEND_API.BASE_API_URL}${ApiContants.BACKEND_API.USER}`,
 //             {
 //                 headers: authHeader(getToken()),
 //             },

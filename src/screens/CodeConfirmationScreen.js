@@ -8,11 +8,15 @@ import AuthenticationService from '../services/AuthenticationService';
 import { CountryCode } from '../assets/constants'
 import { Display } from '../utils';
 import { MaterialIcons, Entypo, Octicons } from '@expo/vector-icons';
+import { StorageService } from '../services';
+import jwt_decode from "jwt-decode";
+import { setToken, setUserData } from '../actions/GeneralAction';
+import { useDispatch } from 'react-redux';
 
 const { width, height } = Dimensions.get('screen');
 
 const CodeConfirmationScreen = ({ navigation, route }) => {
-    const { userId } = route.params;
+    const userId = route.params.userId;
     const [code, setCode] = useState('');
     const [isLoading, setIsLoading] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
@@ -24,6 +28,8 @@ const CodeConfirmationScreen = ({ navigation, route }) => {
         })
     }, [code])
 
+    const dispatch = useDispatch()
+
     const [animationData, setAnimationData] = useState({
         reqCode: 'Enter the 5 digit code send to your phone',
         codeDone: 'Code Confirmation',
@@ -34,20 +40,27 @@ const CodeConfirmationScreen = ({ navigation, route }) => {
     const handleConfirmCode = async () => {
         try {
             const response = await AuthenticationService.phoneVerification(codeData);
-            console.log(codeData, response)
+            // console.log(codeData, response)
             setIsLoading(false);
 
-            if (response?.isSuccess) {
+            if (response?.status) {
                 setAnimationData({
                     reqCode: 'Phone number successfully verified',
                     codeDone: 'Verified',
                     color: '#FFAF51',
                     name: 'check',
                 });
+                StorageService.setToken(response?.data?.Token).then(() => {
+                    dispatch(setToken(response?.data?.Token));
+                })
+                const decodedData = jwt_decode(response?.data?.Token)
+                StorageService.setUserData(decodedData).then(() => {
+                    dispatch(setUserData(decodedData))
+                })
                 setTimeout(() => {
-                    navigation.navigate('Main')
+                    navigation.navigate('LocationAccess')
                 }, 5000);
-                // Alert.alert('Success', 'Your account has been verified!');
+                Alert.alert('Success', 'Your account has been verified!');
             } else {
                 Alert.alert('Error', response?.message || 'Invalid verification code.');
             }
@@ -176,7 +189,10 @@ const CodeConfirmationScreen = ({ navigation, route }) => {
                                 placeholder="Verification Code"
                                 keyboardType="numeric"
                             />
-                            <Button title='Confirm' onPress={handleConfirmCode} />
+                            <Button 
+                                disabled={ codeData?.code ? false : true }
+                                color={ codeData?.code ? "#325964" : "#d9d9d9" }
+                            title='Confirm' onPress={handleConfirmCode} />
                         </View>
                     </View>
                 </View>

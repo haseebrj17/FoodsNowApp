@@ -54,51 +54,63 @@ export const updateAddressFailure = (error) => ({
     payload: error,
 });
 
-export const fetchAddresses = (userId) => {
-    return async (dispatch) => {
-        dispatch(fetchAddressStart());
-        try {
-            const response = await UserAddressService.getUserAddress({ userId });
-            if (response?.status) {
-                dispatch(fetchAddressSuccess(response?.data));
-            } else {
-                dispatch(fetchAddressFailure(response.message));
-            }
-        } catch (error) {
-            dispatch(fetchAddressFailure(error.message));
-        }
-    };
-};
-
-export const addUserAddressAction = (userId, address) => {
+export const addUserAddress = ({ inputs }) => {
     return async (dispatch) => {
         dispatch(addAddressStart());
         try {
-            const response = await UserAddressService.addUserAddress({ userId, address });
+            console.log('Inputs in action:', inputs);
+            const response = await UserAddressService.addUserAddress(inputs);
             if (response?.status) {
                 dispatch(addAddressSuccess(response?.data));
+                return Promise.resolve("OK");
             } else {
                 dispatch(addAddressFailure(response.message));
+                return Promise.reject(response.message);
             }
         } catch (error) {
-            dispatch(addAddressFailure(error.message));
+            console.error('Action error:', error);
+            dispatch(addAddressFailure(error.message || 'Unexpected Error'));
+            return Promise.reject(error.message || 'Unexpected Error');
         }
     };
 };
 
-export const updateUserAddressAction = (userId, address) => {
+
+export const updateUserAddress = ({ Id, inputs }) => {
     return async (dispatch) => {
         dispatch(updateAddressStart());
         try {
-            const response = await UserAddressService.updateUserAddress({ userId, address });
+            const response = await UserAddressService.updateUserAddress({ Id, inputs });
             if (response?.status) {
                 dispatch(updateAddressSuccess(response?.data));
+                return Promise.resolve("OK");
             } else {
                 dispatch(updateAddressFailure(response.message));
+                return Promise.reject("Error");
             }
         } catch (error) {
             dispatch(updateAddressFailure(error.message));
+            return Promise.reject("Error");
         }
     };
 };
 
+
+export const fetchUserAddresses = (Id) => {
+    return async (dispatch) => {
+        dispatch(fetchAddressStart());
+        try {
+            const response = await UserAddressService.getUserAddresses({ Id });
+            if (response?.status) {
+                dispatch(fetchAddressSuccess(response?.data));
+                return Promise.resolve("OK");
+            } else {
+                dispatch(fetchAddressFailure(response.message));
+                return Promise.reject("Error");
+            }
+        } catch (error) {
+            dispatch(fetchAddressFailure(error.message));
+            return Promise.reject("Error");
+        }
+    };
+};

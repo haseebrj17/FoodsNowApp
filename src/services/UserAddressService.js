@@ -7,55 +7,59 @@ const AuthRequest = axios.create({
     baseURL: ApiContants.BACKEND_API.BASE_API_URL,
 });
 
-const addUserAddress = async () => {
-    console.log(`UserService | addUserData`);
-    try {
-        let requestBody = {
-            Id: user?.Id,
-            StreetAddress: address?.streetAddress,
-            House: address?.house,
-            District: address?.district,
-            UnitNumber: address?.unitNumber,
-            FloorNumber: address?.floorNumber,
-            Notes: address?.notes,
-            Tag: address?.tag,
-            Latitude: address?.latitude,
-            Longitude: address?.longitude,
-            City: address?.city
+const handleResponse = (response, successMessage) => {
+    if (response?.status === 200) {
+        return {
+            status: true,
+            message: successMessage,
+            data: response?.data,
         };
-        let addAddressResponse = await AuthRequest.post(
-            `${ApiContants.BACKEND_API.BASE_API_URL}${ApiContants.BACKEND_API.ADD_ADDRESS}`,
-            // {
-            //     headers: authHeader(getToken()),
-            // },
-            { 
-                requestBody 
-            }
-        );
-
-        if (addAddressResponse?.status === 200) {
-            return {
-                status: true,
-                message: `Address added successfully`,
-                data: addAddressResponse?.data,
-            };
-        } else {
-            return {
-                status: false,
-                message: `Failed to add address`,
-            };
-        }
-    } catch (error) {
+    } else {
         return {
             status: false,
-            message: error?.response?.data?.message
-                ? error?.response?.data?.message
-                : `Failed to add Address`,
+            message: response?.data?.message || 'Unknown error occurred',
         };
     }
 };
 
-const updateUserAddress = async () => {
+const addUserAddress = async (inputs) => {
+    console.log(`UserService | addUserAddress`);
+    try {
+        let requestBody = {
+            Id: null,
+            StreetAddress: inputs?.StreetAddress,
+            House: inputs?.House,
+            District: inputs?.District,
+            UnitNumber: inputs?.UnitNumber,
+            FloorNumber: inputs?.FloorNumber,
+            Notes: inputs?.Notes,
+            Tag: inputs?.Tag,
+            IsDefault: inputs?.IsDefault,
+            Latitude: inputs?.Latitude,
+            Longitude: inputs?.Longitude,
+            CityName: inputs?.CityName,
+            CustomerId: inputs?.CustomerId,
+            PostalCode: inputs?.PostalCode
+        };
+
+        console.log('Request body:', requestBody);
+
+        let response = await axios.post(
+            `${ApiContants.BACKEND_API.BASE_API_URL}${ApiContants.BACKEND_API.ADD_ADDRESS}`,
+            requestBody
+        );
+
+        return handleResponse(response, 'Address added successfully');
+    } catch (error) {
+        console.error('Detailed API call error:', JSON.stringify(error, null, 2));
+        return {
+            status: false,
+            message: error?.response?.data?.message || `Failed to add Address`,
+        };
+    }
+};
+
+const updateUserAddress = async (user, address) => {
     console.log(`UserService | updateUserData`);
     try {
         let requestBody = {
@@ -71,36 +75,43 @@ const updateUserAddress = async () => {
             Longitude: address?.longitude,
             City: address?.city
         };
-        let addAddressResponse = await AuthRequest.post(
+        let response = await axios.post(
             `${ApiContants.BACKEND_API.BASE_API_URL}${ApiContants.BACKEND_API.ADD_ADDRESS}`,
-            // {
-            //     headers: authHeader(getToken()),
-            // },
-            {
-                requestBody 
-            }
+            requestBody
         );
 
-        if (addAddressResponse?.status === 200) {
-            return {
-                status: true,
-                message: `Address added successfully`,
-                data: addAddressResponse?.data,
-            };
-        } else {
-            return {
-                status: false,
-                message: `Failed to add address`,
-            };
-        }
+        return handleResponse(response, 'Address updated successfully');
     } catch (error) {
         return {
             status: false,
             message: error?.response?.data?.message
                 ? error?.response?.data?.message
-                : `Failed to add Address`,
+                : `Failed to update Address`,
         };
     }
 };
 
-export default { addUserAddress, updateUserAddress };
+const getUserAddresses = async ({ Id }) => {
+    console.log("UserService | getUserAddresses");
+    try {
+        let requestBody = {
+            Id: Id
+        };
+        console.log(requestBody)
+        let response = await axios.post(
+            `${ApiContants.BACKEND_API.BASE_API_URL}${ApiContants.BACKEND_API.GET_ADDRESS}`,
+            requestBody
+        );
+
+        return handleResponse(response, 'Address fetched successfully');
+    } catch (error) {
+        return {
+            status: false,
+            message: error?.response?.data?.message
+                ? error?.response?.data?.message
+                : `Failed to fetch Address`,
+        }
+    }
+}
+
+export default { addUserAddress, updateUserAddress, getUserAddresses };

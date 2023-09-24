@@ -6,7 +6,6 @@ import SplashScreen from "./SplashScreen";
 import SreachScreen from "./SreachScreen";
 import AccountScreen from "./AccountScreen";
 import CartScreen from "./CartScreen";
-import DishDetailScreen from "./DishDetailScreen";
 import LoginScreen from "./LoginScreen";
 import RegistrationScreen from "./RegistrationScreen";
 import VerificationScreen from './VerificationScreen';
@@ -31,7 +30,6 @@ export {
     SreachScreen,
     AccountScreen,
     CartScreen,
-    DishDetailScreen,
     LoginScreen,
     RegistrationScreen,
     VerificationScreen,

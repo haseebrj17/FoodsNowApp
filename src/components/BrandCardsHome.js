@@ -155,7 +155,16 @@ const BrandCardsHome = ({ brand, deliveryParams }) => {
             }
         );
         return (
-            <TouchableWithoutFeedback onPress={() => navigation.navigate('Details', { brand: brand, deliveryParams: deliveryParams })}>
+            <TouchableWithoutFeedback
+                onPress={() => navigation.navigate('HomeNavigator', {
+                    screen: 'Details',
+                    params: {
+                        brand: brand,
+                        deliveryParams: deliveryParams
+                    }
+                })
+                }
+            >
                 <View
                     style={{
                         width: width * 0.27,

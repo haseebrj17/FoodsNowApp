@@ -14,6 +14,8 @@ import { BottomSheetModal, BottomSheetModalProvider, BottomSheetBackdrop } from 
 import { NativeBaseProvider } from 'native-base';
 import { Input } from '@rneui/base';
 import { Button } from 'react-native-paper';
+import { StorageService } from '../services';
+import { useDispatch } from 'react-redux';
 
 
 const { width, height } = Dimensions.get('screen');
@@ -89,7 +91,6 @@ const LocationAccessScreen = ({ navigation }) => {
 
     const Address = async (location) => {
         const { latitude, longitude } = location;
-        console.log(latitude, longitude)
         let response = await Location.reverseGeocodeAsync({
             latitude,
             longitude
@@ -101,7 +102,6 @@ const LocationAccessScreen = ({ navigation }) => {
             setAddress(firstAddress)
             setAddressName(formattedAddressName);
             setCity(formattedAddressCity)
-            console.log(firstAddress)
         }
     }
 

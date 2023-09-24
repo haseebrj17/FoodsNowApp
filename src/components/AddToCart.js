@@ -91,36 +91,6 @@ const AddToCartModal = forwardRef((props, ref) => {
 
     const cartIconOpacity = useRef(new Animated.Value(0)).current;
 
-    const AnimatedDot = () => {
-        const dotStyle = {
-            width: 10,
-            height: 10,
-            borderRadius: 5,
-            backgroundColor: '#FFAF51',
-            position: 'absolute',
-            marginLeft: -30,
-            top: dotPosition.interpolate({
-                inputRange: [0, 1],
-                outputRange: [buttonPositionY, cartIconPositionY], // Set these values
-            }),
-            left: dotPosition.interpolate({
-                inputRange: [0, 1],
-                outputRange: [buttonPositionX, cartIconPositionX], // Set these values
-            }),
-        };
-
-        return <Animated.View style={dotStyle} />;
-    };
-
-    const AnimatedCartIcon = () => {
-        return (
-            <Animated.Image
-                source={require('../assets/icons/cart.png')} // Provide your cart icon here
-                style={{ width: 30, height: 30, position: 'absolute', top: '5%', zIndex: 99, right: '5%', opacity: cartIconOpacity }}
-            />
-        );
-    };
-
     ////////// Review and Star Mean //////////
 
     const sectionListRef = React.useRef(null);
@@ -209,19 +179,6 @@ const AddToCartModal = forwardRef((props, ref) => {
             .then((result) => {
                 if (result === 'OK') {
                     setQuantity(1)
-                    Animated.parallel([
-                        Animated.timing(dotPosition, {
-                            toValue: 1,
-                            duration: 1000,
-                            easing: Easing.inOut(Easing.quad),
-                            useNativeDriver: false,
-                        }),
-                        Animated.timing(cartIconOpacity, {
-                            toValue: 1,
-                            duration: 1000,
-                            useNativeDriver: false,
-                        }),
-                    ]).start();
                     modalRef.current.dismiss();
                 }
             })
@@ -330,45 +287,6 @@ const AddToCartModal = forwardRef((props, ref) => {
 
     const [expanded, setExpanded] = useState(false);
     const renderComment = ({ item: comment }) => {
-
-        // const seed = comment.comment ? comment.comment : comment.star
-
-        // const avatar = createAvatar(thumbs, {
-        //     seed: seed,
-        //     backgroundColor: ["b6e3f4", "c0aede", "d1d4f9", "ffd5dc", "ffdfbf"],
-        //     backgroundType: [
-        //         "gradientLinear",
-        //         "solid"
-        //     ],
-        //     mouth: [
-        //         "variant01",
-        //         "variant05",
-        //         "variant06",
-        //         "variant12",
-        //         "variant15",
-        //         "variant16",
-        //         "variant17",
-        //         "variant18",
-        //         "variant20",
-        //         "variant21",
-        //         "variant23",
-        //         "variant24",
-        //         "variant25",
-        //         "variant26",
-        //         "variant27",
-        //         "variant28",
-        //         "variant29",
-        //         "variant30",
-        //         "variant19"
-        //     ],
-        //     skinolor: [
-        //         "ecad80",
-        //         "f2d3b1",
-        //         "9e5622"
-        //     ],
-        //     radius: 50
-        //     // ... other options
-        // }).toString();
 
         const toggleExpansion = () => {
             setExpanded(!expanded);
@@ -485,7 +403,6 @@ const AddToCartModal = forwardRef((props, ref) => {
             handleIndicatorStyle={{ backgroundColor: '#fff' }}
         >
             <View style={styles.contentContainer}>
-                <AnimatedCartIcon />
                 <Image
                     source={{ uri: dish ? dish.Image : '' }}
                     style={styles.image}
@@ -651,7 +568,6 @@ const AddToCartModal = forwardRef((props, ref) => {
                             contentContainerStyle={styles.buttonContent}
                             onPress={() => handleAddToCart(dishId, selectedSize, selectedExtras, selectedDips, quantity)}
                         />
-                        <AnimatedDot />
                     </View>
                 </View>
             </View>

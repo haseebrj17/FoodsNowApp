@@ -188,7 +188,7 @@ const DishFormPizza = ({ dish, extras, dips, selectedSize, setSelectedSize, sele
         <View
             style={{
                 width,
-                height: Display.setHeight(110),
+
                 alignItems: 'flex-start',
                 justifyContent: 'flex-start',
                 padding: 10,

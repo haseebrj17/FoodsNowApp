@@ -15,6 +15,8 @@ import Loader from '../components/Loader';
 import Button from '../components/Button';
 import { useDispatch } from 'react-redux';
 import AuthenticationService from '../services/AuthenticationService';
+import { setToken } from '../actions/GeneralAction';
+import { StorageService } from '../services';
 
 const { width, height } = Dimensions.get('screen')
 
@@ -129,16 +131,22 @@ const LoginScreen = ({ navigation }) => {
             EmailAdress: inputs.email,
             Password: inputs.password
         };
-        AuthenticationService.login(user).then(response => {
+        try {
+            const response = await AuthenticationService.login(user);
             setIsLoading(false);
             if (response?.isSuccess) {
-                navigation.navigate('Main')
+                await StorageService.setToken(response.data.Token);
+                await dispatch(setToken(response.data.Token));
+                navigation.navigate('Main');
             } else {
                 setErrorMessage(response?.message);
             }
-        });
+        } catch (error) {
+            setIsLoading(false);
+            // Handle the error as you see fit, possibly set an error message
+        }
     };
-
+    
     const handleOnchange = (text, input) => {
         setInputs(prevState => ({ ...prevState, [input]: text }));
     };

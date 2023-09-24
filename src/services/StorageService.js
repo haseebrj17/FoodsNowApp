@@ -51,30 +51,6 @@ const getLocation = async () => {
     return location !== null ? JSON.parse(location) : null;
 }
 
-const setAddress = async (newAddress) => {
-    try {
-        const existingAddresses = await getAddress();
-        if (existingAddresses === null) {
-            await AsyncStorage.setItem('address', JSON.stringify([newAddress]));
-        } else {
-            const updatedAddresses = [...existingAddresses, newAddress];
-            await AsyncStorage.setItem('address', JSON.stringify(updatedAddresses));
-            console.log(updatedAddresses)
-        }
-    } catch (e) {
-    }
-}
-
-const getAddress = async () => {
-    try {
-        const value = await AsyncStorage.getItem('address');
-        if (value !== null) {
-            return JSON.parse(value);
-        }
-    } catch (e) {
-    }
-}
-
 export default { 
     setFirstTimeUse, 
     getFirstTimeUse, 
@@ -88,6 +64,4 @@ export default {
     setAppleUser, 
     getLocation, 
     setLocation,
-    setAddress,
-    getAddress,
 };

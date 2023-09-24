@@ -21,6 +21,10 @@ import { clientData } from '../shared/ClientData';
 import { useDispatch, useSelector } from "react-redux";
 import { fetchBrands } from "../actions/BrandAction";
 import { db } from "../SqlLiteDB";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { createAvatar } from '@dicebear/core';
+import { adventurer, thumbs } from '@dicebear/collection';
+import { SvgXml } from 'react-native-svg';
 
 const config = require('../../package.json').projectName;
 const CLIENT_NAME = config.name;
@@ -28,6 +32,48 @@ const CLIENT_NAME = config.name;
 const { width, height } = Dimensions.get('window');
 
 console.log(width, height)
+
+// const Avatar = ({ seed }) => {
+
+//     const avatar = createAvatar(thumbs, {
+//         seed: seed,
+//         backgroundColor: ["b6e3f4", "c0aede", "d1d4f9", "ffd5dc", "ffdfbf"],
+//         backgroundType: [
+//             "gradientLinear",
+//             "solid"
+//         ],
+//         mouth: [
+//             "variant01",
+//             "variant05",
+//             "variant06",
+//             "variant12",
+//             "variant15",
+//             "variant16",
+//             "variant17",
+//             "variant18",
+//             "variant20",
+//             "variant21",
+//             "variant23",
+//             "variant24",
+//             "variant25",
+//             "variant26",
+//             "variant27",
+//             "variant28",
+//             "variant29",
+//             "variant30",
+//             "variant19"
+//         ],
+//         skinolor: [
+//             "ecad80",
+//             "f2d3b1",
+//             "9e5622"
+//         ],
+//         radius: 50
+//         // ... other options
+//     }).toString();
+
+//     return avatar
+// }
 
 const HomeScreen = () => {
     const [fontsLoaded] = useFonts({
@@ -85,7 +131,11 @@ const HomeScreen = () => {
         fetchLocationAndDashboard();
     }, []);
 
+    const { isFirstTimeUse } = useSelector(
+        (state) => state.generalState
+    )
 
+    console.log(isFirstTimeUse)
 
     // const dispatch = useDispatch();
 
@@ -149,6 +199,7 @@ const HomeScreen = () => {
                         color="#F4E4CD"
                         disableElevation={true}
                     />
+                    {/* <SvgXml xml={<Avatar seed={'heelo'} />}/> */}
                     <Button
                         title="Sign Up"
                         color="#FFAF51"

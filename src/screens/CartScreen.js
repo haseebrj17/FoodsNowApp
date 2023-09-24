@@ -15,6 +15,9 @@ import { Separator } from '../components'
 import Button from '../components/Button'
 import empty from '../assets/icons/emptycart.png'
 import { Store } from '../Store';
+import { ActivityIndicator } from 'react-native-paper';
+import globalEventEmitter from '../events/globalEventEmitter';
+import LoadingOverlay from '../components/LoadingOverlay';
 
 const { width, height } = Dimensions.get('window');
 
@@ -26,14 +29,31 @@ const CartScreen = ({ navigation }) => {
         dispatch(getCartItems());
     }, [dispatch]);
 
-    useEffect(() => {
-        const unsubscribe = navigation.addListener('focus', () => {
-            // Fetch cart data whenever the screen comes into focus
-            dispatch(getCartItems());
-        });
+    const { cart, isLoading, error, subLoading } = useSelector(
+        (state) => state.cartState
+    );
 
-        return unsubscribe;
-    }, [navigation, dispatch]);
+    const { isAppLoading, token, isFirstTimeUse, userData, location } = useSelector(
+        (state) => state.generalState
+    )
+
+    useEffect(() => {
+        console.log(`IsLoading ${isAppLoading}, Token ${token}, isFirst ${isFirstTimeUse}, userData ${userData}, Location ${location}`)
+    }, [isAppLoading, token, isFirstTimeUse, userData, location])
+
+    useEffect(() => {
+        const handleRefetch = () => {
+            dispatch(getCartItems())
+        };
+
+        // Start listening to the event
+        globalEventEmitter.addListener('refetchCart', handleRefetch);
+
+        // Cleanup on component unmount
+        return () => {
+            globalEventEmitter.removeListener('refetchCart', handleRefetch);
+        };
+    }, []);
 
     const [loading, setLoading] = useState(true)
 
@@ -44,6 +64,8 @@ const CartScreen = ({ navigation }) => {
     const [itemTotal, setItemTotal] = useState(null);
 
     const [cartData, setCartDate] = useState(null);
+
+    const [checkout, setCheckout] = useState(null);
 
     const [vatRate, setVatRate] = useState(null);
 
@@ -69,7 +91,7 @@ const CartScreen = ({ navigation }) => {
                 const location = await StorageService.getLocation();
                 if (location && location.Country) {
                     setLocationData(location);
-                    setMinOrder(location.DeliveryParams.minOrderValue)
+                    setMinOrder(location?.DeliveryParams?.minOrderValue)
                     const rate = await fetchVATRateForCountry(location.Country);
                     if (rate !== null) {
                         setVatRate((rate / 100) + 1);
@@ -77,8 +99,9 @@ const CartScreen = ({ navigation }) => {
                 }
 
                 await calculateTotalPrice(cartItems).then(response => {
-                    setGrandTotal(response.grandTotal)
+                    setGrandTotal(response.grandTotal + location.DeliveryParams.deliverCharges)
                     setCartDate(response.productDetailsArray)
+                    setCheckout(response.checkoutArray)
                 });
 
             } catch (error) {
@@ -112,6 +135,7 @@ const CartScreen = ({ navigation }) => {
     const calculateTotalPrice = async (cartItems) => {
         let grandTotal = 0;
         const productDetailsArray = [];
+        const checkoutArray = [];
 
         // Iterate over cartItems to fetch product details
         const productPromises = cartItems?.map(async item => {
@@ -186,13 +210,29 @@ const CartScreen = ({ navigation }) => {
                 ProductExtraDippings: selectedDips,
                 ProductExtraTroppings: selectedToppings,
                 itemTotal,
-                quantity: quantity
+                quantity: quantity,
             });
+            checkoutArray.push({
+                Quantity: quantity,
+                ProductId: productDetails.data.Product.Id,
+                ProductPriceId: productDetails.data.Product.Prices.find(price => price.Description === productId.selectedSize)?.Id,
+                ProductExtraDippings: selectedDips.map(dip => ({
+                    Quantity: "1",
+                    ProductExtraDippingId: dip.Id,
+                    ProductExtraDippingPriceId: dip.Prices.find(price => price.Description === productId.selectedDippings[dip.Name].priceDescription)?.Id
+                })),
+                ProductExtraTroppings: selectedToppings.map(topping => ({
+                    Quantity: "1",
+                    ProductExtraToppingId: topping.Id,
+                    ProductExtraToppingPriceId: topping.Prices.find(price => price.Description === productId.selectedToppings[topping.Name].priceDescription)?.Id
+                }))
+            })
         });
 
         return {
             grandTotal,
-            productDetailsArray
+            productDetailsArray,
+            checkoutArray
         };
     }
 
@@ -303,6 +343,10 @@ const CartScreen = ({ navigation }) => {
                 </View>
             </View>
         )
+    }
+
+    if (subLoading) {
+        return <LoadingOverlay />
     }
 
     return (
@@ -653,12 +697,20 @@ const CartScreen = ({ navigation }) => {
                                                                 alignSelf: 'center',
                                                             }}
                                                         >
-                                                            <Button
-                                                                disabled={grandTotal >= minOrder ? false : true}
-                                                                color={grandTotal >= minOrder ? null : '#d9d9d9'}
-                                                                title='Proceed To Checkout'
-                                                                onPress={() => navigation.navigate('CartNavigator', { screen: 'Checkout' })}
-                                                            />
+                                                            {
+                                                                token === null || token === '' ? (
+                                                                    <Button
+                                                                        title='Sign Up to Checkout'
+                                                                        onPress={() => navigation.navigate('Registration')}
+                                                                    />
+                                                                ) : (
+                                                                    <Button
+                                                                        disabled={grandTotal >= minOrder ? false : true}
+                                                                        color={grandTotal >= minOrder ? null : '#d9d9d9'}
+                                                                        title='Proceed To Checkout'
+                                                                        onPress={() => navigation.navigate('CartNavigator', { screen: 'Checkout', params: { checkoutData: checkout, cartData: cartData, grandTotal: grandTotal } })}
+                                                                    />
+                                                                )}
                                                         </View>
                                                     </View>
                                                 </View>

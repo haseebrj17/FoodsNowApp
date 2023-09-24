@@ -1,16 +1,16 @@
-import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
+import { configureStore, createListenerMiddleware } from '@reduxjs/toolkit';
 import Reducers from './reducers';
 import thunk from 'redux-thunk';
+import cartRefetchMiddleware from './middleware/cartRefetchMiddleware';
+import { subLoadingMiddleware } from './middleware/subLoadingMiddleware';
 
 const Store = configureStore({
     reducer: Reducers,
-    middleware: getDefaultMiddleware({
-        immutableCheck: false,
-    })
-    .concat(thunk)
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware()
+        .concat(cartRefetchMiddleware, subLoadingMiddleware)
 });
 
 const getToken = () => Store?.getState()?.generalState?.token;
-const getLocation = () => Store?.getState()?.generalState?.location;
 
-export { Store, getToken, getLocation };
+export { Store, getToken };

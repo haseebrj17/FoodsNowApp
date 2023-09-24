@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { TouchableOpacity, Animated, StyleSheet, Easing } from 'react-native';
 
 const containerStyle = (size, isActive) => ({
-    backgroundColor: isActive ? '#325664' : '#f1f1f1',
+    backgroundColor: isActive ? '#325964' : '#d4d4d4',
     height: 32 * size,
     width: 64 * size,
     borderRadius: 32,
@@ -21,7 +21,7 @@ const toggleStyle = (size, animatedValue) => ({
     ],
 });
 
-const ToggleButton = ({ size }) => {
+const ToggleButton = ({ size, onToggle }) => {
     const [isActive, setIsActive] = useState(false);
     const [animatedValue, setAnimatedValue] = useState(new Animated.Value(0));
 
@@ -34,6 +34,7 @@ const ToggleButton = ({ size }) => {
             useNativeDriver: true,
         }).start();
         setIsActive(!isActive);
+        onToggle && onToggle(!isActive);
     };
 
     return (

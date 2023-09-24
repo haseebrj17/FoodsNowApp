@@ -4,11 +4,14 @@ import {
     ADD_TO_CART_START,
     ADD_TO_CART_SUCCESS,
     ADD_TO_CART_FAILURE,
+    SET_SUB_LOADING,
+    UNSET_SUB_LOADING,
 } from '../actions/CartAction';
 
 const initialState = {
     cart: [],
     isLoading: false,
+    subLoading: false,
     error: null,
 };
 
@@ -23,6 +26,10 @@ export default (state = initialState, action) => {
             return { ...state, isLoading: false, error: null };
         case ADD_TO_CART_FAILURE:
             return { ...state, isLoading: false, error: action?.payload };
+        case SET_SUB_LOADING:
+            return { ...state, subLoading: true };
+        case UNSET_SUB_LOADING:
+            return { ...state, subLoading: false };
         default:
             return state;
     }

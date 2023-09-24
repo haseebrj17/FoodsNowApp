@@ -5,6 +5,21 @@ export const SET_IS_LOADING = 'SET_IS_LOADING';
 export const ADD_TO_CART_START = 'ADD_TO_CART_START';
 export const ADD_TO_CART_SUCCESS = 'ADD_TO_CART_SUCCESS';
 export const ADD_TO_CART_FAILURE = 'ADD_TO_CART_FAILURE';
+export const SET_SUB_LOADING = 'SET_SUB_LOADING';
+export const UNSET_SUB_LOADING = 'UNSET_SUB_LOADING';
+
+export const setSubLoading = () => ({
+    type: SET_SUB_LOADING,
+});
+
+export const unsetSubLoading = () => ({
+    type: UNSET_SUB_LOADING,
+});
+
+export const setIsLoading = (loading) => ({
+    type: SET_IS_LOADING,
+    payload: loading,
+});
 
 export const addToCartStart = () => ({
     type: ADD_TO_CART_START,
@@ -129,27 +144,32 @@ export const getCartItems = () => (dispatch) => {
 };
 
 export const incrementQuantity = (cartItemId) => (dispatch) => {
+    dispatch(setSubLoading());
     db.transaction(
         (tx) => {
             tx.executeSql(
                 'UPDATE cart SET quantity = quantity + 1 WHERE id = ?;',
                 [cartItemId],
                 (_, resultSet) => {
-                    dispatch(getCartItems());  // Refresh the cart items after successful increment
+                    dispatch(getCartItems());
+                    dispatch(unsetSubLoading());
                 },
                 (_, error) => {
                     console.log("Database error while incrementing quantity:", error);
+                    dispatch(unsetSubLoading());
                     return true;
                 }
             );
         },
         (error) => {
             console.log("Transaction error while incrementing quantity:", error);
+            dispatch(unsetSubLoading());
         }
     );
 };
 
 export const decrementQuantity = (cartItemId) => (dispatch) => {
+    dispatch(setSubLoading());
     db.transaction(
         (tx) => {
             tx.executeSql(
@@ -157,16 +177,19 @@ export const decrementQuantity = (cartItemId) => (dispatch) => {
                 [cartItemId],
                 (_, { rows }) => {
                     if (rows._array[0].quantity === 1) {
-                        dispatch(removeFromCart(cartItemId));  // If quantity is 1, remove item from cart
+                        dispatch(removeFromCart(cartItemId));
+                        dispatch(unsetSubLoading());
                     } else {
                         tx.executeSql(
                             'UPDATE cart SET quantity = quantity - 1 WHERE id = ?;',
                             [cartItemId],
                             (_, resultSet) => {
-                                dispatch(getCartItems());  // Refresh the cart items after successful decrement
+                                dispatch(getCartItems());
+                                dispatch(unsetSubLoading());
                             },
                             (_, error) => {
                                 console.log("Database error while decrementing quantity:", error);
+                                dispatch(unsetSubLoading());
                                 return true;
                             }
                         );
@@ -174,12 +197,17 @@ export const decrementQuantity = (cartItemId) => (dispatch) => {
                 },
                 (_, error) => {
                     console.log("Database error while checking item quantity:", error);
+                    dispatch(unsetSubLoading());
                     return true;
                 }
             );
         },
         (error) => {
             console.log("Transaction error while decrementing quantity:", error);
+            dispatch(unsetSubLoading());
+        },
+        () => {
+            dispatch(unsetSubLoading());
         }
     );
 };

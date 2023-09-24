@@ -42,6 +42,7 @@ import { Display } from "../utils";
 import { Separator } from "../components";
 import Skeleton from "../components/Skeleton";
 import { GetImageAspectRatio } from "../utils/ImageAspect";
+import { addToCart, getCartItems } from "../actions/CartAction";
 
 const { width, height } = Dimensions.get('screen');
 
@@ -71,6 +72,11 @@ const DetailsScreen = ({ route }) => {
     const [dips, setDips] = useState(null);
 
     const dispatch = useDispatch();
+
+    const { cart } = useSelector(
+        (state) => state.cartState
+    );
+
     const { products, loadingProducts, error } = useSelector(
         (state) => state.productState
     );
@@ -96,6 +102,42 @@ const DetailsScreen = ({ route }) => {
             setExtras(products.ProductExtraTroppings)
         }
     }, [products])
+
+    ///////////////  Add To Cart Funtion  ///////////////
+
+    const handleCart = (dishes) => {
+        if (dishes.showExtraTropping === false && dishes.showExtraDipping === false && dishes.Prices.length === 1) {
+            const newInput = {
+                ...input,
+                dishId: dishes.Id
+            };
+            setInput(newInput);
+            handleAddToCart(newInput);
+        } else {
+            handleOpenModal(dishes);
+        }
+    };
+
+    const [input, setInput] = useState({
+        dishId: null,
+        selectedSize: "Normal",
+        selectedExtras: {},
+        selectedDips: {},
+        quantity: 1
+    })
+
+    const handleAddToCart = (newInput) => {
+        const { dishId, selectedSize, selectedExtras, selectedDips, quantity } = newInput;
+        dispatch(addToCart({ dishId, selectedSize, selectedExtras, selectedDips, quantity }))
+            .then((result) => {
+                if (result === 'OK') {
+                    dispatch(getCartItems())
+                }
+            })
+            .catch((error) => {
+                console.error('Error adding to cart:', error);
+            })
+    };
 
     ///////////////  Extras and Dips for Dish Form  ///////////////
 
@@ -340,7 +382,7 @@ const DetailsScreen = ({ route }) => {
                             </HStack>
                         </View>
                         <Button
-                            onPress={() => handleOpenModal(dishes)}
+                            onPress={() => handleCart(dishes)}
                             title="Add to Cart"
                             color="#FFAF51"
                             titleStyle={{ color: "#325962", fontSize: 10, fontWeight: 800 }}
@@ -391,151 +433,151 @@ const DetailsScreen = ({ route }) => {
     const SkeletonRender = () => {
         return (
             <View
-            style={{
-                backgroundColor: '#fff'
-            }}
-        >
-            <Skeleton height={Display.setHeight(30)} width={Display.setWidth(100)} style={{ alignSelf: 'center', borderRadius: 6 }} />
-            <View
                 style={{
-                    width: '100%',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginTop: Display.setHeight(0.2)
+                    backgroundColor: '#fff'
                 }}
             >
-                <View>
-                    <Skeleton height={Display.setHeight(8)} width={Display.setWidth(100)} style={{ borderRadius: 2 }} />
-                    <View
-                        style={{
-                            width: Display.setHeight(5),
-                            height: Display.setHeight(5),
-                            borderRadius: 2,
-                            position: 'absolute',
-                            left: '5%',
-                            top: '-70%',
-                        }}
-                    >
-                        <Skeleton height={Display.setHeight(9)} width={Display.setHeight(9)} style={{ borderRadius: 2 }} backgroundColor={"rgba(256, 256, 256, 1)"} />
-                        <Skeleton height={Display.setHeight(3)} width={Display.setHeight(30)} style={{ borderRadius: 5, marginTop: Display.setHeight(1) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
-                    </View>
-                </View>
-                <View>
-                    <Skeleton height={Display.setHeight(6)} width={Display.setWidth(100)} style={{ borderRadius: 2, marginTop: Display.setHeight(0.2) }} />
-                    <View
-                        style={{
-                            width: Display.setWidth(90),
-                            position: 'absolute',
-                            alignSelf: 'center',
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                            alignItems: 'center'
-                        }}
-                    >
-                        <Skeleton height={Display.setHeight(3)} width={Display.setHeight(10)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
-                        <Skeleton height={Display.setHeight(3)} width={Display.setHeight(10)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
-                    </View>
-                </View>
-                <View>
-                    <View
-                        style={{
-                            width: Display.setWidth(100),
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            justifyContent: 'space-evenly',
-                            margin: Display.setHeight(1)
-                        }}
-                    >
-                        <View>
-                            <Skeleton height={Display.setHeight(35)} width={Display.setWidth(45)} style={{ borderRadius: 2, marginTop: Display.setHeight(0.2) }} />
-                            <View
-                                style={{
-                                    position: 'absolute',
-                                    bottom: '0%',
-                                    alignSelf: 'center',
-                                    justifyContent: 'flex-start',
-                                    alignItems: 'flex-start',
-                                    width: Display.setWidth(40),
-                                    marginBottom: Display.setHeight(1)
-                                }}
-                            >
-                                <Skeleton height={Display.setHeight(3)} width={Display.setWidth(34)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
-                                <Skeleton height={Display.setHeight(4)} width={Display.setWidth(40)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
-                                <Skeleton height={Display.setHeight(3)} width={Display.setWidth(8)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
-                                <Skeleton height={Display.setHeight(4)} width={Display.setWidth(40)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
-                            </View>
-                        </View>
-                        <View>
-                            <Skeleton height={Display.setHeight(35)} width={Display.setWidth(45)} style={{ borderRadius: 2, marginTop: Display.setHeight(0.2) }} />
-                            <View
-                                style={{
-                                    position: 'absolute',
-                                    bottom: '0%',
-                                    alignSelf: 'center',
-                                    justifyContent: 'flex-start',
-                                    alignItems: 'flex-start',
-                                    width: Display.setWidth(40),
-                                    marginBottom: Display.setHeight(1)
-                                }}
-                            >
-                                <Skeleton height={Display.setHeight(3)} width={Display.setWidth(34)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
-                                <Skeleton height={Display.setHeight(4)} width={Display.setWidth(40)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
-                                <Skeleton height={Display.setHeight(3)} width={Display.setWidth(8)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
-                                <Skeleton height={Display.setHeight(4)} width={Display.setWidth(40)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
-                            </View>
+                <Skeleton height={Display.setHeight(30)} width={Display.setWidth(100)} style={{ alignSelf: 'center', borderRadius: 6 }} />
+                <View
+                    style={{
+                        width: '100%',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        marginTop: Display.setHeight(0.2)
+                    }}
+                >
+                    <View>
+                        <Skeleton height={Display.setHeight(8)} width={Display.setWidth(100)} style={{ borderRadius: 2 }} />
+                        <View
+                            style={{
+                                width: Display.setHeight(5),
+                                height: Display.setHeight(5),
+                                borderRadius: 2,
+                                position: 'absolute',
+                                left: '5%',
+                                top: '-70%',
+                            }}
+                        >
+                            <Skeleton height={Display.setHeight(9)} width={Display.setHeight(9)} style={{ borderRadius: 2 }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                            <Skeleton height={Display.setHeight(3)} width={Display.setHeight(30)} style={{ borderRadius: 5, marginTop: Display.setHeight(1) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
                         </View>
                     </View>
-                    <View
-                        style={{
-                            width: Display.setWidth(100),
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            justifyContent: 'space-evenly',
-                            margin: Display.setHeight(1)
-                        }}
-                    >
-                        <View>
-                            <Skeleton height={Display.setHeight(35)} width={Display.setWidth(45)} style={{ borderRadius: 2, marginTop: Display.setHeight(0.2) }} />
-                            <View
-                                style={{
-                                    position: 'absolute',
-                                    bottom: '0%',
-                                    alignSelf: 'center',
-                                    justifyContent: 'flex-start',
-                                    alignItems: 'flex-start',
-                                    width: Display.setWidth(40),
-                                    marginBottom: Display.setHeight(1)
-                                }}
-                            >
-                                <Skeleton height={Display.setHeight(3)} width={Display.setWidth(34)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
-                                <Skeleton height={Display.setHeight(4)} width={Display.setWidth(40)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
-                                <Skeleton height={Display.setHeight(3)} width={Display.setWidth(8)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
-                                <Skeleton height={Display.setHeight(4)} width={Display.setWidth(40)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                    <View>
+                        <Skeleton height={Display.setHeight(6)} width={Display.setWidth(100)} style={{ borderRadius: 2, marginTop: Display.setHeight(0.2) }} />
+                        <View
+                            style={{
+                                width: Display.setWidth(90),
+                                position: 'absolute',
+                                alignSelf: 'center',
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
+                                alignItems: 'center'
+                            }}
+                        >
+                            <Skeleton height={Display.setHeight(3)} width={Display.setHeight(10)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                            <Skeleton height={Display.setHeight(3)} width={Display.setHeight(10)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                        </View>
+                    </View>
+                    <View>
+                        <View
+                            style={{
+                                width: Display.setWidth(100),
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                justifyContent: 'space-evenly',
+                                margin: Display.setHeight(1)
+                            }}
+                        >
+                            <View>
+                                <Skeleton height={Display.setHeight(35)} width={Display.setWidth(45)} style={{ borderRadius: 2, marginTop: Display.setHeight(0.2) }} />
+                                <View
+                                    style={{
+                                        position: 'absolute',
+                                        bottom: '0%',
+                                        alignSelf: 'center',
+                                        justifyContent: 'flex-start',
+                                        alignItems: 'flex-start',
+                                        width: Display.setWidth(40),
+                                        marginBottom: Display.setHeight(1)
+                                    }}
+                                >
+                                    <Skeleton height={Display.setHeight(3)} width={Display.setWidth(34)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                                    <Skeleton height={Display.setHeight(4)} width={Display.setWidth(40)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                                    <Skeleton height={Display.setHeight(3)} width={Display.setWidth(8)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                                    <Skeleton height={Display.setHeight(4)} width={Display.setWidth(40)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                                </View>
+                            </View>
+                            <View>
+                                <Skeleton height={Display.setHeight(35)} width={Display.setWidth(45)} style={{ borderRadius: 2, marginTop: Display.setHeight(0.2) }} />
+                                <View
+                                    style={{
+                                        position: 'absolute',
+                                        bottom: '0%',
+                                        alignSelf: 'center',
+                                        justifyContent: 'flex-start',
+                                        alignItems: 'flex-start',
+                                        width: Display.setWidth(40),
+                                        marginBottom: Display.setHeight(1)
+                                    }}
+                                >
+                                    <Skeleton height={Display.setHeight(3)} width={Display.setWidth(34)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                                    <Skeleton height={Display.setHeight(4)} width={Display.setWidth(40)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                                    <Skeleton height={Display.setHeight(3)} width={Display.setWidth(8)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                                    <Skeleton height={Display.setHeight(4)} width={Display.setWidth(40)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                                </View>
                             </View>
                         </View>
-                        <View>
-                            <Skeleton height={Display.setHeight(35)} width={Display.setWidth(45)} style={{ borderRadius: 2, marginTop: Display.setHeight(0.2) }} />
-                            <View
-                                style={{
-                                    position: 'absolute',
-                                    bottom: '0%',
-                                    alignSelf: 'center',
-                                    justifyContent: 'flex-start',
-                                    alignItems: 'flex-start',
-                                    width: Display.setWidth(40),
-                                    marginBottom: Display.setHeight(1)
-                                }}
-                            >
-                                <Skeleton height={Display.setHeight(3)} width={Display.setWidth(34)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
-                                <Skeleton height={Display.setHeight(4)} width={Display.setWidth(40)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
-                                <Skeleton height={Display.setHeight(3)} width={Display.setWidth(8)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
-                                <Skeleton height={Display.setHeight(4)} width={Display.setWidth(40)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                        <View
+                            style={{
+                                width: Display.setWidth(100),
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                justifyContent: 'space-evenly',
+                                margin: Display.setHeight(1)
+                            }}
+                        >
+                            <View>
+                                <Skeleton height={Display.setHeight(35)} width={Display.setWidth(45)} style={{ borderRadius: 2, marginTop: Display.setHeight(0.2) }} />
+                                <View
+                                    style={{
+                                        position: 'absolute',
+                                        bottom: '0%',
+                                        alignSelf: 'center',
+                                        justifyContent: 'flex-start',
+                                        alignItems: 'flex-start',
+                                        width: Display.setWidth(40),
+                                        marginBottom: Display.setHeight(1)
+                                    }}
+                                >
+                                    <Skeleton height={Display.setHeight(3)} width={Display.setWidth(34)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                                    <Skeleton height={Display.setHeight(4)} width={Display.setWidth(40)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                                    <Skeleton height={Display.setHeight(3)} width={Display.setWidth(8)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                                    <Skeleton height={Display.setHeight(4)} width={Display.setWidth(40)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                                </View>
+                            </View>
+                            <View>
+                                <Skeleton height={Display.setHeight(35)} width={Display.setWidth(45)} style={{ borderRadius: 2, marginTop: Display.setHeight(0.2) }} />
+                                <View
+                                    style={{
+                                        position: 'absolute',
+                                        bottom: '0%',
+                                        alignSelf: 'center',
+                                        justifyContent: 'flex-start',
+                                        alignItems: 'flex-start',
+                                        width: Display.setWidth(40),
+                                        marginBottom: Display.setHeight(1)
+                                    }}
+                                >
+                                    <Skeleton height={Display.setHeight(3)} width={Display.setWidth(34)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                                    <Skeleton height={Display.setHeight(4)} width={Display.setWidth(40)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                                    <Skeleton height={Display.setHeight(3)} width={Display.setWidth(8)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                                    <Skeleton height={Display.setHeight(4)} width={Display.setWidth(40)} style={{ borderRadius: 5, marginTop: Display.setHeight(2) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                                </View>
                             </View>
                         </View>
                     </View>
                 </View>
             </View>
-        </View>
         )
     }
 
@@ -788,6 +830,56 @@ const DetailsScreen = ({ route }) => {
                                 backgroundColor='#fff'
                             />
                         </View>
+                        {
+                            cart.length >= 1 &&
+                            <View
+                                style={{
+                                    width,
+                                    height: height * 0.09,
+                                    borderRadius: 12,
+                                    backgroundColor: '#f1f1f1',
+                                    position: 'absolute',
+                                    bottom: '0%',
+                                    shadowColor: '#000000',
+                                    shadowOffset: {
+                                        width: 0,
+                                        height: -10,
+                                    },
+                                    shadowOpacity: 0.3,
+                                    shadowRadius: 5,
+                                    alignItems: 'center',
+                                    justifyContent: 'space-evenly',
+                                    flexDirection: 'row'
+                                }}
+                            >
+                                <View
+                                    style={{
+                                        alignItems: 'center',
+                                        justifyContent: 'center'
+                                    }}
+                                >
+                                    <Text
+                                        style={{
+                                            fontSize: 16,
+                                            fontWeight: 700,
+                                            color: '#325964'
+                                        }}
+                                    >Total items in cart: {cart?.length}</Text>
+                                </View>
+                                <Button
+                                    onPress={() => navigation.navigate('Cart')}
+                                    title={<CustomTitleCart />}
+                                    color="#FFAF51"
+                                    titleStyle={{ color: "#325962", fontSize: 15, fontWeight: 800 }}
+                                    uppercase={false}
+                                    contentContainerStyle={{
+                                        height: Display.setHeight(5),
+                                        alignItems: 'center',
+                                        justifyContent: 'center'
+                                    }}
+                                ></Button>
+                            </View>
+                        }
                         <AddToCart
                             ref={modalRef}
                             dish={selectedDish}
@@ -803,6 +895,26 @@ const DetailsScreen = ({ route }) => {
     )
 }
 
+const CustomTitleCart = ({ CartItem }) => {
+    return (
+        <View
+            style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexDirection: 'row',
+            }}
+        >
+            <Text
+                style={{
+                    color: "#325962",
+                    fontSize: 15,
+                    fontWeight: 800
+                }}
+            >View Cart </Text>
+            <MaterialIcons name="shopping-cart" size={28} color="#325964" />
+        </View>
+    )
+}
 
 const styles = StyleSheet.create({
     Container: {

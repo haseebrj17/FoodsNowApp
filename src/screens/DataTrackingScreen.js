@@ -32,7 +32,7 @@ const DataTrackingScreen = ({ navigation }) => {
                     <View style={styles.button}>
                         <Text style={styles.buttonText}>Sie können diese Optionen in der Einstellungs-App{'\n'}Ihres Telefons ändern</Text>
                         <Button
-                            onPress={() => navigation.navigate('Home')}
+                            onPress={() => navigation.navigate('Location')}
                             title='weiter'
                             color="#325962"
                             contentContainerStyle={styles.button}

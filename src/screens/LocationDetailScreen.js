@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Dimensions, TouchableOpacity, ScrollView, FlatList, Animated } from 'react-native';
+import { StyleSheet, Text, View, Dimensions, TouchableOpacity, ScrollView, FlatList, Animated, Alert } from 'react-native';
 import React, { useState, useEffect, useRef } from 'react';
 import MapView, { PROVIDER_GOOGLE, Callout, Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
@@ -9,6 +9,9 @@ import { Display } from '../utils';
 import { Fonts } from '../assets/constants';
 import Input from '../components/Input';
 import { Button } from 'react-native-paper';
+import { useDispatch, useSelector } from 'react-redux';
+import { addUserAddress } from '../actions/UserAddressAction';
+import { ToggleButton } from '../components';
 
 const { width, height } = Dimensions.get('screen');
 
@@ -81,16 +84,58 @@ const AddresseButton = ({ onpress }) => {
             fontWeight: '700',
             letterSpacing: 1,
         }}
-    >Add Addresse Details</Button>
+    >Add Addresse</Button>
 }
 
 
 const LocationDetailScreen = ({ route, navigation }) => {
-    const { address } = route.params;
-    const { selectedLocation } = route.params;
+    const address = route.params.address;
+    const selectedLocation = route.params.selectedLocation;
 
-    console.log(selectedLocation)
+    const dispatch = useDispatch()
 
+    const processAddressAddition = async (inputs) => {
+        try {
+            // Fetch user data
+            const data = await StorageService.getUserData();
+            const parsedData = JSON.parse(data);
+            setUserId(parsedData.Id);
+
+            // Update the inputs state with the CustomerId
+            const updatedInputs = {
+                ...inputs,
+                CustomerId: parsedData.Id
+            };
+
+            // Handle address addition
+            const response = await dispatch(addUserAddress({ inputs: updatedInputs }));
+            if (response === "OK") {
+                navigation.navigate('Main');
+            } else {
+                throw new Error('Unexpected response when adding address.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            Alert.alert('Error', 'An error occurred while adding the address.');
+            navigation.navigate('Main');
+        }
+    };
+
+    // const handleAddAddress = async (inputs) => {
+    //     try {
+    //         const response = await dispatch(addUserAddress(inputs));
+    //         if (response === "OK") {
+    //             navigation.navigate('Main');
+    //         } else {
+    //             throw new Error('Unexpected response when adding address.');
+    //         }
+    //     } catch (error) {
+    //         Alert.alert('Error', 'An error occurred while adding the address.');
+    //         navigation.navigate('Main');
+    //     }
+    // };
+
+    const [userId, setUserId] = useState()
     const [region, setRegion] = useState(null);
     const [newAddress, setNewAddress] = useState(null);
     const [showCallout, setShowCallout] = useState(true);
@@ -124,22 +169,25 @@ const LocationDetailScreen = ({ route, navigation }) => {
         Latitude: selectedLocation.latitude,
         Longitude: selectedLocation.longitude,
         CityName: address.city,
-        CustomerId: selectedLocation,
         PostalCode: address.postalCode
     });
 
-    // console.log(inputs)
+    const onToggleChange = (newState) => {
+        setInputs(prevState => ({ ...prevState, IsDefault: newState }));
+        console.log(inputs)
+    };
 
     const handleOnchange = (text, input) => {
-        if (input === 'tag') {
+        if (input === 'Tag') {
             setOtherTagInput(text);
-            if (text != 'Home' && 'Work' && 'Friend') {
+            if (text !== 'Home' && text !== 'Work' && text !== 'Friend') {
                 setInputs(prevState => ({ ...prevState, [input]: text }));
             }
             return text
             setData(newData);
         } else {
             setInputs(prevState => ({ ...prevState, [input]: text }));
+            console.log(inputs)
         }
     };
 
@@ -159,7 +207,7 @@ const LocationDetailScreen = ({ route, navigation }) => {
             }
         } else {
             setClickedTag(tag);
-            setInputs(prevState => ({ ...prevState, 'tag': tag }));
+            setInputs(prevState => ({ ...prevState, 'Tag': tag }));
 
             if (name === 'Other') {
                 Animated.timing(inputHeight, {
@@ -180,7 +228,6 @@ const LocationDetailScreen = ({ route, navigation }) => {
             }
         }
     };
-
 
     useEffect(() => {
         setStates();
@@ -453,7 +500,7 @@ const LocationDetailScreen = ({ route, navigation }) => {
                                     if (navigation.canGoBack()) {
                                         navigation.goBack();
                                     } else {
-                                        navigation.navigate('Home');
+                                        navigation.navigate('Main');
                                     }
                                 }}
                             >
@@ -514,14 +561,46 @@ const LocationDetailScreen = ({ route, navigation }) => {
                         </View>
                         <Input
                             keyboardType="numeric"
-                            onChangeText={text => handleOnchange(text, 'unitNumber')}
+                            onChangeText={text => handleOnchange(text, 'UnitNumber')}
                             placeholder="Unit Number"
                         />
                         <Input
                             keyboardType="numeric"
-                            onChangeText={text => handleOnchange(text, 'floorNumber')}
+                            onChangeText={text => handleOnchange(text, 'FloorNumber')}
                             placeholder="Floor Number"
                         />
+                    </View>
+                    <View
+                        style={{
+                            width: '90%',
+                            marginTop: Display.setHeight(2)
+                        }}
+                    >
+                        <Text
+                            style={{
+                                fontSize: 22,
+                                fontWeight: 'bold',
+                                color: '#325964',
+                                marginTop: Display.setHeight(2)
+                            }}
+                        >Set Default</Text>
+                        <Text
+                            style={{
+                                fontSize: 13,
+                                lineHeight: 25,
+                                fontWeight: '300'
+                            }}
+                        >Add this address as the default address?</Text>
+                        <View
+                            style={{
+                                width,
+                                alignItems: 'flex-start',
+                                justifyContent: 'flex-start',
+                                marginTop: Display.setHeight(2)
+                            }}
+                        >
+                            <ToggleButton size={1} onToggle={onToggleChange} />
+                        </View>
                     </View>
                     <View
                         style={{
@@ -545,7 +624,7 @@ const LocationDetailScreen = ({ route, navigation }) => {
                             }}
                         >Give us more information about your address.</Text>
                         <Input
-                            onChangeText={text => handleOnchange(text, 'notes')}
+                            onChangeText={text => handleOnchange(text, 'Notes')}
                             placeholder="Note to rider - e.g. landmark"
                         />
                     </View>
@@ -570,7 +649,7 @@ const LocationDetailScreen = ({ route, navigation }) => {
                             renderItem={renderItem}
                         />
                         <Animated.View style={{ height: inputHeight.interpolate({ inputRange: [0, 1], outputRange: [0, 100] }), overflow: 'hidden' }}>
-                            <Input value={otherTagInput} onChangeText={(text) => handleOnchange(text, 'tag')} placeholder="Enter custom label..." />
+                            <Input value={otherTagInput} onChangeText={(text) => handleOnchange(text, 'Tag')} placeholder="Enter custom label..." />
                         </Animated.View>
                     </View>
                 </View>
@@ -593,8 +672,7 @@ const LocationDetailScreen = ({ route, navigation }) => {
                 />
                 <AddresseButton
                     onpress={() => {
-                        StorageService.setAddress(inputs)
-                        navigation.navigate('Main')
+                        processAddressAddition(inputs)
                     }}
                 />
             </View>

@@ -142,22 +142,32 @@ const RegistrationScreen = ({ navigation }) => {
         }
     };
 
-    const register = () => {
-        let user = {
+    const register = async () => {
+        const user = {
             FullName: inputs.fullname,
             EmailAdress: inputs.email,
             ContactNumber: inputs.phone,
             Password: inputs.password
         };
+
         setIsLoading(true);
-        AuthenticationService.register(user).then(response => {
-            setIsLoading(false);
-            const userId = response.data.Id
-            navigation.navigate('CodeConfirmation', { userId })
-            if (!response?.status) {
-                setErrorMessage(response?.message);
+
+        try {
+            const response = await AuthenticationService.register(user);
+
+            if (response?.status) {
+                const userId = response.data.data.Id;
+                console.log(response.data.data.Id)
+                navigation.navigate('CodeConfirmation', { userId });
+            } else {
+                setErrorMessage(response?.message || 'Registration failed');
             }
-        });
+        } catch (error) {
+            console.error('Error during registration:', error);
+            setErrorMessage('An unexpected error occurred. Please try again.');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const handleOnchange = (text, input) => {

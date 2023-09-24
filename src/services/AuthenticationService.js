@@ -22,7 +22,18 @@ const register = async user => {
             ApiContants.BACKEND_API.REGISTER,
             requestBody
         );
-        return registerResponse?.data;
+        if (registerResponse?.status === 200) {
+            return {
+                status: true,
+                message: 'Registration Successful',
+                data: registerResponse?.data,
+            }
+        } else {
+            return {
+                status: false,
+                message: 'Registration failed'
+            }
+        }
     } catch (error) {
         console.log(error);
         return { status: false, message: 'Oops! Something went wrong' };
@@ -42,7 +53,18 @@ const login = async user => {
             ApiContants.BACKEND_API.LOGIN,
             requestBody
         );
-        return loginResponse?.data;
+        if (loginResponse?.status === 200) {
+            return {
+                status: true,
+                message: 'Login successful',
+                data: loginResponse?.data,
+            }
+        } else {
+            return {
+                status: false,
+                message: 'Invalid credentials',
+            };
+        }
     } catch (error) {
         console.log(error);
         return { status: false, message: 'Oops! Something went wrong' };
@@ -64,23 +86,27 @@ const checkUserExist = async (type, value) => {
 };
 
 const phoneVerification = async codeData => {
-
-    if (!codeData.code) {
-        return { status: false, message: 'Please fill up all fields' };
-    }
-    if (!codeData.id) {
-        return { status: false, message: 'Something went worng, try again.' };
-    }
     try {
         let requestBody = {
             VerificationCode: codeData?.code,
             Id: codeData?.id
         };
-        let verificationResponse = await AuthRequest.post(
-            ApiContants.BACKEND_API.VERIFICATION,
+        let verificationResponse = await axios.post(
+            `${ApiContants.BACKEND_API.BASE_API_URL}${ApiContants.BACKEND_API.VERIFICATION}`,
             requestBody
         );
-        return verificationResponse?.data;
+        if (verificationResponse?.status === 200) {
+            return {
+                status: true,
+                message: `Verification Successfull`,
+                data: verificationResponse?.data,
+            };
+        } else {
+            return {
+                status: false,
+                message: `Invalid code`,
+            };
+        }
     } catch (error) {
         console.log(error);
         return { status: false, message: 'Something went wrong' };
