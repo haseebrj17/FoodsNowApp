@@ -14,7 +14,7 @@ FOODSNOW GmbH<a name="TOP"></a>
 
     Prerequisites: Node latest version
 
-    Go to the newly created folder of FoodsNowApp in the relevent directry
+    Go to the newly created folder of FoodsNowApp in the relevent directory
       
       cd FoodsNowApp
       
