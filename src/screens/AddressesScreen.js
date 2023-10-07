@@ -2,7 +2,6 @@ import { StyleSheet, Text, View, TouchableOpacity, Dimensions, FlatList, Section
 import React, { useEffect, useState } from 'react'
 import { StorageService } from '../services';
 import { Display } from '../utils';
-import AppLoading from 'expo-app-loading';
 import { Swipeable } from 'react-native-gesture-handler';
 import { Button } from 'react-native-paper';
 import { MaterialIcons, Ionicons, EvilIcons, Feather, SimpleLineIcons } from '@expo/vector-icons';
