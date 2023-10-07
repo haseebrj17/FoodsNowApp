@@ -28,6 +28,7 @@ const BACKEND_API = {
     GET_ADDRESS: '/GetCustomerAddresses',
     USER: '/User',
     ORDER: '/PlaceOrder',
+    GET_ORDER: '/GetCustomerOrders',
     USER_EXIST: '/User',
     // REFRESH_TOKEN: '/refresh-token',
     // CART: '/cart',

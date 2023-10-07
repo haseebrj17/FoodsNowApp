@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Dimensions, TouchableOpacity, ScrollView, FlatList, Animated, Alert } from 'react-native';
+import { StyleSheet, Text, View, Dimensions, TouchableOpacity, ScrollView, FlatList, Animated, Alert, Platform } from 'react-native';
 import React, { useState, useEffect, useRef } from 'react';
 import MapView, { PROVIDER_GOOGLE, Callout, Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
@@ -11,7 +11,8 @@ import Input from '../components/Input';
 import { Button } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 import { addUserAddress } from '../actions/UserAddressAction';
-import { ToggleButton } from '../components';
+import { Separator, ToggleButton } from '../components';
+import { getToken } from '../Store';
 
 const { width, height } = Dimensions.get('screen');
 
@@ -84,17 +85,20 @@ const AddresseButton = ({ onpress }) => {
             fontWeight: '700',
             letterSpacing: 1,
         }}
-    >Add Addresse</Button>
+    >Add Address</Button>
 }
-
 
 const LocationDetailScreen = ({ route, navigation }) => {
     const address = route.params.address;
     const selectedLocation = route.params.selectedLocation;
 
+console.log(address)
+
     const dispatch = useDispatch()
 
-    const processAddressAddition = async (inputs) => {
+    const token = useSelector(getToken);
+
+    const processAddressAddition = async (inputs, token) => {
         try {
             // Fetch user data
             const data = await StorageService.getUserData();
@@ -107,8 +111,10 @@ const LocationDetailScreen = ({ route, navigation }) => {
                 CustomerId: parsedData.Id
             };
 
+            console.log(updatedInputs)
+
             // Handle address addition
-            const response = await dispatch(addUserAddress({ inputs: updatedInputs }));
+            const response = await dispatch(addUserAddress({ inputs: updatedInputs, token }));
             if (response === "OK") {
                 navigation.navigate('Main');
             } else {
@@ -120,20 +126,6 @@ const LocationDetailScreen = ({ route, navigation }) => {
             navigation.navigate('Main');
         }
     };
-
-    // const handleAddAddress = async (inputs) => {
-    //     try {
-    //         const response = await dispatch(addUserAddress(inputs));
-    //         if (response === "OK") {
-    //             navigation.navigate('Main');
-    //         } else {
-    //             throw new Error('Unexpected response when adding address.');
-    //         }
-    //     } catch (error) {
-    //         Alert.alert('Error', 'An error occurred while adding the address.');
-    //         navigation.navigate('Main');
-    //     }
-    // };
 
     const [userId, setUserId] = useState()
     const [region, setRegion] = useState(null);
@@ -158,18 +150,20 @@ const LocationDetailScreen = ({ route, navigation }) => {
     }
 
     const [inputs, setInputs] = React.useState({
-        StreetAddress: address.street,
-        House: address.streetNumber,
-        District: address.district,
+        StreetAddress: address?.street,
+        House: address?.streetNumber,
+        District: address?.district,
         UnitNumber: '',
         FloorNumber: '',
         Notes: '',
         Tag: '',
         IsDefault: false,
-        Latitude: selectedLocation.latitude,
-        Longitude: selectedLocation.longitude,
-        CityName: address.city,
-        PostalCode: address.postalCode
+        Latitude: selectedLocation?.latitude,
+        Longitude: selectedLocation?.longitude,
+        CityName: address?.city,
+        PostalCode: address?.postalCode,
+        CountryName: address?.country,
+        StateName: address?.region
     });
 
     const onToggleChange = (newState) => {
@@ -252,7 +246,7 @@ const LocationDetailScreen = ({ route, navigation }) => {
                         style={{
                             width: Display.setHeight(8),
                             height: Display.setHeight(8),
-                            borderRadius: '50%',
+                            borderRadius: Display.setHeight(4),
                             backgroundColor: item.tag === clickedTag ? "#FFAF51" : color,
                             alignItems: 'center',
                             justifyContent: 'center',
@@ -293,7 +287,9 @@ const LocationDetailScreen = ({ route, navigation }) => {
             <View
                 style={{
                     width,
-                    height: height * 0.35,
+                    height: height * 0.43,
+                    position: 'absolute',
+                    top: '0%',
                     alignItems: 'center',
                     justifyContent: 'center'
                 }}
@@ -315,7 +311,7 @@ const LocationDetailScreen = ({ route, navigation }) => {
                     style={{
                         left: '44.6%',
                         position: 'absolute',
-                        top: '49%',
+                        top: Display.setHeight(43) * 0.50,
                     }}
                 >
                     <TouchableOpacity onPress={() => setShowCallout(true)}>
@@ -326,13 +322,15 @@ const LocationDetailScreen = ({ route, navigation }) => {
                             style={{
                                 position: 'absolute',
                                 bottom: Display.setHeight(6.5),
-                                right: -25,
+                                right: Display.setHeight(-4),
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                width: 100,
-                                height: 40,
+                                display: 'flex',
+                                width: Display.setHeight(13),
+                                height: Display.setHeight(4.5),
                                 backgroundColor: '#325964',
                                 borderRadius: 12,
+                                padding: Display.setWidth(1)
                             }}
                         >
                             <TouchableOpacity
@@ -345,28 +343,29 @@ const LocationDetailScreen = ({ route, navigation }) => {
                                 }}
                             >
                                 <Text
+                                    numberOfLines={2}
                                     style={{
                                         left: '-5%',
-                                        top: '30%',
-                                        fontSize: 12,
+                                        top: '90%',
+                                        fontSize: Display.setHeight(1),
                                         fontWeight: '600',
                                         color: '#f1f1f1'
                                     }}
                                 >Tap to edit location</Text>
                                 <SimpleLineIcons
                                     name="arrow-right"
-                                    size={15}
+                                    size={Display.setHeight(1.5)}
                                     color="#f1f1f1"
                                     style={{
                                         position: "absolute",
-                                        top: "55%",
+                                        top: "60%",
                                         right: "-10%",
                                     }}
                                 />
                             </TouchableOpacity>
                             <View
                                 style={{
-                                    top: '30%',
+                                    top: '40%',
                                     width: 0,
                                     height: 0,
                                     backgroundColor: 'transparent',
@@ -394,14 +393,15 @@ const LocationDetailScreen = ({ route, navigation }) => {
                     position: 'absolute',
                     backgroundColor: '#fff',
                     width,
-                    height: height * 0.7,
-                    top: height * 0.29,
+                    height: height * 0.5,
+                    top: height * 0.39,
                 }}
             >
                 <View
                     style={{
                         alignItems: 'center',
-                        height: HEIGHT
+                        height: HEIGHT,
+                        marginBottom: Display.setHeight(10)
                     }}
                 >
                     <View
@@ -656,23 +656,20 @@ const LocationDetailScreen = ({ route, navigation }) => {
             </ScrollView>
             <View
                 style={{
-                    height: Display.setHeight(15),
+                    height: Display.setHeight(11),
                     width,
                     backgroundColor: '#fff',
                     position: 'absolute',
-                    bottom: '0%'
+                    bottom: Platform.OS === 'ios' ? '0%' : '5%'
                 }}
             >
-                <View
-                    style={{
-                        width,
-                        height: Display.setHeight(0.1),
-                        backgroundColor: '#f1f1f1',
-                    }}
+                <Separator
+                        width={Display.setWidth(100)}
+                        height={Display.setHeight(0.1)}
                 />
                 <AddresseButton
                     onpress={() => {
-                        processAddressAddition(inputs)
+                        processAddressAddition(inputs, token)
                     }}
                 />
             </View>

@@ -21,7 +21,7 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true,
+      "supportsTablet": false,
       "bundleIdentifier": "com.anonymous.FoodsNowApp",
       "runtimeVersion": {
         "policy": "sdkVersion"
@@ -34,7 +34,8 @@
       },
       "runtimeVersion": {
         "policy": "sdkVersion"
-      }
+      },
+      "useNextNotificationsApi": true
     },
     "web": {
       "favicon": "./src/assets/favicon.png"

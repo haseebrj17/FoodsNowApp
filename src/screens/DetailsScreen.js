@@ -87,6 +87,23 @@ const DetailsScreen = ({ route }) => {
         dispatch(fetchProducts(categoryId));
     }, [categoryId]);
 
+    const [height, setHeight] = useState(null)
+
+    useEffect(() => {
+
+        const screenWidth = width;
+
+        if (screenWidth <= 375) {
+            setHeight(72)
+        } else if (screenWidth > 375 && screenWidth < 414) {
+            setHeight(60)
+        } else if (screenWidth >= 414 && screenWidth < 480) {
+            setHeight(58)
+        } else if (screenWidth >= 480) {
+            setHeight(60)
+        }
+    }, [])
+
     const renderBackdrop = useCallback(
         (props) => (
             <BottomSheetBackdrop {...props} onPress={closeBottomSheet} />
@@ -309,12 +326,12 @@ const DetailsScreen = ({ route }) => {
                                     key={index}
                                     style={{
                                         flexDirection: 'column',
-                                        justifyContent: "center",
+                                        justifyContent: 'center',
                                         alignItems: "center",
                                         marginRight: 10,
                                     }}
                                 >
-                                    <Text style={[styles.SubTextPrice, { fontSize: 14 }]}>
+                                    <Text style={[styles.SubTextPrice, { fontSize: Display.setHeight(1.6) }]}>
                                         {price.Description === 'Normal' ? 'S' : 'L'}
                                     </Text>
                                     <Text style={styles.SubTextPrice}>€{price.Price}</Text>
@@ -352,14 +369,14 @@ const DetailsScreen = ({ route }) => {
                 <View style={styles.textBox}>
                     <View style={styles.textAlignBox}>
                         <View>
-                            <Heading style={styles.Text}>
+                            <Heading numberOfLines={1} style={styles.Text}>
                                 {dishes.Name}
                             </Heading>
                             <Text style={styles.SubTextBrand}>
                                 {brand.Name}
                             </Text>
                         </View>
-                        <Text fontWeight="400" style={styles.SubText}>
+                        <Text fontWeight="400" numberOfLines={2} style={styles.SubText}>
                             {dishes.IngredientSummary}
                         </Text>
                     </View>
@@ -385,7 +402,7 @@ const DetailsScreen = ({ route }) => {
                             onPress={() => handleCart(dishes)}
                             title="Add to Cart"
                             color="#FFAF51"
-                            titleStyle={{ color: "#325962", fontSize: 10, fontWeight: 800 }}
+                            titleStyle={{ color: "#325962", fontSize: Display.setHeight(1.2), fontWeight: 800 }}
                             uppercase={false}
                             contentContainerStyle={styles.Button}
                             style={{
@@ -604,12 +621,12 @@ const DetailsScreen = ({ route }) => {
                             <View style={{
                                 width: '100%',
                                 height: '100%',
-                                justifyContent: 'start',
+                                justifyContent: 'flex-start',
                                 alignItems: 'center'
                             }}>
                                 <View>
                                     <Text style={{
-                                        fontSize: 22,
+                                        fontSize: Display.setHeight(2.4),
                                         fontWeight: 'bold',
                                         alignSelf: 'center',
                                         margin: 10,
@@ -626,7 +643,7 @@ const DetailsScreen = ({ route }) => {
                                     margin: 10
                                 }}>
                                     <Text style={{
-                                        fontSize: 15,
+                                        fontSize: Display.setHeight(1.7),
                                         fontWeight: '500',
                                         color: '#325962'
                                     }}>
@@ -648,7 +665,7 @@ const DetailsScreen = ({ route }) => {
                                     margin: 10
                                 }}>
                                     <Text style={{
-                                        fontSize: 15,
+                                        fontSize: Display.setHeight(1.7),
                                         fontWeight: '500',
                                         color: '#325962'
                                     }}>
@@ -670,7 +687,7 @@ const DetailsScreen = ({ route }) => {
                                     margin: 10
                                 }}>
                                     <Text style={{
-                                        fontSize: 15,
+                                        fontSize: Display.setHeight(1.7),
                                         fontWeight: '500',
                                         color: '#325962'
                                     }}>
@@ -692,7 +709,7 @@ const DetailsScreen = ({ route }) => {
                                     margin: 10
                                 }}>
                                     <Text style={{
-                                        fontSize: 15,
+                                        fontSize: Display.setHeight(1.7),
                                         fontWeight: '500',
                                         color: '#325962'
                                     }}>
@@ -714,7 +731,7 @@ const DetailsScreen = ({ route }) => {
                                     margin: 10
                                 }}>
                                     <Text style={{
-                                        fontSize: 15,
+                                        fontSize: Display.setHeight(1.7),
                                         fontWeight: '500',
                                         color: '#325962'
                                     }}>
@@ -779,9 +796,9 @@ const DetailsScreen = ({ route }) => {
                                                     justifyContent: 'flex-start'
                                                 }}
                                             >
-                                                <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#325962', marginLeft: Display.setHeight(2), marginBottom: Display.setHeight(1.5), marginTop: Display.setHeight(1.2), letterSpacing: 1, }}>{route.params.brand.Name.toUpperCase()}
+                                                <Text style={{ fontSize: Display.setHeight(2.2), fontWeight: 'bold', color: '#325962', marginLeft: Display.setHeight(2), marginBottom: Display.setHeight(1.5), marginTop: Display.setHeight(1.2), letterSpacing: 1, }}>{route.params.brand.Name.toUpperCase()}
                                                 </Text>
-                                                <Text style={{ lineHeight: 15, fontSize: 12, fontWeight: 'bold', color: '#325962', letterSpacing: 0.5, marginLeft: Display.setHeight(2), marginBottom: Display.setHeight(0.5) }}>{route.params.brand.Description ? route.params.brand.Description : null}
+                                                <Text style={{ lineHeight: 15, fontSize: Display.setHeight(1.4), fontWeight: 'bold', color: '#325962', letterSpacing: 0.5, marginLeft: Display.setHeight(2), marginBottom: Display.setHeight(0.5) }}>{route.params.brand.Description ? route.params.brand.Description : null}
                                                 </Text>
                                             </View>
                                             <Separator height={Display.setHeight(1)} width={'100%'} />
@@ -806,17 +823,6 @@ const DetailsScreen = ({ route }) => {
                                                         size={18}
                                                     />
                                                 </TouchableOpacity>
-                                                <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', right: '5%' }}
-                                                    onPress={handleOpenModal}
-                                                >
-                                                    <Text style={{ marginRight: 3, color: '#325962', opacity: 0.6 }}>Search</Text>
-                                                    <Icon
-                                                        name="search"
-                                                        type="font-awesome"
-                                                        color="#325962"
-                                                        size={18}
-                                                    />
-                                                </TouchableOpacity>
                                             </View>
                                             <Separator height={Display.setHeight(1)} width={'100%'} />
                                         </View>
@@ -835,7 +841,7 @@ const DetailsScreen = ({ route }) => {
                             <View
                                 style={{
                                     width,
-                                    height: height * 0.09,
+                                    height: Display.setHeight(10),
                                     borderRadius: 12,
                                     backgroundColor: '#f1f1f1',
                                     position: 'absolute',
@@ -860,7 +866,7 @@ const DetailsScreen = ({ route }) => {
                                 >
                                     <Text
                                         style={{
-                                            fontSize: 16,
+                                            fontSize: Display.setHeight(1.8),
                                             fontWeight: 700,
                                             color: '#325964'
                                         }}
@@ -870,7 +876,7 @@ const DetailsScreen = ({ route }) => {
                                     onPress={() => navigation.navigate('Cart')}
                                     title={<CustomTitleCart />}
                                     color="#FFAF51"
-                                    titleStyle={{ color: "#325962", fontSize: 15, fontWeight: 800 }}
+                                    titleStyle={{ color: "#325962", fontSize: Display.setHeight(1.7), fontWeight: 800 }}
                                     uppercase={false}
                                     contentContainerStyle={{
                                         height: Display.setHeight(5),
@@ -907,7 +913,7 @@ const CustomTitleCart = ({ CartItem }) => {
             <Text
                 style={{
                     color: "#325962",
-                    fontSize: 15,
+                    fontSize: Display.setHeight(1.7),
                     fontWeight: 800
                 }}
             >View Cart </Text>
@@ -955,7 +961,7 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 8,
     },
     itemText: {
-        fontSize: 10,
+        fontSize: Display.setHeight(1.2),
         color: "#325962",
         fontWeight: "bold"
     },
@@ -982,23 +988,23 @@ const styles = StyleSheet.create({
     Text: {
         paddingRight: Display.setHeight(1),
         lineHeight: 25,
-        fontSize: 13,
+        fontSize: Display.setHeight(1.5),
         color: '#325962',
         fontWeight: "bold",
     },
     SubText: {
         paddingRight: Display.setHeight(1),
-        fontSize: 10,
+        fontSize: Display.setHeight(1.2),
     },
     SubTextBrand: {
         paddingRight: Display.setHeight(1),
-        fontSize: 8,
+        fontSize: Display.setHeight(1),
         color: "#112362",
         marginBottom: 8,
         fontWeight: "700"
     },
     SubTextPrice: {
-        fontSize: 12,
+        fontSize: Display.setHeight(1.4),
         fontWeight: "bold",
         color: "#325962",
     },

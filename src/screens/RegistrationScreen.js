@@ -16,6 +16,7 @@ import Button from '../components/Button';
 import { StorageService } from '../services';
 import { Dispatch } from 'react';
 import AuthenticationService from '../services/AuthenticationService';
+import { Display } from '../utils';
 
 const { width, height } = Dimensions.get('screen')
 
@@ -156,8 +157,8 @@ const RegistrationScreen = ({ navigation }) => {
             const response = await AuthenticationService.register(user);
 
             if (response?.status) {
-                const userId = response.data.data.Id;
-                console.log(response.data.data.Id)
+                const userId = response?.data?.data?.Id;
+                console.log(response?.data?.data?.Id)
                 navigation.navigate('CodeConfirmation', { userId });
             } else {
                 setErrorMessage(response?.message || 'Registration failed');
@@ -195,7 +196,7 @@ const RegistrationScreen = ({ navigation }) => {
                         height: width / 4,
                         backgroundColor: '#f1f1f1',
                         overflow: 'hidden',
-                        borderBottomRightRadius: 75,
+                        borderBottomRightRadius: Display.setHeight(80),
                     }}
                 >
                     <Image
@@ -204,7 +205,7 @@ const RegistrationScreen = ({ navigation }) => {
                             width: width,
                             height: width / 4,
                             aspectRatio: 2000 / 500,
-                            borderBottomRightRadius: 75,
+                            borderBottomRightRadius: Display.setHeight(80),
                         }}
                     />
                 </View>
@@ -244,11 +245,11 @@ const RegistrationScreen = ({ navigation }) => {
                     >
                         <Text
                             style={{
-                                fontSize: 36,
+                                fontSize: Display.setHeight(4),
                                 fontWeight: 'bold',
                                 color: '#325962',
                                 alignSelf: 'center',
-                                margin: 10
+                                marginBottom: Display.setHeight(1)
                             }}
                         >Sign Up</Text>
                         <Input
@@ -292,7 +293,7 @@ const RegistrationScreen = ({ navigation }) => {
             </View>
             <View
                 style={{
-                    height: 170,
+                    height: Display.setHeight(17),
                     backgroundColor: '#325962'
                 }}
             >
@@ -302,7 +303,7 @@ const RegistrationScreen = ({ navigation }) => {
                         justifyContent: 'center',
                         alignItems: 'center',
                         alignSelf: 'center',
-                        margin: 10,
+                        margin: Display.setHeight(1),
                     }}
                 >
                     <View
@@ -310,13 +311,13 @@ const RegistrationScreen = ({ navigation }) => {
                             flexDirection: 'row',
                             alignItems: 'center',
                             justifyContent: 'space-evenly',
-                            margin: 10,
+                            margin: Display.setHeight(1),
                         }}
                     >
                         <Text
                             style={{
                                 fontWeight: "500",
-                                fontSize: 16,
+                                fontSize: Display.setHeight(1.8),
                                 color: '#f1f1f1'
                             }}
                         >Sign up with</Text>
@@ -334,29 +335,29 @@ const RegistrationScreen = ({ navigation }) => {
                                 <TouchableOpacity onPress={() => promptAsyncGoogle()}>
                                     <View
                                         style={{
-                                            width: 50,
-                                            height: 50,
-                                            borderRadius: '50%',
+                                            width: Display.setHeight(5),
+                                            height: Display.setHeight(5),
+                                            borderRadius: Display.setHeight(2.5),
                                             backgroundColor: '#f1f1f1',
                                             justifyContent: 'center',
                                             alignItems: 'center',
                                         }}
                                     >
-                                        <GoogleIcon size={25} />
+                                        <GoogleIcon size={Display.setHeight(3)} />
                                     </View>
                                 </TouchableOpacity>
                                 <TouchableOpacity onPress={handleAppleLogin}>
                                     <View
                                         style={{
-                                            width: 50,
-                                            height: 50,
-                                            borderRadius: '50%',
+                                            width: Display.setHeight(5),
+                                            height: Display.setHeight(5),
+                                            borderRadius: Display.setHeight(2.5),
                                             backgroundColor: '#f1f1f1',
                                             justifyContent: 'center',
                                             alignItems: 'center',
                                         }}
                                     >
-                                        <AppleIcon size={25} />
+                                        <AppleIcon size={Display.setHeight(3)} />
                                     </View>
                                 </TouchableOpacity>
                             </>
@@ -364,15 +365,15 @@ const RegistrationScreen = ({ navigation }) => {
                             <TouchableOpacity onPress={() => promptAsyncGoogle()}>
                                 <View
                                     style={{
-                                        width: 50,
-                                        height: 50,
-                                        borderRadius: '50%',
+                                        width: Display.setHeight(5),
+                                        height: Display.setHeight(5),
+                                        borderRadius: Display.setHeight(2.5),
                                         backgroundColor: '#f1f1f1',
                                         justifyContent: 'center',
                                         alignItems: 'center',
                                     }}
                                 >
-                                    <GoogleIcon size={25} />
+                                    <GoogleIcon size={Display.setHeight(3)} />
                                 </View>
                             </TouchableOpacity>
                         )}
@@ -382,13 +383,13 @@ const RegistrationScreen = ({ navigation }) => {
                             flexDirection: 'row',
                             alignItems: 'center',
                             justifyContent: 'space-evenly',
-                            margin: 10,
+                            margin: Display.setHeight(1.2),
                         }}
                     >
                         <Text
                             style={{
                                 fontWeight: "500",
-                                fontSize: 16,
+                                fontSize: Display.setHeight(2),
                                 color: '#f1f1f1'
                             }}
                         >Already have an account? </Text>
@@ -397,7 +398,7 @@ const RegistrationScreen = ({ navigation }) => {
                         ><Text
                             style={{
                                 fontWeight: "500",
-                                fontSize: 16,
+                                fontSize: Display.setHeight(2),
                                 color: '#FFAF51'
                             }}
                         >Sign In</Text></TouchableOpacity>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, Dimensions, ImageBackground } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import * as Location from 'expo-location';
 import { clientData } from '../shared/ClientData';
@@ -9,6 +9,7 @@ import Button from '../components/Button';
 import StorageService from '../services/StorageService';
 import { setIsFirstTimeUse } from '../actions/GeneralAction';
 import { useDispatch } from 'react-redux';
+import gif from '../assets/AppLoad.gif'
 
 const config = require('../../package.json').projectName;
 const CLIENT_NAME = config.name;
@@ -58,11 +59,14 @@ const LocationScreen = ({ navigation }) => {
                     latitude: location.coords.latitude,
                     longitude: location.coords.longitude,
                 });
-                let country = geocodeResults[0].country;
+                console.log(geocodeResults)
+                let country = geocodeResults[0]?.country;
+                let city = geocodeResults[0]?.city;
                 setLocationUser({
                     Latitude: location.coords.latitude,
                     Longitude: location.coords.longitude,
                     Country: country,
+                    City: city
                 });
             } catch (error) {
                 console.error(`Error fetching user location: ${error}`);
@@ -114,6 +118,7 @@ const LocationScreen = ({ navigation }) => {
                             UserDistanceFromFranchise: minDistance,
                             DeliveryParams: Client.distanceRange.fourKm,
                             Country: locationUser.Country,
+                            City: locationUser.City
                         };
                     } else if (minDistance <= 6000) {
                         locationData = {
@@ -122,6 +127,7 @@ const LocationScreen = ({ navigation }) => {
                             UserDistanceFromFranchise: minDistance,
                             DeliveryParams: Client.distanceRange.sixKm,
                             Country: locationUser.Country,
+                            City: locationUser.City
                         };
                     } else if (minDistance <= 10000) {
                         locationData = {
@@ -130,9 +136,17 @@ const LocationScreen = ({ navigation }) => {
                             UserDistanceFromFranchise: minDistance,
                             DeliveryParams: Client.distanceRange.tenKm,
                             Country: locationUser.Country,
+                            City: locationUser.City
                         };
                     } else {
-                        setOutOfRange(true);
+                        locationData = {
+                            Franchise: closestFranchise.Title,
+                            FranchiseId: closestFranchise.Id,
+                            UserDistanceFromFranchise: minDistance,
+                            DeliveryParams: Client.distanceRange.tenKm,
+                            Country: locationUser.Country,
+                            City: locationUser.City
+                        };
                     }
 
                     if (locationData) {
@@ -157,7 +171,11 @@ const LocationScreen = ({ navigation }) => {
     }, [locationUser, franchiseLocation, maxDistance]);
 
     return (
-        <View style={styles.container}>
+        <ImageBackground
+            source={gif}
+            style={styles.container}
+            resizeMode='cover'
+        >
             {outOfRange ? (
                 <View style={styles.outOfRangeContainer}>
                     <FontAwesome5 name="search-location" size={Display.setHeight(17)} color="#325964" />
@@ -166,7 +184,7 @@ const LocationScreen = ({ navigation }) => {
                 </View>
             ) : null}
             {errorMsg ? <Text style={styles.error}>{errorMsg}</Text> : null}
-        </View>
+        </ImageBackground>
     );
 };
 
@@ -174,7 +192,6 @@ const styles = StyleSheet.create({
     container: {
         width: width,
         height: height,
-        backgroundColor: '#325964',
     },
     outOfRangeContainer: {
         width,

@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, Image, ScrollView, Dimensions, FlatList, SectionList } from 'react-native'
-import React from 'react'
+import React, { useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { addListener, removeListener } from '@reduxjs/toolkit';
 import { useEffect, useState } from 'react'
@@ -10,7 +10,7 @@ import Skeleton from '../components/Skeleton'
 import { CountryCode } from '../assets/constants'
 import { StorageService } from '../services'
 import { FontAwesome, MaterialCommunityIcons, AntDesign, Entypo } from '@expo/vector-icons';
-import { getCartItems, incrementQuantity, decrementQuantity } from '../actions/CartAction'
+import { getCartItems, incrementQuantity, decrementQuantity, beginDecrementing, endDecrementing } from '../actions/CartAction'
 import { Separator } from '../components'
 import Button from '../components/Button'
 import empty from '../assets/icons/emptycart.png'
@@ -18,32 +18,35 @@ import { Store } from '../Store';
 import { ActivityIndicator } from 'react-native-paper';
 import globalEventEmitter from '../events/globalEventEmitter';
 import LoadingOverlay from '../components/LoadingOverlay';
+import ActiveTabContext from '../context/ActiveTabContext';
 
 const { width, height } = Dimensions.get('window');
 
 const CartScreen = ({ navigation }) => {
 
-    const dispatch = useDispatch()
+    const { setActiveTab } = useContext(ActiveTabContext);
+
+    const dispatch = useDispatch();
 
     useEffect(() => {
         dispatch(getCartItems());
     }, [dispatch]);
 
-    const { cart, isLoading, error, subLoading } = useSelector(
+    const { cart, isLoading, error, subLoading, isDecrementing } = useSelector(
         (state) => state.cartState
     );
 
     const { isAppLoading, token, isFirstTimeUse, userData, location } = useSelector(
         (state) => state.generalState
-    )
+    );
 
     useEffect(() => {
-        console.log(`IsLoading ${isAppLoading}, Token ${token}, isFirst ${isFirstTimeUse}, userData ${userData}, Location ${location}`)
-    }, [isAppLoading, token, isFirstTimeUse, userData, location])
+        console.log(`IsLoading ${isAppLoading}, Token ${token}, isFirst ${isFirstTimeUse}, userData ${userData}, Location ${location}`);
+    }, [isAppLoading, token, isFirstTimeUse, userData, location]);
 
     useEffect(() => {
         const handleRefetch = () => {
-            dispatch(getCartItems())
+            dispatch(getCartItems());
         };
 
         // Start listening to the event
@@ -55,7 +58,7 @@ const CartScreen = ({ navigation }) => {
         };
     }, []);
 
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(true);
 
     const cartItems = useSelector(state => state.cartState.cart);
 
@@ -63,27 +66,25 @@ const CartScreen = ({ navigation }) => {
 
     const [itemTotal, setItemTotal] = useState(null);
 
-    const [cartData, setCartDate] = useState(null);
+    const [cartData, setCartData] = useState([]);
 
     const [checkout, setCheckout] = useState(null);
 
-    const [vatRate, setVatRate] = useState(null);
+    const [locationData, setLocationData] = useState(null);
 
-    const [vatApplied, setVatApplied] = useState(null);
+    const [minOrder, setMinOrder] = useState(null);
 
-    const [locationData, setLocationData] = useState(null)
-
-    const [minOrder, setMinOrder] = useState(null)
+    const [dataLoaded, setDataLoaded] = useState(false);
 
     useEffect(() => {
-        if (vatRate && grandTotal) {
-            const itemTotal = grandTotal / vatRate;
-            setItemTotal(itemTotal.toFixed(2));
-            const vatCalc = grandTotal - itemTotal;
-            setVatApplied(vatCalc.toFixed(2));
+        if (dataLoaded) {
             setLoading(false);
         }
-    }, [vatRate, grandTotal])
+    }, [dataLoaded]);
+
+    // useEffect(() => {
+    //     setLoading(false);
+    // }, [itemTotal, grandTotal, cartData, checkout, locationData, cartItems])
 
     useEffect(() => {
         const fetchData = async () => {
@@ -91,46 +92,27 @@ const CartScreen = ({ navigation }) => {
                 const location = await StorageService.getLocation();
                 if (location && location.Country) {
                     setLocationData(location);
-                    setMinOrder(location?.DeliveryParams?.minOrderValue)
-                    const rate = await fetchVATRateForCountry(location.Country);
-                    if (rate !== null) {
-                        setVatRate((rate / 100) + 1);
-                    }
+                    setMinOrder(location?.DeliveryParams?.minOrderValue);
                 }
 
                 await calculateTotalPrice(cartItems).then(response => {
-                    setGrandTotal(response.grandTotal + location.DeliveryParams.deliverCharges)
-                    setCartDate(response.productDetailsArray)
-                    setCheckout(response.checkoutArray)
-                });
-
+                    setItemTotal(response.grandTotal);
+                    setGrandTotal(response.grandTotal + location.DeliveryParams.deliverCharges);
+                    setCartData(response.productDetailsArray);
+                    setCheckout(response.checkoutArray);
+                })
             } catch (error) {
                 console.error("Error while fetching data:", error);
-                setLoading(false);  // You might want to set loading to false even in case of error, so the user isn't left with an indefinite loading state
+                setLoading(false);  // Handle loading state in case of error
+            } finally {
+                setTimeout(() => {
+                    setDataLoaded(true);
+                }, 2500);
             }
         };
 
         fetchData();
     }, [cartItems]);
-
-    const fetchVATRateForCountry = async (countryCode) => {
-        try {
-            const response = await fetch('https://euvatrates.com/rates.json');
-            const data = await response.json();
-            if (data && data.rates) {
-                // Finding the correct country code based on country name
-                const vatCountryCode = Object.keys(data.rates).find(code => data.rates[code].country === countryCode);
-                if (vatCountryCode) {
-                    return data.rates[vatCountryCode].reduced_rate;
-                } else {
-                    throw new Error('Country code not found or data structure changed');
-                }
-            }
-        } catch (error) {
-            console.error("Failed to fetch VAT rate:", error);
-            return null;
-        }
-    }
 
     const calculateTotalPrice = async (cartItems) => {
         let grandTotal = 0;
@@ -216,12 +198,12 @@ const CartScreen = ({ navigation }) => {
                 Quantity: quantity,
                 ProductId: productDetails.data.Product.Id,
                 ProductPriceId: productDetails.data.Product.Prices.find(price => price.Description === productId.selectedSize)?.Id,
-                ProductExtraDippings: selectedDips.map(dip => ({
+                OrderProductExtraDippings: selectedDips.map(dip => ({
                     Quantity: "1",
                     ProductExtraDippingId: dip.Id,
                     ProductExtraDippingPriceId: dip.Prices.find(price => price.Description === productId.selectedDippings[dip.Name].priceDescription)?.Id
                 })),
-                ProductExtraTroppings: selectedToppings.map(topping => ({
+                OrderProductExtraToppings: selectedToppings.map(topping => ({
                     Quantity: "1",
                     ProductExtraToppingId: topping.Id,
                     ProductExtraToppingPriceId: topping.Prices.find(price => price.Description === productId.selectedToppings[topping.Name].priceDescription)?.Id
@@ -272,6 +254,7 @@ const CartScreen = ({ navigation }) => {
                     }}
                 >
                     <Text
+                        numberOfLines={1}
                         style={{
                             fontSize: 15,
                             fontWeight: '700',
@@ -282,7 +265,7 @@ const CartScreen = ({ navigation }) => {
                     <View
                         style={{
                             width: '95%',
-                            height: Display.setHeight(4),
+                            height: Display.setHeight(5),
                             flexDirection: 'row',
                             alignItems: 'center',
                             justifyContent: 'space-between',
@@ -309,30 +292,43 @@ const CartScreen = ({ navigation }) => {
                         <View style={{
                             flexDirection: 'row',
                             alignItems: 'center',
+                            justifyContent: 'center',
                             backgroundColor: "#d9d9d9",
-                            paddingVertical: Display.setHeight(1),
-                            paddingHorizontal: Display.setHeight(1),
+                            paddingVertical: Display.setHeight(0.8),
+                            paddingHorizontal: Display.setHeight(2),
                             borderRadius: 8,
                         }}>
                             <AntDesign
                                 name="minus"
                                 color='#FFAF51'
-                                size={18}
+                                size={Display.setHeight(2.6)}
                                 style={{
                                     marginRight: Display.setHeight(1)
                                 }}
-                                onPress={() => dispatch(decrementQuantity(item.id))}
+                                onPress={() => {
+                                    if (!isDecrementing) {
+                                        dispatch(beginDecrementing());
+                                        dispatch(decrementQuantity(item.id))
+                                            .then(() => {
+                                                dispatch(endDecrementing());
+                                            })
+                                            .catch(() => {
+                                                dispatch(endDecrementing());
+                                            });
+                                    }
+                                }}
+                                disabled={isDecrementing}
                             />
                             <Text style={{
                                 color: '#325962',
-                                fontSize: 18,
+                                fontSize: Display.setHeight(1.8),
                                 lineHeight: Display.setHeight(2),
                                 marginHorizontal: 8,
                             }}>{item.quantity}</Text>
                             <AntDesign
                                 name="plus"
                                 color='#FFAF51'
-                                size={18}
+                                size={Display.setHeight(2.6)}
                                 style={{
                                     marginLeft: Display.setHeight(1)
                                 }}
@@ -404,7 +400,10 @@ const CartScreen = ({ navigation }) => {
                             >
                                 <Button
                                     title='Add Something'
-                                    onPress={() => navigation.navigate('Home')}
+                                    onPress={() => {
+                                        navigation.navigate('Home')
+                                        setActiveTab("Home")
+                                    }}
                                 />
                             </View>
                         </View>
@@ -585,30 +584,6 @@ const CartScreen = ({ navigation }) => {
                                                                         fontWeight: '600',
                                                                         color: '#325964',
                                                                     }}
-                                                                >VAT Applied {((vatRate - 1) * 100).toFixed(1)} %</Text>
-                                                                <Text
-                                                                    style={{
-                                                                        fontSize: 16,
-                                                                        fontWeight: '600',
-                                                                        color: '#325964',
-                                                                    }}
-                                                                >€ {vatApplied}</Text>
-                                                            </View>
-                                                            <View
-                                                                style={{
-                                                                    width: width * 0.9,
-                                                                    alignItems: 'center',
-                                                                    justifyContent: 'space-between',
-                                                                    flexDirection: 'row',
-                                                                    margin: Display.setHeight(0.5)
-                                                                }}
-                                                            >
-                                                                <Text
-                                                                    style={{
-                                                                        fontSize: 16,
-                                                                        fontWeight: '600',
-                                                                        color: '#325964',
-                                                                    }}
                                                                 >Delivery Charges</Text>
                                                                 <Text
                                                                     style={{
@@ -616,7 +591,7 @@ const CartScreen = ({ navigation }) => {
                                                                         fontWeight: '600',
                                                                         color: '#325964',
                                                                     }}
-                                                                >{locationData.DeliveryParams.deliverCharges === 0 ? 'Free' : `€ ${locationData.DeliveryParams.deliverCharges}`}</Text>
+                                                                >{locationData?.DeliveryParams?.deliverCharges === 0 ? 'Free' : `€ ${locationData?.DeliveryParams?.deliverCharges}`}</Text>
                                                             </View>
                                                         </View>
                                                         <Separator width={'100%'} height={Display.setHeight(0.1)} />
@@ -677,11 +652,12 @@ const CartScreen = ({ navigation }) => {
                                                                                 borderRadius: 12,
                                                                                 justifyContent: 'center',
                                                                                 alignItems: 'center',
+                                                                                padding: Display.setHeight(1)
                                                                             }}
                                                                         >
                                                                             <Text
                                                                                 style={{
-                                                                                    fontSize: 14,
+                                                                                    fontSize: Display.setHeight(1.5),
                                                                                     color: '#000'
                                                                                 }}
                                                                             >Please add more items to the cart to meet the minimum order value of € {minOrder}</Text>

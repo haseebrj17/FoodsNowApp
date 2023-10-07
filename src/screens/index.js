@@ -20,6 +20,8 @@ import MoreScreen from "./MoreScreen";
 import LocationAccessScreen from "./LocationAccessScreen";
 import LocationDetailScreen from "./LocationDetailScreen";
 import CheckoutScreen from "./CheckoutScreen";
+import OrderConfirmationScreen from "./OrderConfirmationScreen";
+import BrandScreen from "./BrandScreen";
 
 export {
     DataTrackingScreen,
@@ -44,4 +46,6 @@ export {
     LocationAccessScreen,
     LocationDetailScreen,
     CheckoutScreen,
+    OrderConfirmationScreen,
+    BrandScreen,
 }

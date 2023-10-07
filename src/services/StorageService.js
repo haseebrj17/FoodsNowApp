@@ -51,6 +51,14 @@ const getLocation = async () => {
     return location !== null ? JSON.parse(location) : null;
 }
 
+const removeData = async (key) => {
+    try {
+        await AsyncStorage.removeItem(key);
+    } catch (error) {
+        console.error(`Error removing data for key ${key}:`, error);
+    }
+};
+
 export default { 
     setFirstTimeUse, 
     getFirstTimeUse, 
@@ -64,4 +72,5 @@ export default {
     setAppleUser, 
     getLocation, 
     setLocation,
+    removeData,
 };

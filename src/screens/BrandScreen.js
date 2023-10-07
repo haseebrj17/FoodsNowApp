@@ -1,14 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, FlatList, View, Text, Image, Dimensions, TouchableWithoutFeedback, Animated, ScrollView } from 'react-native';
+import { StyleSheet, FlatList, View, Text, Image, Dimensions, TouchableWithoutFeedback, TouchableOpacity, Animated, ScrollView } from 'react-native';
 import { Extras, Dips, BrandCard } from '../assets/constants/Slider';
 import { useFonts } from 'expo-font';
 import { Button } from "@react-native-material/core";
 import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Display } from '../utils';
-import Skeleton from './Skeleton';
+import Skeleton from '../components/Skeleton';
 import { useDispatch, useSelector } from "react-redux";
 import { fetchBrands } from "../actions/BrandAction";
+import { MaterialIcons, Ionicons, EvilIcons, Feather, SimpleLineIcons } from '@expo/vector-icons';
 
 const column = 3;
 
@@ -24,18 +25,20 @@ const formatData = (brands, column) => {
     return brands;
 }
 
-const BrandCardsHome = ({ brand, deliveryParams }) => {
-    const [showAllBrands, setShowAllBrands] = useState(false);
-    const [imagesLoaded, setImagesLoaded] = useState(0);
-    const [scroll, setScroll] = useState(false);
+const BrandScreen = ({ route }) => {
+
     const navigation = useNavigation();
+
+    const { brand, deliveryParams } = route.params;
+
+    const [imagesLoaded, setImagesLoaded] = useState(0);
     const [brands, setBrand] = useState(null);
     const [loading, setLoading] = useState(true);
 
     const handleImageLoad = () => {
         setImagesLoaded(prevCount => prevCount + 1);
         if (imagesLoaded + 1 === brands.length) {
-            setLoading(false); // Assuming you have a setLoading function somewhere
+            setLoading(false);
         }
     };
 
@@ -43,57 +46,9 @@ const BrandCardsHome = ({ brand, deliveryParams }) => {
         if (brand) {
             console.log(brand);
             setBrand(brand);
-            setLoading(false); // Assuming you have a setLoading function somewhere
+            setLoading(false);
         }
     }, [brand]);
-
-    const ConditionalRendering = ({ brands, deliveryParams }) => {
-        if (brands?.length > 6) {
-            return (
-                <Button
-                    onPress={() => navigation.navigate('HomeNavigator', {
-                        screen: 'Brand',
-                        params: {
-                            brand: brands,
-                            deliveryParams: deliveryParams
-                        }
-                    })
-                    }
-                    title={custonTitle}
-                    style={styles.Button}
-                    color="rgba(50, 89, 98, 0.2)"
-                    disableElevation={true}
-                    uppercase={false}
-                    leading
-                />
-            );
-        } else {
-            return null;
-        }
-    };
-
-    const custonTitle = () => {
-        return (
-            <View
-                style={{
-                    width: '100%',
-                    height: '100%',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                }}
-            >
-                <Text
-                    style={{
-                        color: "#325962",
-                        fontSize: 12,
-                        fontWeight: "600",
-                        letterSpacing: 0.2,
-                        // marginTop: 2,
-                    }}
-                >Explore all Restaurants</Text>
-            </View>
-        )
-    }
 
     renderItem = ({ item: brand }) => {
         if (brand.empty === true) {
@@ -206,8 +161,54 @@ const BrandCardsHome = ({ brand, deliveryParams }) => {
     return (
         <View>
             {loading ? (
-                <View>
-                    <Skeleton height={Display.setHeight(2.5)} width={Display.setHeight(35)} style={{ alignSelf: 'center', marginBottom: 5, borderRadius: 6 }} />
+                <View
+                    style={{
+                        width,
+                        height,
+                        backgroundColor: '#fff'
+                    }}
+                >
+                    <View
+                        style={{
+                            width,
+                            height: height * 0.12,
+                            backgroundColor: '#F4E4CD',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            flexDirection: 'row',
+                        }}
+                    >
+                        <TouchableOpacity
+                            onPress={() => {
+                                if (navigation.canGoBack()) {
+                                    navigation.goBack();
+                                } else {
+                                    navigation.navigate('Account');
+                                }
+                            }}
+                            style={{
+                                position: "absolute",
+                                left: '1%',
+                                top: "10%",
+                                marginTop: 35,
+                                zIndex: 999,
+                            }}
+                        >
+                            <MaterialIcons
+                                name="keyboard-arrow-left"
+                                size={50}
+                                color="#325962"
+                            />
+                        </TouchableOpacity>
+                        <Text
+                            style={{
+                                fontSize: 20,
+                                fontWeight: 'bold',
+                                marginTop: 35,
+                                color: "#325962",
+                            }}
+                        >Brands</Text>
+                    </View>
                     <View
                         style={{
                             width: '100%',
@@ -240,13 +241,57 @@ const BrandCardsHome = ({ brand, deliveryParams }) => {
                             <Skeleton height={Display.setHeight(14)} width={Display.setHeight(11.5)} style={{ margin: 10, borderRadius: 12 }} />
                             <Skeleton height={Display.setHeight(14)} width={Display.setHeight(11.5)} style={{ margin: 10, borderRadius: 12 }} />
                         </View>
-                        <View>
-                            <Skeleton height={50} width={240} style={{ margin: 10, borderRadius: 12 }} />
-                        </View>
                     </View>
                 </View>
             ) : (
-                <View>
+                <View
+                    style={{
+                        width,
+                        height,
+                        backgroundColor: '#fff'
+                    }}
+                >
+                    <View
+                        style={{
+                            width,
+                            height: height * 0.12,
+                            backgroundColor: '#F4E4CD',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            flexDirection: 'row',
+                        }}
+                    >
+                        <TouchableOpacity
+                            onPress={() => {
+                                if (navigation.canGoBack()) {
+                                    navigation.goBack();
+                                } else {
+                                    navigation.navigate('Account');
+                                }
+                            }}
+                            style={{
+                                position: "absolute",
+                                left: '1%',
+                                top: "10%",
+                                marginTop: 35,
+                                zIndex: 999,
+                            }}
+                        >
+                            <MaterialIcons
+                                name="keyboard-arrow-left"
+                                size={50}
+                                color="#325962"
+                            />
+                        </TouchableOpacity>
+                        <Text
+                            style={{
+                                fontSize: 20,
+                                fontWeight: 'bold',
+                                marginTop: 35,
+                                color: "#325962",
+                            }}
+                        >Brands</Text>
+                    </View>
                     <View
                         style={{
                             flex: 1,
@@ -254,28 +299,19 @@ const BrandCardsHome = ({ brand, deliveryParams }) => {
                             alignSelf: 'center',
                             marginBottom: 1,
                             width: width * 0.9,
-                            // Removed the dynamic HEIGHT, replaced with a static height or remove it entirely
                         }}
                     >
-                        <Text style={{
-                            fontSize: 15,
-                            color: '#325962',
-                            fontWeight: "bold",
-                            alignSelf: "center",
-                            marginBottom: 1,
-                        }}>Alles in unserem Food Court, in EINER Lieferung!</Text>
                         <FlatList
-                            // Display only the first 6 brands
-                            data={brands ? formatData(brands.slice(0, 6), column) : null}
+                            data={brands ? formatData(brands, column) : null}
                             renderItem={renderItem}
                             numColumns={column}
                             keyExtractor={(item, index) => index.toString()}
                         />
                     </View>
-                    <ConditionalRendering brands={brands} />
                 </View>
-            )}
-        </View>
+            )
+            }
+        </View >
     );
 };
 
@@ -340,4 +376,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default BrandCardsHome;
+export default BrandScreen;

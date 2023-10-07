@@ -35,13 +35,13 @@ const SreachScreen = ({ navigation }) => {
     }, [searchQuery]);
     const renderItem = ({ item: logo }) => {
         return (
-            <TouchableOpacity onPress={() => navigation.navigate('Details', { brand: logo.name })}>
+            <TouchableOpacity>
                 <Image
                     source={logo.image}
                     resizeMode='contain'
                     style={styles.item}
                 />
-            </TouchableOpacity>
+            </TouchableOpacity >
         )
     }
     return (
@@ -58,13 +58,13 @@ const SreachScreen = ({ navigation }) => {
             </View>
             <View style={{ width: width * 0.9, alignItems: 'center', alignSelf: 'center', marginTop: 20, flexDirection: 'row' }}>
                 <Entypo name="back-in-time" size={24} color="#325962" />
-                <Text style={{ fontSize: 18, fontFamily: 'PBO', marginLeft: 10, fontWeight: 'bold', color: '#325962' }}>
+                <Text style={{ fontSize: 18, marginLeft: 10, fontWeight: 'bold', color: '#325962' }}>
                     Recent Sreach
                 </Text>
             </View>
             <View style={{ width: width * 0.9, alignItems: 'center', alignSelf: 'center', marginTop: 20, flexDirection: 'row' }}>
                 <MaterialIcons name='local-fire-department' size={24} color="#325962" />
-                <Text style={{ fontSize: 18, fontFamily: 'PBO', marginLeft: 10, fontWeight: 'bold', color: '#325962' }}>
+                <Text style={{ fontSize: 18, marginLeft: 10, fontWeight: 'bold', color: '#325962' }}>
                     Most loved restaurants
                 </Text>
             </View>

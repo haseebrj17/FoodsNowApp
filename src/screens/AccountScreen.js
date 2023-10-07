@@ -22,26 +22,26 @@ const accountData = [
         "navigator": "Addresses",
         "iconname": <Entypo name="address" size={size} color={color} />
     },
+    // {
+    //     "name": "Schedules",
+    //     "navigator": "Schedules",
+    //     "iconname": <MaterialCommunityIcons name="calendar-clock" size={size} color={color} />
+    // },
     {
-        "name": "Schedules",
-        "navigator": "Schedules",
-        "iconname": <MaterialCommunityIcons name="calendar-clock" size={size} color={color} />
-    },
-    {
-        "name": "Orders & Reordering",
+        "name": "Orders",
         "navigator": "OrderReordering",
         "iconname": <FontAwesome5 name="truck" size={size} color={color} />
-    },
-    {
-        "name": "Settings",
-        "navigator": "Settings",
-        "iconname": <FontAwesome name="gear" size={size} color={color} />
-    },
-    {
-        "name": "More...",
-        "navigator": "More",
-        "iconname": <MaterialCommunityIcons name="more" size={size} color={color} />
-    },
+    }
+    // {
+    //     "name": "Settings",
+    //     "navigator": "Settings",
+    //     "iconname": <FontAwesome name="gear" size={size} color={color} />
+    // },
+    // {
+    //     "name": "More...",
+    //     "navigator": "More",
+    //     "iconname": <MaterialCommunityIcons name="more" size={size} color={color} />
+    // },
 ]
 
 const AccountScreen = ({ navigation }) => {
@@ -155,7 +155,7 @@ const AccountScreen = ({ navigation }) => {
                                         marginTop: 35,
                                         color: "#325962"
                                     }}
-                                >Profile</Text>
+                                >Account</Text>
                             </View>
                             <View
                                 style={{
@@ -192,7 +192,7 @@ const AccountScreen = ({ navigation }) => {
                                                     fontSize: 18,
                                                     fontWeight: 'bold',
                                                     color: "#FFAF51",
-                                                    marginBottom:  Display.setHeight(0.5)
+                                                    marginBottom: Display.setHeight(0.5)
                                                 }}
                                             >Not a user yet</Text>
                                             <Text
@@ -204,6 +204,7 @@ const AccountScreen = ({ navigation }) => {
                                         </View>
                                         <Button
                                             title="Sign Up"
+                                            onPress={() => navigation.navigate('Registration')}
                                             color="#FFAF51"
                                             uppercase={false}
                                             titleStyle={{ color: "#325962" }}

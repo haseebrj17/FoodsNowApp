@@ -143,36 +143,41 @@ const WelcomeScreen = () => {
 
     const renderItem = ({ item, index }) => {
         return (
-            <View
-                key={index.toString()}
-                style={{ width, alignItems: 'center', paddingBottom: 20 }}
-            >
-                <View style={{ flex: 0.7, justifyContent: 'center ' }}>
-                    <Image source={item.image} style={{ width: width / 2, height: height / 2, resizeMode: 'contain' }} />
-                </View>
-                <View style={{ flex: 0.3 }}>
-                    <Text style={{ fontWeight: '800', fontSize: 28, marginBottom: 10, color: 'white', marginTop: 30, }}>{item.title}</Text>
-                    <Text style={{ fontWeight: '300', color: 'white' }}>{item.description}</Text>
-                </View>
-                {index === splashData.length - 1 && (
-                    <View
-                        style={{
-                            width: '60%',
-                            position: 'absolute',
-                            bottom: '8%',
-                            alignSelf: 'center',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                        }}
-                    >
-                        <Button
-                            title={'Read Policy'}
-                            color={'#FFAF51'}
-                            onPress={() => navigation.navigate('DataTracking')}
-                        />
+            <>
+                <View
+                    key={index.toString()}
+                    style={{ width, alignItems: 'center', paddingBottom: 20 }}
+                >
+                    <View style={{ flex: 0.7, justifyContent: 'center' }}>
+                        <Image source={item.image} style={{ width: width / 1.8, height: height / 1.8, resizeMode: 'contain' }} />
                     </View>
-                )}
-            </View>
+                    <View style={{ flex: 0.3 }}>
+                        <Text style={{ fontWeight: '800', fontSize: 28, marginBottom: 10, color: 'white', marginTop: 30, }}>{item.title}</Text>
+                        <Text style={{ fontWeight: '300', color: 'white' }}>{item.description}</Text>
+                    </View>
+                </View>
+                {
+                    index === splashData.length - 1 && (
+                        <View
+                            style={{
+                                width: '50%',
+                                position: 'absolute',
+                                left: '25%',
+                                bottom: '-10%',
+                                alignSelf: 'center',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                            }}
+                        >
+                            <Button
+                                title={'Read Policy'}
+                                color={'#325964'}
+                                onPress={() => navigation.navigate('DataTracking')}
+                            />
+                        </View>
+                    )
+                }
+            </>
         )
     }
     return (
@@ -203,6 +208,8 @@ const WelcomeScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
         backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center',

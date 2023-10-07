@@ -54,12 +54,11 @@ export const updateAddressFailure = (error) => ({
     payload: error,
 });
 
-export const addUserAddress = ({ inputs }) => {
+export const addUserAddress = ({ inputs, token }) => {
     return async (dispatch) => {
         dispatch(addAddressStart());
         try {
-            console.log('Inputs in action:', inputs);
-            const response = await UserAddressService.addUserAddress(inputs);
+            const response = await UserAddressService.addUserAddress(inputs, token);
             if (response?.status) {
                 dispatch(addAddressSuccess(response?.data));
                 return Promise.resolve("OK");
@@ -76,11 +75,11 @@ export const addUserAddress = ({ inputs }) => {
 };
 
 
-export const updateUserAddress = ({ Id, inputs }) => {
+export const updateUserAddress = ({ Id, inputs, token }) => {
     return async (dispatch) => {
         dispatch(updateAddressStart());
         try {
-            const response = await UserAddressService.updateUserAddress({ Id, inputs });
+            const response = await UserAddressService.updateUserAddress({ Id, inputs, token});
             if (response?.status) {
                 dispatch(updateAddressSuccess(response?.data));
                 return Promise.resolve("OK");
@@ -96,11 +95,11 @@ export const updateUserAddress = ({ Id, inputs }) => {
 };
 
 
-export const fetchUserAddresses = (Id) => {
+export const fetchUserAddresses = (Id, token) => {
     return async (dispatch) => {
         dispatch(fetchAddressStart());
         try {
-            const response = await UserAddressService.getUserAddresses({ Id });
+            const response = await UserAddressService.getUserAddresses({ Id, token });
             if (response?.status) {
                 dispatch(fetchAddressSuccess(response?.data));
                 return Promise.resolve("OK");

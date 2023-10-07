@@ -7,6 +7,8 @@ export const ADD_TO_CART_SUCCESS = 'ADD_TO_CART_SUCCESS';
 export const ADD_TO_CART_FAILURE = 'ADD_TO_CART_FAILURE';
 export const SET_SUB_LOADING = 'SET_SUB_LOADING';
 export const UNSET_SUB_LOADING = 'UNSET_SUB_LOADING';
+export const BEGIN_DECREMENTING = 'BEGIN_DECREMENTING';
+export const END_DECREMENTING = 'END_DECREMENTING';
 
 export const setSubLoading = () => ({
     type: SET_SUB_LOADING,
@@ -34,6 +36,14 @@ export const addToCartFailure = (error) => ({
     type: ADD_TO_CART_FAILURE,
     payload: error,
 });
+
+export const beginDecrementing = () => ({
+    type: BEGIN_DECREMENTING,
+})
+
+export const endDecrementing = () => ({
+    type: END_DECREMENTING,
+})
 
 export const addToCart = ({ dishId, selectedSize, selectedExtras, selectedDips, quantity }) => (dispatch) => {
     dispatch(addToCartStart());
@@ -170,44 +180,74 @@ export const incrementQuantity = (cartItemId) => (dispatch) => {
 
 export const decrementQuantity = (cartItemId) => (dispatch) => {
     dispatch(setSubLoading());
+    return new Promise((resolve, reject) => {
+        db.transaction(
+            (tx) => {
+                tx.executeSql(
+                    'SELECT quantity FROM cart WHERE id = ?;',
+                    [cartItemId],
+                    (_, { rows }) => {
+                        if (rows._array[0].quantity === 1) {
+                            dispatch(removeFromCart(cartItemId));
+                            dispatch(unsetSubLoading());
+                            resolve();
+                        } else {
+                            tx.executeSql(
+                                'UPDATE cart SET quantity = quantity - 1 WHERE id = ?;',
+                                [cartItemId],
+                                (_, resultSet) => {
+                                    dispatch(getCartItems());
+                                    dispatch(unsetSubLoading());
+                                    resolve();
+                                },
+                                (_, error) => {
+                                    console.log("Database error while decrementing quantity:", error);
+                                    dispatch(unsetSubLoading());
+                                    reject(error);
+                                    return true;
+                                }
+                            );
+                        }
+                    },
+                    (_, error) => {
+                        console.log("Database error while checking item quantity:", error);
+                        dispatch(unsetSubLoading());
+                        reject(error);
+                        return true;
+                    }
+                );
+            },
+            (error) => {
+                console.log("Transaction error while decrementing quantity:", error);
+                dispatch(unsetSubLoading());
+                reject(error);
+            },
+            () => {
+                dispatch(unsetSubLoading());
+                resolve();
+            }
+        );
+    });
+};
+
+export const clearCart = () => (dispatch) => {
     db.transaction(
         (tx) => {
             tx.executeSql(
-                'SELECT quantity FROM cart WHERE id = ?;',
-                [cartItemId],
-                (_, { rows }) => {
-                    if (rows._array[0].quantity === 1) {
-                        dispatch(removeFromCart(cartItemId));
-                        dispatch(unsetSubLoading());
-                    } else {
-                        tx.executeSql(
-                            'UPDATE cart SET quantity = quantity - 1 WHERE id = ?;',
-                            [cartItemId],
-                            (_, resultSet) => {
-                                dispatch(getCartItems());
-                                dispatch(unsetSubLoading());
-                            },
-                            (_, error) => {
-                                console.log("Database error while decrementing quantity:", error);
-                                dispatch(unsetSubLoading());
-                                return true;
-                            }
-                        );
-                    }
-                },
+                'DELETE FROM cart;',
+                [],
+                null,
                 (_, error) => {
-                    console.log("Database error while checking item quantity:", error);
-                    dispatch(unsetSubLoading());
+                    console.log("Database error while clearing cart:", error);
                     return true;
                 }
             );
         },
         (error) => {
-            console.log("Transaction error while decrementing quantity:", error);
-            dispatch(unsetSubLoading());
+            console.log("Transaction error while clearing cart:", error);
         },
         () => {
-            dispatch(unsetSubLoading());
+            dispatch(getCartItems());
         }
     );
 };

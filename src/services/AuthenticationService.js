@@ -41,9 +41,6 @@ const register = async user => {
 };
 
 const login = async user => {
-    if (!user?.EmailAdress || !user?.Password) {
-        return { status: false, message: 'Please fill up all fields' };
-    }
     try {
         let requestBody = {
             EmailAdress: user?.EmailAdress,
@@ -91,10 +88,12 @@ const phoneVerification = async codeData => {
             VerificationCode: codeData?.code,
             Id: codeData?.id
         };
+        console.log(`Request Body ${requestBody}`)
         let verificationResponse = await axios.post(
             `${ApiContants.BACKEND_API.BASE_API_URL}${ApiContants.BACKEND_API.VERIFICATION}`,
             requestBody
         );
+        console.log(`Response Body ${verificationResponse}`)
         if (verificationResponse?.status === 200) {
             return {
                 status: true,

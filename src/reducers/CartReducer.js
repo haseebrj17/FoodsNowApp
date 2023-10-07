@@ -6,13 +6,16 @@ import {
     ADD_TO_CART_FAILURE,
     SET_SUB_LOADING,
     UNSET_SUB_LOADING,
+    BEGIN_DECREMENTING,
+    END_DECREMENTING
 } from '../actions/CartAction';
 
 const initialState = {
     cart: [],
     isLoading: false,
     subLoading: false,
-    error: null,
+    isDecrementing: false,
+    error: null
 };
 
 export default (state = initialState, action) => {
@@ -30,6 +33,10 @@ export default (state = initialState, action) => {
             return { ...state, subLoading: true };
         case UNSET_SUB_LOADING:
             return { ...state, subLoading: false };
+        case BEGIN_DECREMENTING:
+            return { ...state, isDecrementing: true };
+        case END_DECREMENTING:
+            return { ...state, isDecrementing: false };
         default:
             return state;
     }

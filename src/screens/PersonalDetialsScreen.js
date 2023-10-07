@@ -10,6 +10,8 @@ import { useAuthRequest } from 'expo-auth-session';
 import * as AuthSession from 'expo-auth-session';
 import GoogleIcon from '../assets/icons/Google';
 import AppleIcon from '../assets/icons/Apple';
+import * as SplashScreen from 'expo-splash-screen';
+import Skeleton from '../components/Skeleton';
 
 const { width, height } = Dimensions.get('screen');
 
@@ -42,6 +44,10 @@ const PersonalDetialsScreen = ({ navigation }) => {
     //     }
     // };
 
+    useEffect(() => {
+        fetchUserData();
+    }, []);
+
     const fetchUserData = async () => {
         try {
             const userData = await StorageService.getUserData();
@@ -50,8 +56,6 @@ const PersonalDetialsScreen = ({ navigation }) => {
 
             if (userData) {
                 setUser(JSON.parse(userData));
-            } else {
-                console.log("No user data found in Storage Service");
             }
 
             if (googleUser === "true") setGoogleConnected(true);
@@ -65,18 +69,130 @@ const PersonalDetialsScreen = ({ navigation }) => {
             setIsReady(true);
         }
     };
+
     if (!isReady) {
         return (
-            <AppLoading
-                startAsync={fetchUserData}
-                onFinish={() => setIsReady(true)}
-                onError={console.warn}
-            />
-        );
+            <>
+                <View>
+                    <View
+                        style={{
+                            width,
+                            height: Display.setHeight(12),
+                            backgroundColor: '#F4E4CD',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            flexDirection: 'row'
+                        }}
+                    >
+                        <Text
+                            style={{
+                                fontSize: 20,
+                                fontWeight: 'bold',
+                                marginTop: 35,
+                                color: "#325962",
+                            }}
+                        >My Cart</Text>
+                    </View>
+                    <View>
+                        <Skeleton height={Display.setHeight(12)} width={Display.setWidth(90)} style={{ borderRadius: 12, alignSelf: 'center', marginTop: Display.setHeight(1.5) }} />
+                        <View
+                            style={{
+                                width: Display.setHeight(5),
+                                height: Display.setHeight(5),
+                                borderRadius: 2,
+                                flexDirection: 'row',
+                                position: 'absolute',
+                                left: '10%',
+                                top: '15%',
+                            }}
+                        >
+                            <View
+                                style={{
+                                    padding: 10
+                                }}
+                            >
+                                <Skeleton height={Display.setHeight(3)} width={Display.setHeight(18)} style={{ borderRadius: 5, marginTop: Display.setHeight(0.5) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                                <Skeleton height={Display.setHeight(2)} width={Display.setHeight(27)} style={{ borderRadius: 5, marginTop: Display.setHeight(3) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                            </View>
+                        </View>
+                    </View>
+                    <View>
+                        <Skeleton height={Display.setHeight(12)} width={Display.setWidth(90)} style={{ borderRadius: 12, alignSelf: 'center', marginTop: Display.setHeight(1.5) }} />
+                        <View
+                            style={{
+                                width: Display.setHeight(5),
+                                height: Display.setHeight(5),
+                                borderRadius: 2,
+                                flexDirection: 'row',
+                                position: 'absolute',
+                                left: '10%',
+                                top: '15%',
+                            }}
+                        >
+                            <View
+                                style={{
+                                    padding: 10
+                                }}
+                            >
+                                <Skeleton height={Display.setHeight(3)} width={Display.setHeight(18)} style={{ borderRadius: 5, marginTop: Display.setHeight(0.5) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                                <Skeleton height={Display.setHeight(2)} width={Display.setHeight(27)} style={{ borderRadius: 5, marginTop: Display.setHeight(3) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                            </View>
+                        </View>
+                    </View>
+                    <View>
+                        <Skeleton height={Display.setHeight(12)} width={Display.setWidth(90)} style={{ borderRadius: 12, alignSelf: 'center', marginTop: Display.setHeight(1.5) }} />
+                        <View
+                            style={{
+                                width: Display.setHeight(5),
+                                height: Display.setHeight(5),
+                                borderRadius: 2,
+                                flexDirection: 'row',
+                                position: 'absolute',
+                                left: '10%',
+                                top: '15%',
+                            }}
+                        >
+                            <View
+                                style={{
+                                    padding: 10
+                                }}
+                            >
+                                <Skeleton height={Display.setHeight(3)} width={Display.setHeight(18)} style={{ borderRadius: 5, marginTop: Display.setHeight(0.5) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                                <Skeleton height={Display.setHeight(2)} width={Display.setHeight(27)} style={{ borderRadius: 5, marginTop: Display.setHeight(3) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                            </View>
+                        </View>
+                    </View>
+                    <View>
+                        <Skeleton height={Display.setHeight(14)} width={Display.setWidth(90)} style={{ borderRadius: 12, alignSelf: 'center', marginTop: Display.setHeight(1.5) }} />
+                        <View
+                            style={{
+                                width: Display.setHeight(5),
+                                height: Display.setHeight(5),
+                                borderRadius: 2,
+                                flexDirection: 'row',
+                                position: 'absolute',
+                                left: '10%',
+                                top: '15%',
+                            }}
+                        >
+                            <View
+                                style={{
+                                    padding: 10
+                                }}
+                            >
+                                <Skeleton height={Display.setHeight(3)} width={Display.setHeight(18)} style={{ borderRadius: 5, marginTop: Display.setHeight(0.5) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                                <Skeleton height={Display.setHeight(2)} width={Display.setHeight(27)} style={{ borderRadius: 5, marginTop: Display.setHeight(1) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                                <Skeleton height={Display.setHeight(3)} width={Display.setHeight(12)} style={{ borderRadius: 12, marginTop: Display.setHeight(1) }} backgroundColor={"rgba(256, 256, 256, 1)"} />
+                            </View>
+                        </View>
+                    </View>
+                </View>
+            </>
+        )
     }
 
     // const redirectUri = AuthSession.makeRedirectUri({ useProxy: true });
-    
+
     // const [requestGoogle, responseGoogle, promptAsyncGoogle] = Google.useAuthRequest({
     //     clientId: 'GOOGLE_CLIENT_ID',
     //     redirectUri,
@@ -134,7 +250,8 @@ const PersonalDetialsScreen = ({ navigation }) => {
             style={{
                 flexGrow: 1,
                 width,
-                height
+                height,
+                backgroundColor: '#fff'
             }}
             scrollIndicatorInsets={1}
         >
@@ -220,7 +337,7 @@ const PersonalDetialsScreen = ({ navigation }) => {
                                 width: '90%',
                                 alignItems: 'center',
                                 justifyContent: 'space-between',
-                                margin: Display.setHeight(1.5),
+                                marginTop: Display.setHeight(1.5),
                                 flexDirection: 'row'
                             }}
                         >
@@ -231,7 +348,7 @@ const PersonalDetialsScreen = ({ navigation }) => {
                                     color: '#325964'
                                 }}
                             >Name</Text>
-                            <TouchableOpacity><MaterialIcons name="edit" size={22} color="#325964" /></TouchableOpacity>
+
                         </View>
                         <View
                             style={{
@@ -247,7 +364,7 @@ const PersonalDetialsScreen = ({ navigation }) => {
                                     fontWeight: '500',
                                     color: '#325964',
                                 }}
-                            >{user.fullname}</Text>
+                            >{user?.FullName}</Text>
                         </View>
                     </View>
                 </View>
@@ -281,7 +398,7 @@ const PersonalDetialsScreen = ({ navigation }) => {
                                 width: '90%',
                                 alignItems: 'center',
                                 justifyContent: 'space-between',
-                                margin: Display.setHeight(1.5),
+                                marginTop: Display.setHeight(1.5),
                                 flexDirection: 'row'
                             }}
                         >
@@ -292,7 +409,7 @@ const PersonalDetialsScreen = ({ navigation }) => {
                                     color: '#325964'
                                 }}
                             >Email</Text>
-                            <TouchableOpacity><MaterialIcons name="edit" size={22} color="#325964" /></TouchableOpacity>
+
                         </View>
                         <View
                             style={{
@@ -308,7 +425,7 @@ const PersonalDetialsScreen = ({ navigation }) => {
                                     fontWeight: '500',
                                     color: '#325964',
                                 }}
-                            >{user.email}</Text>
+                            >{user?.EmailAdress}</Text>
                         </View>
                     </View>
                 </View>
@@ -342,7 +459,7 @@ const PersonalDetialsScreen = ({ navigation }) => {
                                 width: '90%',
                                 alignItems: 'center',
                                 justifyContent: 'space-between',
-                                margin: Display.setHeight(1.5),
+                                marginTop: Display.setHeight(1.5),
                                 flexDirection: 'row'
                             }}
                         >
@@ -353,7 +470,7 @@ const PersonalDetialsScreen = ({ navigation }) => {
                                     color: '#325964'
                                 }}
                             >Password</Text>
-                            <TouchableOpacity><MaterialIcons name="edit" size={22} color="#325964" /></TouchableOpacity>
+
                         </View>
                         <View
                             style={{
@@ -369,7 +486,7 @@ const PersonalDetialsScreen = ({ navigation }) => {
                                     fontWeight: '500',
                                     color: '#325964',
                                 }}
-                            >{"".padStart(user.password.length, "*")}</Text>
+                            >********</Text>
                         </View>
                     </View>
                 </View>
@@ -403,7 +520,7 @@ const PersonalDetialsScreen = ({ navigation }) => {
                                 width: '90%',
                                 alignItems: 'center',
                                 justifyContent: 'space-between',
-                                margin: Display.setHeight(1.5),
+                                marginTop: Display.setHeight(1.5),
                                 flexDirection: 'row'
                             }}
                         >
@@ -414,7 +531,7 @@ const PersonalDetialsScreen = ({ navigation }) => {
                                     color: '#325964'
                                 }}
                             >Mobile Number</Text>
-                            <TouchableOpacity><MaterialIcons name="edit" size={22} color="#325964" /></TouchableOpacity>
+
                         </View>
                         <View
                             style={{
@@ -431,7 +548,7 @@ const PersonalDetialsScreen = ({ navigation }) => {
                                     fontWeight: '500',
                                     color: '#325964',
                                 }}
-                            >{user && user.phone ? "+92 " + user.phone.slice(1, 4) + " " + user.phone.slice(4) : "No phone number"}</Text>
+                            >{user?.ContactNumber}</Text>
                         </View>
                         <View
                             style={{
@@ -444,7 +561,7 @@ const PersonalDetialsScreen = ({ navigation }) => {
                                     width: '35%',
                                     height: Display.setHeight(4),
                                     backgroundColor: '#e1e1e1',
-                                    borderRadius: '50%',
+                                    borderRadius: Display.setHeight(2),
                                     alignItems: 'center',
                                     justifyContent: 'center',
                                     flexDirection: 'row',
@@ -598,7 +715,72 @@ const PersonalDetialsScreen = ({ navigation }) => {
                     </View>
                 </View>
             </View>
-        </ScrollView>
+            <View
+                style={{
+                    flex: 1,
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    marginBottom: Display.setHeight(7)
+                }}
+            >
+                <Text
+                    style={{
+                        fontSize: 18,
+                        fontWeight: 'bold',
+                        marginLeft: width * 0.05,
+                        alignSelf: 'flex-start',
+                        color: "#325962",
+                    }}
+                >Delete Account</Text>
+                <View
+                    style={{
+                        width: "90%",
+                        height: "90%",
+                        alignItems: 'center',
+                    }}
+                >
+                    <TouchableOpacity>
+                        <View
+                            style={{
+                                width: "100%",
+                                height: Display.setHeight(6),
+                                backgroundColor: '#f1f1f1',
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                marginTop: 15,
+                                borderRadius: 10,
+                                shadowColor: '#325964',
+                                shadowOffset: {
+                                    width: 0,
+                                    height: 3,
+                                },
+                                shadowOpacity: 0.5,
+                                shadowRadius: 2,
+                                elevation: 10,
+                                marginBottom: Display.setHeight(8)
+                            }}
+                        >
+                            <View
+                                style={{
+                                    flexDirection: 'row',
+                                    width: "100%",
+                                    marginLeft: Display.setHeight(1.5)
+                                }}
+                            >
+                                <Text
+                                    style={{
+                                        fontSize: Display.setHeight(1.6),
+                                        color: '#FF7074',
+                                        fontWeight: '500'
+                                    }}
+                                >Delete my account and related data</Text>
+                            </View>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </ScrollView >
     )
 }
 

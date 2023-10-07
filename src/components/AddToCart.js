@@ -35,7 +35,7 @@ const DeliveryPrice = ({ price }) => {
             <MaterialCommunityIcons name="truck-fast" size={24} color="#325962" />
             <Text
                 style={{
-                    fontSize: 16,
+                    fontSize: Display.setHeight(1.6),
                     fontWeight: '500',
                     color: '#325962'
                 }}
@@ -50,7 +50,7 @@ const DeliveryPrice = ({ price }) => {
         }}
     ><MaterialCommunityIcons name="truck-fast" size={24} color="#325962" /><Text
         style={{
-            fontSize: 16,
+            fontSize: Display.setHeight(1.6),
             fontWeight: '500',
             color: '#325962'
         }}
@@ -202,7 +202,7 @@ const AddToCartModal = forwardRef((props, ref) => {
             <View style={[styles.scene, { backgroundColor: 'white' }]} >
                 <Text
                     style={{
-                        fontSize: 18,
+                        fontSize: Display.setHeight(1.9),
                         fontWeight: 'bold',
                         color: '#000',
                         marginLeft: Display.setHeight(1),
@@ -211,7 +211,7 @@ const AddToCartModal = forwardRef((props, ref) => {
                 >Description</Text>
                 <Text
                     style={{
-                        fontSize: 12,
+                        fontSize: Display.setHeight(1.5),
                         fontWeight: '400',
                         color: '#000',
                         marginLeft: 10,
@@ -223,7 +223,7 @@ const AddToCartModal = forwardRef((props, ref) => {
                 </Text>
                 <Text
                     style={{
-                        fontSize: 18,
+                        fontSize: Display.setHeight(1.9),
                         fontWeight: 'bold',
                         color: '#000',
                         marginLeft: Display.setHeight(1),
@@ -232,7 +232,7 @@ const AddToCartModal = forwardRef((props, ref) => {
                 >Ingredients</Text>
                 <Text
                     style={{
-                        fontSize: 12,
+                        fontSize: Display.setHeight(1.5),
                         fontWeight: '400',
                         color: '#000',
                         marginLeft: Display.setHeight(1),
@@ -243,7 +243,7 @@ const AddToCartModal = forwardRef((props, ref) => {
                 </Text>
                 <Text
                     style={{
-                        fontSize: 18,
+                        fontSize: Display.setHeight(1.9),
                         fontWeight: 'bold',
                         color: '#000',
                         marginLeft: Display.setHeight(1),
@@ -267,11 +267,11 @@ const AddToCartModal = forwardRef((props, ref) => {
                                 />
                                 <Text
                                     style={{
-                                        fontSize: 14,
+                                        fontSize: Display.setHeight(1.7),
                                         fontWeight: '600',
                                         color: '#000',
                                         marginLeft: Display.setHeight(0),
-                                        marginTop: Display.setHeight(0.5),
+                                        marginTop: Display.setHeight(0.8),
                                     }}
                                     key={index}
                                 >
@@ -321,7 +321,7 @@ const AddToCartModal = forwardRef((props, ref) => {
                     style={{
                         width: Display.setHeight(6),
                         height: Display.setHeight(6),
-                        borderRadius: '50%',
+                        borderRadius: Display.setHeight(3),
                         justifyContent: 'center',
                         alignItems: 'center',
                         marginRight: 10,
@@ -333,7 +333,7 @@ const AddToCartModal = forwardRef((props, ref) => {
                 <View style={{ flex: 1 }}>
                     <Text
                         style={{
-                            fontSize: 14,
+                            fontSize: Display.setHeight(1.6),
                             color: '#325962',
                             fontWeight: '500',
                             marginBottom: 2,
@@ -341,7 +341,7 @@ const AddToCartModal = forwardRef((props, ref) => {
                     >
                         {comment.user}  <FontAwesome name="star" size={15} color="#FFAF51" /> {comment.star}
                     </Text>
-                    <Text style={[{ fontSize: 12, color: '#000', fontWeight: '400' }, commentStyle]}>
+                    <Text style={[{ fontSize: Display.setHeight(1.4), color: '#000', fontWeight: '400' }, commentStyle]}>
                         {comment.comment}
                     </Text>
                 </View>
@@ -392,7 +392,7 @@ const AddToCartModal = forwardRef((props, ref) => {
             enableOverDrag
             enab
             backgroundStyle={{
-                borderRadius: 30
+                borderRadius: Display.setHeight(3.2)
             }}
             animateOnMount={true}
             handleStyle={{
@@ -425,17 +425,93 @@ const AddToCartModal = forwardRef((props, ref) => {
                     </View>
                     <View style={styles.divider} />
                     <SectionList
+                        removeClippedSubviews={false}
+                        // sections={[
+                        //     {
+                        //         data: [
+                        //             <View
+                        //                 key="details"
+                        //                 style={{
+                        //                     width: "100%",
+                        //                     height: Display.setHeight(45),
+                        //                     flexDirection: "column",
+                        //                 }}
+                        //             >
+                        //                 <TabView
+                        //                     navigationState={{ index, routes }}
+                        //                     renderScene={SceneMap({
+                        //                         details: DetailsRoute,
+                        //                         reviews: ReviewsRoute,
+                        //                     })}
+                        //                     onIndexChange={setIndex}
+                        //                     initialLayout={{ width: width }}
+                        //                     renderTabBar={props => (
+                        //                         <TabBar
+                        //                             {...props}
+                        //                             indicatorStyle={{ backgroundColor: '#FFAF51' }}
+                        //                             style={{ backgroundColor: '#fff' }}
+                        //                             labelStyle={{ color: '#325962', fontSize: Display.setHeight(2.2) }}
+                        //                         />
+                        //                     )}
+                        //                 />
+                        //                 <View style={styles.divider} />
+                        //             </View>
+                        //         ]
+                        //     },
+                        //     {
+                        //         title: "Customize",
+                        //         data: [
+                        //             <DishFormPizza
+                        //                 key="customize"
+                        //                 dish={dish ? dish : ''}
+                        //                 extras={extras}
+                        //                 dips={dips}
+                        //                 onSizeChange={handleSizeChange}
+                        //                 onToppingsChange={handleToppingsChange}
+                        //                 onDippingsChange={handleDippingsChange}
+                        //                 selectedSize={selectedSize}
+                        //                 setSelectedSize={setSelectedSize}
+                        //                 selectedExtras={selectedExtras}
+                        //                 setSelectedExtras={setSelectedExtras}
+                        //                 selectedDips={selectedDips}
+                        //                 setSelectedDips={setSelectedDips}
+                        //             />
+                        //         ]
+                        //     }
+                        // ]}
+                        // ref={sectionListRef}
+                        // renderItem={({ item }) => item}
                         sections={[
                             {
+                                key: "details",
+                                data: [{ type: "details" }]
+                            },
+                            {
+                                title: "Customize",
                                 data: [
-                                    <View
-                                        key="details"
-                                        style={{
-                                            width: "100%",
-                                            height: Display.setHeight(45),
-                                            flexDirection: "column",
-                                        }}
-                                    >
+                                    {
+                                        type: "customize",
+                                        dish: dish ? dish : '',
+                                        extras: extras,
+                                        dips: dips,
+                                        onSizeChange: handleSizeChange,
+                                        onToppingsChange: handleToppingsChange,
+                                        onDippingsChange: handleDippingsChange,
+                                        selectedSize: selectedSize,
+                                        setSelectedSize: setSelectedSize,
+                                        selectedExtras: selectedExtras,
+                                        setSelectedExtras: setSelectedExtras,
+                                        selectedDips: selectedDips,
+                                        setSelectedDips: setSelectedDips
+                                    }
+                                ]
+                            }
+                        ]}
+                        ref={sectionListRef}
+                        renderItem={({ item }) => {
+                            if (item.type === "details") {
+                                return (
+                                    <View style={{ width: "100%", height: Display.setHeight(45), flexDirection: "column" }}>
                                         <TabView
                                             navigationState={{ index, routes }}
                                             renderScene={SceneMap({
@@ -449,37 +525,32 @@ const AddToCartModal = forwardRef((props, ref) => {
                                                     {...props}
                                                     indicatorStyle={{ backgroundColor: '#FFAF51' }}
                                                     style={{ backgroundColor: '#fff' }}
-                                                    labelStyle={{ color: '#325962' }}
+                                                    labelStyle={{ color: '#325962', fontSize: Display.setHeight(2.2) }}
                                                 />
                                             )}
                                         />
                                         <View style={styles.divider} />
                                     </View>
-                                ]
-                            },
-                            {
-                                title: "Customize",
-                                data: [
+                                );
+                            } else if (item.type === "customize") {
+                                return (
                                     <DishFormPizza
-                                        key="customize"
-                                        dish={dish ? dish : ''}
-                                        extras={extras}
-                                        dips={dips}
-                                        onSizeChange={handleSizeChange}
-                                        onToppingsChange={handleToppingsChange}
-                                        onDippingsChange={handleDippingsChange}
-                                        selectedSize={selectedSize}
-                                        setSelectedSize={setSelectedSize}
-                                        selectedExtras={selectedExtras}
-                                        setSelectedExtras={setSelectedExtras}
-                                        selectedDips={selectedDips}
-                                        setSelectedDips={setSelectedDips}
+                                        dish={item.dish ? item.dish : ''}
+                                        extras={item.extras}
+                                        dips={item.dips}
+                                        onSizeChange={item.onSizeChange}
+                                        onToppingsChange={item.onToppingsChange}
+                                        onDippingsChange={item.onDippingsChange}
+                                        selectedSize={item.selectedSize}
+                                        setSelectedSize={item.setSelectedSize}
+                                        selectedExtras={item.selectedExtras}
+                                        setSelectedExtras={item.setSelectedExtras}
+                                        selectedDips={item.selectedDips}
+                                        setSelectedDips={item.setSelectedDips}
                                     />
-                                ]
+                                );
                             }
-                        ]}
-                        ref={sectionListRef}
-                        renderItem={({ item }) => item}
+                        }}
                         renderSectionHeader={({ section }) => section.title ?
                             <TouchableOpacity
                                 onPress={() => scrollToSection(section.title)}
@@ -496,7 +567,7 @@ const AddToCartModal = forwardRef((props, ref) => {
                                 >
                                     <Text
                                         style={{
-                                            fontSize: 17,
+                                            fontSize: Display.setHeight(2),
                                             fontWeight: '300',
                                             lineHeight: Display.setHeight(5.5),
                                             color: '#325964',
@@ -583,20 +654,20 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     title: {
-        fontSize: 24,
+        fontSize: Display.setHeight(2.6),
         marginBottom: 20,
     },
     button: {
         backgroundColor: '#325962',
         paddingHorizontal: 16,
         paddingVertical: 12,
-        borderRadius: 4,
+        borderRadius: Display.setHeight(0.6),
     },
     buttonText: {
         color: '#ffffff',
     },
     SubTextPrice: {
-        fontSize: 25,
+        fontSize: Display.setHeight(2.5),
         color: '#FFAF51',
         fontWeight: 'bold',
     },
@@ -605,8 +676,8 @@ const styles = StyleSheet.create({
         height: undefined,
         resizeMode: 'cover',
         aspectRatio: 166 / 115,
-        borderTopLeftRadius: 30,
-        borderTopRightRadius: 30,
+        borderTopLeftRadius: Display.setHeight(3.2),
+        borderTopRightRadius: Display.setHeight(3.2),
     },
     modalContent: {
         width: '100%',
@@ -614,7 +685,7 @@ const styles = StyleSheet.create({
         position: 'relative',
         top: '-5%',
         backgroundColor: '#fff',
-        borderRadius: 30,
+        borderRadius: Display.setHeight(3.2),
     },
     infoContainer: {
         width: '88%',
@@ -626,13 +697,8 @@ const styles = StyleSheet.create({
         padding: 10
     },
     dishName: {
-        fontSize: 28,
+        fontSize: Display.setHeight(2.8),
         color: '#325962',
-        fontWeight: 'bold',
-    },
-    subTextPrice: {
-        fontSize: 25,
-        color: '#FFAF51',
         fontWeight: 'bold',
     },
     reviewContainer: {
@@ -648,7 +714,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     reviewText: {
-        fontSize: 16,
+        fontSize: Display.setHeight(1.8),
         fontWeight: '500',
         color: '#325962',
         marginLeft: 5,
@@ -658,7 +724,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     deliveryPriceText: {
-        fontSize: 16,
+        fontSize: Display.setHeight(1.8),
         fontWeight: '500',
         color: '#325962',
     },
@@ -669,7 +735,7 @@ const styles = StyleSheet.create({
     },
     buttonTitle: {
         color: '#325962',
-        fontSize: 12,
+        fontSize: Display.setHeight(1.4),
         fontWeight: '800',
     },
     buttonContent: {
@@ -681,7 +747,7 @@ const styles = StyleSheet.create({
         padding: 10,
     },
     description: {
-        fontSize: 12,
+        fontSize: Display.setHeight(1.4),
         fontWeight: '400',
         color: '#000',
         marginTop: 5,
@@ -698,7 +764,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'flex-start',
         alignSelf: 'center',
-        borderRadius: 10,
+        borderRadius: Display.setHeight(1.2),
         shadowColor: '#000',
         shadowOffset: {
             width: 0,
@@ -713,7 +779,7 @@ const styles = StyleSheet.create({
     commentAvatarContainer: {
         width: 50,
         height: 50,
-        borderRadius: 25,
+        borderRadius: Display.setHeight(2.7),
         justifyContent: 'center',
         alignItems: 'center',
         marginRight: 10,
@@ -722,18 +788,18 @@ const styles = StyleSheet.create({
     commentAvatar: {
         width: 40,
         height: 40,
-        borderRadius: 10,
+        borderRadius: Display.setHeight(1.2),
     },
     commentContent: {
         flex: 1,
     },
     commentUser: {
-        fontSize: 14,
+        fontSize: Display.setHeight(1.6),
         color: '#325962',
         fontWeight: '500',
     },
     commentText: {
-        fontSize: 12,
+        fontSize: Display.setHeight(1.4),
         color: '#000',
         fontWeight: '400',
     },
@@ -743,11 +809,11 @@ const styles = StyleSheet.create({
         backgroundColor: "#f1f1f1",
         paddingVertical: 10,
         paddingHorizontal: 10,
-        borderRadius: 8,
+        borderRadius: Display.setHeight(1),
     },
     itemCountText: {
         color: '#325962',
-        fontSize: 20,
+        fontSize: Display.setHeight(2.2),
         lineHeight: 14 * 1.4,
         marginHorizontal: 8,
     },

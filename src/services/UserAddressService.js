@@ -1,7 +1,6 @@
 import { ApiContants } from '../assets/constants';
 import axios from 'axios';
 import { authHeader } from '../utils/Generator';
-// import { getToken } from '../Store';
 
 const AuthRequest = axios.create({
     baseURL: ApiContants.BACKEND_API.BASE_API_URL,
@@ -22,7 +21,7 @@ const handleResponse = (response, successMessage) => {
     }
 };
 
-const addUserAddress = async (inputs) => {
+const addUserAddress = async (inputs, token) => {
     console.log(`UserService | addUserAddress`);
     try {
         let requestBody = {
@@ -39,15 +38,22 @@ const addUserAddress = async (inputs) => {
             Longitude: inputs?.Longitude,
             CityName: inputs?.CityName,
             CustomerId: inputs?.CustomerId,
-            PostalCode: inputs?.PostalCode
+            PostalCode: inputs?.PostalCode,
+            CountryName: inputs?.CountryName,
+            StateName: inputs?.StateName
         };
 
         console.log('Request body:', requestBody);
 
         let response = await axios.post(
             `${ApiContants.BACKEND_API.BASE_API_URL}${ApiContants.BACKEND_API.ADD_ADDRESS}`,
-            requestBody
+            requestBody,
+            {
+                headers: authHeader(token),
+            }
         );
+
+        console.log(`Response by BackEnd ${response}`)
 
         return handleResponse(response, 'Address added successfully');
     } catch (error) {
@@ -59,7 +65,7 @@ const addUserAddress = async (inputs) => {
     }
 };
 
-const updateUserAddress = async (user, address) => {
+const updateUserAddress = async (user, address, token) => {
     console.log(`UserService | updateUserData`);
     try {
         let requestBody = {
@@ -77,7 +83,10 @@ const updateUserAddress = async (user, address) => {
         };
         let response = await axios.post(
             `${ApiContants.BACKEND_API.BASE_API_URL}${ApiContants.BACKEND_API.ADD_ADDRESS}`,
-            requestBody
+            requestBody,
+            {
+                headers: authHeader(token),
+            }
         );
 
         return handleResponse(response, 'Address updated successfully');
@@ -91,17 +100,20 @@ const updateUserAddress = async (user, address) => {
     }
 };
 
-const getUserAddresses = async ({ Id }) => {
+const getUserAddresses = async ({ Id, token}) => {
     console.log("UserService | getUserAddresses");
     try {
         let requestBody = {
             Id: Id
         };
-        console.log(requestBody)
         let response = await axios.post(
             `${ApiContants.BACKEND_API.BASE_API_URL}${ApiContants.BACKEND_API.GET_ADDRESS}`,
-            requestBody
+            requestBody,
+            {
+                headers: authHeader(token),
+            }
         );
+        console.log(response)
 
         return handleResponse(response, 'Address fetched successfully');
     } catch (error) {

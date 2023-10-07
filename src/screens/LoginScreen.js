@@ -15,12 +15,17 @@ import Loader from '../components/Loader';
 import Button from '../components/Button';
 import { useDispatch } from 'react-redux';
 import AuthenticationService from '../services/AuthenticationService';
-import { setToken } from '../actions/GeneralAction';
+import { setToken, setUserData } from '../actions/GeneralAction';
 import { StorageService } from '../services';
+import jwt_decode from "jwt-decode";
+import { useNavigation } from '@react-navigation/native';
+import { Display } from '../utils';
 
 const { width, height } = Dimensions.get('screen')
 
-const LoginScreen = ({ navigation }) => {
+const LoginScreen = () => {
+    const navigation = useNavigation();
+
     const [inputs, setInputs] = React.useState({ email: '', password: '' });
     const [errors, setErrors] = React.useState({});
     const [isLoading, setIsLoading] = useState(false);
@@ -47,7 +52,7 @@ const LoginScreen = ({ navigation }) => {
                 .then((response) => response.json())
                 .then((data) => {
                     if (data.success) {
-                        navigation.navigate('Home');
+                        navigation.navigate('Main');
                     } else {
                         // Handle unsuccessful login attempt
                         Alert.alert('Error', data.error);
@@ -92,7 +97,7 @@ const LoginScreen = ({ navigation }) => {
                 .then((data) => {
                     // If login successful, navigate to Home
                     if (data.success) {
-                        navigation.navigate('Home');
+                        navigation.navigate('Main');
                     } else {
                         // Handle unsuccessful login attempt
                         Alert.alert('Error', data.error);
@@ -121,11 +126,11 @@ const LoginScreen = ({ navigation }) => {
             isValid = false;
         }
         if (isValid) {
-            Login();
+            Login(inputs);
         }
     };
 
-    const Login = async () => {
+    const Login = async (inputs) => {
         setIsLoading(true);
         let user = {
             EmailAdress: inputs.email,
@@ -134,19 +139,24 @@ const LoginScreen = ({ navigation }) => {
         try {
             const response = await AuthenticationService.login(user);
             setIsLoading(false);
-            if (response?.isSuccess) {
-                await StorageService.setToken(response.data.Token);
-                await dispatch(setToken(response.data.Token));
+            console.log("Response status:", response?.status);
+            if (response?.status) {
+                await StorageService.setToken(response?.data?.Token);
+                dispatch(setToken(response?.data?.Token));
+
+                const decodedData = jwt_decode(response?.data?.Token);
+                await StorageService.setUserData(decodedData);
+                dispatch(setUserData(decodedData));
                 navigation.navigate('Main');
             } else {
                 setErrorMessage(response?.message);
             }
         } catch (error) {
+            console.error("Login error:", error);
             setIsLoading(false);
-            // Handle the error as you see fit, possibly set an error message
         }
     };
-    
+
     const handleOnchange = (text, input) => {
         setInputs(prevState => ({ ...prevState, [input]: text }));
     };
@@ -221,12 +231,12 @@ const LoginScreen = ({ navigation }) => {
                     >
                         <Text
                             style={{
-                                fontSize: 50,
+                                fontSize: Display.setHeight(4),
                                 fontWeight: 'bold',
                                 color: '#325962',
                                 alignSelf: 'center',
-                                margin: 20,
-                                marginBottom: 50,
+                                margin: Display.setHeight(1),
+                                marginBottom: Display.setHeight(5)
                             }}
                         >Login</Text>
                         <NativeBaseProvider>
@@ -256,7 +266,7 @@ const LoginScreen = ({ navigation }) => {
             </View>
             <View
                 style={{
-                    height: 200,
+                    height: Display.setHeight(17),
                     backgroundColor: '#325962'
                 }}
             >
@@ -266,9 +276,24 @@ const LoginScreen = ({ navigation }) => {
                         justifyContent: 'center',
                         alignItems: 'center',
                         alignSelf: 'center',
-                        margin: 40,
                     }}
                 >
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'space-evenly',
+                            margin: Display.setHeight(1),
+                        }}
+                    >
+                        <Text
+                            style={{
+                                fontWeight: "500",
+                                fontSize: Display.setHeight(1.8),
+                                color: '#f1f1f1'
+                            }}
+                        >Sign in with</Text>
+                    </View>
                     <View
                         style={{
                             width: '60%',
@@ -280,29 +305,29 @@ const LoginScreen = ({ navigation }) => {
                         <TouchableOpacity onPress={handleGoogleLogin}>
                             <View
                                 style={{
-                                    width: 50,
-                                    height: 50,
-                                    borderRadius: '50%',
+                                    width: Display.setHeight(5),
+                                    height: Display.setHeight(5),
+                                    borderRadius: Display.setHeight(2.5),
                                     backgroundColor: '#f1f1f1',
                                     justifyContent: 'center',
                                     alignItems: 'center',
                                 }}
                             >
-                                <GoogleIcon size={25} />
+                                <GoogleIcon size={Display.setHeight(3)} />
                             </View>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={handleAppleLogin}>
                             <View
                                 style={{
-                                    width: 50,
-                                    height: 50,
-                                    borderRadius: '50%',
+                                    width: Display.setHeight(5),
+                                    height: Display.setHeight(5),
+                                    borderRadius: Display.setHeight(2.5),
                                     backgroundColor: '#f1f1f1',
                                     justifyContent: 'center',
                                     alignItems: 'center',
                                 }}
                             >
-                                <AppleIcon size={25} />
+                                <AppleIcon size={Display.setHeight(3)} />
                             </View>
                         </TouchableOpacity>
                     </View>
@@ -311,13 +336,13 @@ const LoginScreen = ({ navigation }) => {
                             flexDirection: 'row',
                             alignItems: 'center',
                             justifyContent: 'space-evenly',
-                            margin: 25,
+                            margin: Display.setHeight(2.5),
                         }}
                     >
                         <Text
                             style={{
                                 fontWeight: "500",
-                                fontSize: 16,
+                                fontSize: Display.setHeight(2),
                                 color: '#f1f1f1'
                             }}
                         >Don't have an account? </Text>
@@ -326,7 +351,7 @@ const LoginScreen = ({ navigation }) => {
                         ><Text
                             style={{
                                 fontWeight: "500",
-                                fontSize: 16,
+                                fontSize: Display.setHeight(2),
                                 color: '#FFAF51'
                             }}
                         >Sign Up</Text></TouchableOpacity>

@@ -6,6 +6,8 @@ import CartService from './CartService';
 import FoodService from './FoodService';
 import BookmarkService from './BookmarkService';
 import UserAddressService from './UserAddressService';
+import OrderService from './OrderService';
+import GetOrderService from './GetOrderService';
 
 export {
     StaticImageService,
@@ -16,4 +18,6 @@ export {
     FoodService,
     BookmarkService,
     UserAddressService,
+    OrderService,
+    GetOrderService,
 };

@@ -7,6 +7,7 @@ import {
     TouchableOpacity,
     Animated,
     SectionList,
+    Alert,
 } from "react-native";
 import { Display } from "../utils";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -25,9 +26,12 @@ import {
 import { CheckBox } from "@rneui/base";
 import TimePicker from "../components/TimePicker";
 import Skeleton from "../components/Skeleton";
-import format from "date-fns/format";
+import { parse, format } from 'date-fns';
 import Button from "../components/Button";
 import Input from "../components/Input";
+import { placeOrder } from "../actions/PlaceOrderAction";
+import { clearCart } from "../actions/CartAction";
+import { getToken } from "../Store";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -54,9 +58,11 @@ const CheckoutScreen = ({ route, navigation }) => {
     const [paymentMethod, setPaymentMethod] = useState("cash");
     const [selectedAddressId, setSelectedAddressId] = useState(null);
 
+    const token = useSelector(getToken);
+
     useEffect(() => {
         if (Id) {
-            dispatch(fetchUserAddresses(Id));
+            dispatch(fetchUserAddresses(Id, token));
         } else {
             console.log("User Id not available");
         }
@@ -66,9 +72,26 @@ const CheckoutScreen = ({ route, navigation }) => {
         (state) => state.addressState
     );
 
+    const handleOrder = async (inputs) => {
+        try {
+            const response = await dispatch(placeOrder(inputs, token));
+            if (response.status) {
+                dispatch(clearCart());
+                navigation.navigate('OrderConfirmation');
+                Alert.alert('Order Placed', 'Your order was successfully placed.');
+            } else {
+                Alert.alert('Error', 'An error occurred while placing your order.');
+                throw new Error(`Unexpected response: ${response.message}`);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            Alert.alert('Error', 'An error occurred while placing your order.');
+        }
+    };
+
     const [inputs, setInputs] = useState({
         Instructions: '',
-        Products: checkoutData,
+        OrderProducts: checkoutData,
     })
 
     useEffect(() => {
@@ -78,13 +101,14 @@ const CheckoutScreen = ({ route, navigation }) => {
             CustomerId: Id,
             CustomerAddressId: selectedAddressId,
             FranchiseId: franchiseId,
-            Time: deliveryDetails,
+            OrderDeliveryDateTime: deliveryDetails.time,
         }));
 
         console.log(inputs)
     }, [Id, selectedAddressId, franchiseId, deliveryDetails]);
 
-    const initialTime = format(new Date(), "h:mm a");
+    const currentDate = new Date();
+    const initialTime = format(currentDate, "yyyy-MM-dd HH:mm:ss.SSS");
     const [deliveryDetails, setDeliveryDetails] = useState({
         option: "now",
         time: initialTime,
@@ -93,13 +117,12 @@ const CheckoutScreen = ({ route, navigation }) => {
 
     const handleCheckboxChange = (option) => {
         if (option === "now") {
-            const currentTime = format(new Date(), "h:mm a");
-            setDeliveryDetails((prev) => ({ ...prev, option, time: currentTime }));
+            const currentTime = new Date();
+            const formattedTime = format(currentTime, "yyyy-MM-dd HH:mm:ss.SSS");
+            setDeliveryDetails((prev) => ({ ...prev, option, time: formattedTime }));
         } else {
             setDeliveryDetails((prev) => ({ ...prev, option }));
         }
-
-        setDeliveryDetails((prev) => ({ ...prev, option }));
 
         if (option === "scheduled") {
             Animated.timing(animationValue, {
@@ -117,12 +140,28 @@ const CheckoutScreen = ({ route, navigation }) => {
     };
 
     const handleTimeChange = (selectedTime) => {
-        setDeliveryDetails((prev) => ({ ...prev, time: selectedTime }));
+        const convertedTime = convertPickedTimeToDateTime({ time: selectedTime });
+
+        setDeliveryDetails((prev) => ({ ...prev, time: convertedTime }));
     };
 
     const handleOnchange = (text, input) => {
         setInputs(prevState => ({ ...prevState, [input]: text }));
         console.log(inputs)
+    };
+
+
+    const convertPickedTimeToDateTime = (pickedTime) => {
+        // Assuming pickedTime is in the format: {"time": "12:30 PM"}
+
+        // Parse the time string into a Date object
+        const currentDate = new Date();
+        const parsedTime = parse(pickedTime.time, "h:mm a", currentDate);
+
+        // Format the Date object into the desired DateTime format
+        const formattedDateTime = format(parsedTime, "yyyy-MM-dd HH:mm:ss.SSS");
+
+        return formattedDateTime;
     };
 
     useEffect(() => {
@@ -131,8 +170,6 @@ const CheckoutScreen = ({ route, navigation }) => {
             setSelectedAddressId(defaultAddress.Id);
         }
     }, [addresses]);
-
-    console.log(selectedAddressId, deliveryDetails);
 
     const onlinePaymentFormHeight = useRef(new Animated.Value(0)).current;
 
@@ -271,7 +308,7 @@ const CheckoutScreen = ({ route, navigation }) => {
                                     style={{
                                         width: "85%",
                                         height: "100%",
-                                        alignItems: "start",
+                                        alignItems: "flex-start",
                                         justifyContent: "center",
                                     }}>
                                     <Text
@@ -305,7 +342,7 @@ const CheckoutScreen = ({ route, navigation }) => {
                                     style={{
                                         width: "15%",
                                         height: "100%",
-                                        alignItems: "end",
+                                        alignItems: "flex-end",
                                         justifyContent: "center",
                                     }}>
                                     <CheckBox
@@ -456,6 +493,7 @@ const CheckoutScreen = ({ route, navigation }) => {
                 backgroundColor: "#fff",
             }}>
             <SectionList
+                stickySectionHeadersEnabled={false}
                 sections={sectionsData}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item, section }) =>
@@ -573,14 +611,14 @@ const CheckoutScreen = ({ route, navigation }) => {
                         <View
                             style={{
                                 width,
-                                alignItems: "center",
-                                justifyContent: "center",
+                                alignItems: 'center',
+                                justifyContent: 'center',
                             }}>
                             <View
                                 style={{
                                     width,
-                                    alignItems: "center",
-                                    justifyContent: "center",
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
                                 }}>
                                 <View
                                     style={{
@@ -795,7 +833,7 @@ const CheckoutScreen = ({ route, navigation }) => {
                                                         alignItems: "center",
                                                     }}>
                                                     <Text style={{
-                                                        color: "#000",
+                                                        color: "#325964",
                                                         fontSize: 16,
                                                         fontWeight: 'bold'
                                                     }}>
@@ -825,8 +863,10 @@ const CheckoutScreen = ({ route, navigation }) => {
                             }}
                         >
                             <Button
+                                disabled={ selectedAddressId === null ? true : false }
+                                color={ selectedAddressId === null ? '#696969' : '#325964' }
                                 title={'Place Order'}
-                                onPress={() => handleOrder}
+                                onPress={() => handleOrder(inputs)}
                             />
                         </View>
                     </>

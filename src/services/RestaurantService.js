@@ -1,7 +1,6 @@
 import { ApiContants } from '../assets/constants';
 import axios from 'axios';
 import { authHeader, dashboardHeader, franchisesHeader } from '../utils/Generator';
-// import { getToken } from '../Store';
 
 const getFranchises = async ({ clientId }) => {
     console.log(`DashboardService | getFranchises`);

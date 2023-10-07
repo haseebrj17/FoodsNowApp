@@ -1,13 +1,15 @@
-import React, { useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import {
     View, StyleSheet, TouchableWithoutFeedback, Animated, Dimensions,
 } from "react-native";
 import { FontAwesome as Icon } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import ActiveTabContext from "../context/ActiveTabContext";
 
 const { width } = Dimensions.get("window");
 
 const StaticTabbar = ({ tabs, value }) => {
+    const { activeTab } = useContext(ActiveTabContext);
     const navigation = useNavigation();
     const initValues = tabs.map((tab, index) => new Animated.Value(index === 0 ? 1 : 0));
     const values = useRef(initValues).current;

@@ -137,12 +137,12 @@ const LocationAccessScreen = ({ navigation }) => {
         Animated.parallel([
             Animated.timing(animatedValue, {
                 toValue: 0.5,
-                duration: 50,
+                duration: 10,
                 useNativeDriver: true,
             }),
             Animated.timing(markerTop, {
                 toValue: -5,
-                duration: 50,
+                duration: 10,
                 useNativeDriver: true,
             })
         ]).start();
@@ -153,16 +153,16 @@ const LocationAccessScreen = ({ navigation }) => {
         Animated.parallel([
             Animated.timing(animatedValue, {
                 toValue: 0,
-                duration: 150,
+                duration: 50,
                 useNativeDriver: true,
             }),
             Animated.timing(markerTop, {
                 toValue: 0,
-                duration: 150,
+                duration: 50,
                 useNativeDriver: true,
             })
         ]).start();
-        if ((selectedLocation.latitude.toFixed(6) !== region.latitude.toFixed(6)) || (selectedLocation.longitude.toFixed(6) !== region.longitude.toFixed(6))) {
+        if ((selectedLocation?.latitude?.toFixed(6) !== region?.latitude?.toFixed(6)) || (selectedLocation?.longitude?.toFixed(6) !== region?.longitude?.toFixed(6))) {
             setSelectedLocation(selectedLocation);
             Address(selectedLocation);
             setAddressAdded(true);
@@ -222,7 +222,9 @@ const LocationAccessScreen = ({ navigation }) => {
             <View
                 style={{
                     width,
-                    height: height * 0.65,
+                    height: height * 0.70,
+                    position: 'absolute',
+                    top: '0%'
                 }}
             >
                 <MapView
@@ -248,6 +250,7 @@ const LocationAccessScreen = ({ navigation }) => {
                         initialRegion={region}
                         onRegionChange={onRegionChange}
                         onRegionChangeComplete={onRegionChangeComplete}
+                        pointerEvents="none"  // Add this line
                     />
                 </TouchableOpacity>
                 <Animated.View style={[styles.markerFixed, { transform: [{ translateY: markerTop }] }]}>
@@ -260,11 +263,11 @@ const LocationAccessScreen = ({ navigation }) => {
                     style={{
                         zIndex: 9999,
                         position: 'absolute',
-                        bottom: '2.5%',
-                        right: '5%',
+                        bottom: '10%',
+                        right: '3%',
                         width: Display.setHeight(6),
                         height: Display.setHeight(6),
-                        borderRadius: '50%',
+                        borderRadius: Display.setHeight(3),
                         backgroundColor: '#fff',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -287,6 +290,8 @@ const LocationAccessScreen = ({ navigation }) => {
                 style={{
                     width,
                     height: height * 0.35,
+                    position: 'absolute',
+                    bottom: '0%',
                     alignItems: 'center',
                     borderTopLeftRadius: 35,
                     borderTopRightRadius: 35,
@@ -407,7 +412,7 @@ const LocationAccessScreen = ({ navigation }) => {
                                     justifyContent: 'center',
                                 }}
                             >
-                                <MaterialIcons name="info" size={20} color="#6d6d6d" />
+                                <MaterialIcons name="info" size={Display.setHeight(2.2)} color="#6d6d6d" />
                             </View>
                             <View
                                 style={{
@@ -417,7 +422,7 @@ const LocationAccessScreen = ({ navigation }) => {
                             >
                                 <Text
                                     style={{
-                                        fontSize: 14,
+                                        fontSize: Display.setHeight(1.6),
                                         fontWeight: '400'
                                     }}
                                 >Your rider will deliver to the pinned location. You can edit your written address on the next page.</Text>
@@ -446,7 +451,7 @@ const LocationAccessScreen = ({ navigation }) => {
                         <View style={{
                             width: '100%',
                             height: '100%',
-                            justifyContent: 'start',
+                            justifyContent: 'flex-start',
                             alignItems: 'center'
                         }}>
                             <GooglePlacesAutocomplete
@@ -482,8 +487,8 @@ const LocationAccessScreen = ({ navigation }) => {
                                 query={{
                                     key: GOOGLE_LOCATION_AUTO_COMPLETE,
                                     language: "de",
-                                    components: "country:de",
-                                    radius: 30000,
+                                    // components: "country:de",
+                                    // radius: 30000,
                                     GooglePlacesSearchQuery: { rankby: 'distance' },
                                     location: `${selectedLocation?.latitude}, ${selectedLocation?.longitude}`
                                 }}
@@ -532,13 +537,13 @@ const styles = StyleSheet.create({
     markerFixed: {
         left: '44.6%',
         position: 'absolute',
-        top: '47.4%',
+        top: '47.7%',
     },
     miniMap: {
         width: Display.setHeight(9),
         height: Display.setHeight(9),
         position: 'absolute',
-        bottom: '1%',
+        bottom: '8%',
         left: '1.5%',
         borderRadius: 10,
     },

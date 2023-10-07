@@ -25,6 +25,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createAvatar } from '@dicebear/core';
 import { adventurer, thumbs } from '@dicebear/collection';
 import { SvgXml } from 'react-native-svg';
+import { Display } from "../utils";
 
 const config = require('../../package.json').projectName;
 const CLIENT_NAME = config.name;
@@ -33,78 +34,21 @@ const { width, height } = Dimensions.get('window');
 
 console.log(width, height)
 
-// const Avatar = ({ seed }) => {
-
-//     const avatar = createAvatar(thumbs, {
-//         seed: seed,
-//         backgroundColor: ["b6e3f4", "c0aede", "d1d4f9", "ffd5dc", "ffdfbf"],
-//         backgroundType: [
-//             "gradientLinear",
-//             "solid"
-//         ],
-//         mouth: [
-//             "variant01",
-//             "variant05",
-//             "variant06",
-//             "variant12",
-//             "variant15",
-//             "variant16",
-//             "variant17",
-//             "variant18",
-//             "variant20",
-//             "variant21",
-//             "variant23",
-//             "variant24",
-//             "variant25",
-//             "variant26",
-//             "variant27",
-//             "variant28",
-//             "variant29",
-//             "variant30",
-//             "variant19"
-//         ],
-//         skinolor: [
-//             "ecad80",
-//             "f2d3b1",
-//             "9e5622"
-//         ],
-//         radius: 50
-//         // ... other options
-//     }).toString();
-
-//     return avatar
-// }
-
 const HomeScreen = () => {
     const [fontsLoaded] = useFonts({
         Fonts
     });
 
-    // useEffect(() => {
-    //     const resetDatabase = () => {
-    //         return new Promise((resolve, reject) => {
-    //             db.transaction((tx) => {
-    //                 tx.executeSql('DROP TABLE IF EXISTS cart');
-    //             }, reject, resolve);
-    //         });
-    //     };
-
-    //     resetDatabase()
-    //         .then(() => {
-    //             console.log('Database reset successfully');
-    //         })
-    //         .catch((error) => {
-    //             console.error('Error resetting the database:', error);
-    //         });
-    // }, []);
-
     const [brand, setBrand] = useState(null);
     const [deliveryParams, setDeliveryParams] = useState(null);
+    const [location, setLocation] = useState(null)
 
     useEffect(() => {
         const fetchLocationAndDashboard = async () => {
             try {
                 const location = await StorageService.getLocation();
+                setLocation(location)
+                console.log(location)
                 const { FranchiseId, DeliveryParams } = location;
                 setDeliveryParams(DeliveryParams)
                 console.log(location);
@@ -113,9 +57,6 @@ const HomeScreen = () => {
                     if (response?.status) {
                         const brandsData = response?.data?.brands;
                         setBrand(response?.data?.brands);
-                        setBanner(response?.data?.banners);
-                        // insertBrands(brandsData);
-                        // fetchBrandsFromDatabase();
                     } else {
                         console.log(`${response.message} Error Status False`);
                     }
@@ -131,36 +72,45 @@ const HomeScreen = () => {
         fetchLocationAndDashboard();
     }, []);
 
-    const { isFirstTimeUse } = useSelector(
+    const { token, userData, isFirstTimeUse } = useSelector(
         (state) => state.generalState
     )
 
-    console.log(isFirstTimeUse)
-
-    // const dispatch = useDispatch();
-
-    // const { brand, loadingBrands, error } = useSelector(
-    //     (state) => state.brandState
-    // );
-
-    // useEffect(() => {
-    //     const fetchLocationAndDashboard = async () => {
-    //         try {
-    //             const location = await StorageService.getLocation(); // Adjust as needed
-    //             const { FranchiseId } = location;
-    //             if (FranchiseId) {
-    //                 // Dispatch the fetchBrands action with the FranchiseId
-    //                 dispatch(fetchBrands(FranchiseId));
-    //             } else {
-    //                 console.error('Franchise ID not found');
-    //             }
-    //         } catch (error) {
-    //             console.error(`Error fetching location: ${error}`);
-    //         }
-    //     };
-
-    //     fetchLocationAndDashboard();
-    // }, [dispatch]);
+    const Avatar = createAvatar(adventurer, {
+        seed: userData ? userData.FullName : 'Seed',
+        backgroundColor: ["b6e3f4", "c0aede", "d1d4f9", "ffd5dc", "ffdfbf"],
+        backgroundType: [
+            "gradientLinear",
+            "solid"
+        ],
+        mouth: [
+            "variant01",
+            "variant05",
+            "variant06",
+            "variant12",
+            "variant15",
+            "variant16",
+            "variant17",
+            "variant18",
+            "variant20",
+            "variant21",
+            "variant23",
+            "variant24",
+            "variant25",
+            "variant26",
+            "variant27",
+            "variant28",
+            "variant29",
+            "variant30",
+            "variant19"
+        ],
+        skinolor: [
+            "ecad80",
+            "f2d3b1",
+            "9e5622"
+        ],
+        radius: 50
+    }).toString();
 
     const navigation = useNavigation();
     return (
@@ -178,50 +128,117 @@ const HomeScreen = () => {
                         </View>
                     </View>
                 </TouchableOpacity>
-                <View style={styles.Locationbar}>
-                    <Button
-                        title={CustomLocationButton}
-                        contentContainerStyle={[
-                            styles.ButtonLocation,
-                            {
-                                backgroundColor: "#F4E4CD",
-                                height: "100%"
-                            }
-                        ]}
-                        style={{
-                            backgroundColor: "#F4E4CD",
-                            width: "40%",
-                            height: 50,
-                            flexDirection: "row",
-                            justifyContent: "center",
-                            alignItems: "center",
-                        }}
-                        color="#F4E4CD"
-                        disableElevation={true}
-                    />
-                    {/* <SvgXml xml={<Avatar seed={'heelo'} />}/> */}
-                    <Button
-                        title="Sign Up"
-                        color="#FFAF51"
-                        uppercase={false}
-                        titleStyle={{ color: "#325962" }}
-                        style={{
-                            position: "absolute",
-                            right: "9%",
-                        }}
-                        contentContainerStyle={[
-                            styles.ButtonSignUp,
-                            {
-                                shadowOffset: {
-                                    width: 50,
-                                    height: 50,
-                                },
-                                shadowColor: "rgba(0, 0, 0, 1)",
-                                shadowOpacity: 1,
-                                shadowRadius: 100,
-                            }
-                        ]}
-                    />
+                <View style={{
+                    width: Display.setWidth(90),
+                    height: Display.setHeight(3.5),
+                    position: "absolute",
+                    top: Display.setHeight(4),
+                    display: "flex",
+                    left: '5%',
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: 'space-between'
+                }}>
+                    {
+                        token ? (
+                            <>
+                                <View
+                                    style={{
+                                        width: '45%',
+                                        height: Display.setHeight(3.5),
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                        justifyContent: 'flex-start',
+                                    }}
+                                >
+                                    <Button
+                                        title={<CustomLocationButton location={location?.City} />}
+                                        contentContainerStyle={
+                                            styles.ButtonLocation
+                                        }
+                                        color="#F4E4CD"
+                                        disableElevation={true}
+                                    />
+                                </View>
+                                <View
+                                    style={{
+                                        width: '40%',
+                                        height: Display.setHeight(3.5),
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                        justifyContent: 'flex-end',
+                                    }}
+                                >
+                                    <Text
+                                        style={{
+                                            fontSize: Display.setHeight(2),
+                                            lineHeight: Display.setHeight(4),
+                                            fontWeight: 'bold',
+                                            color: '#325964'
+                                        }}
+                                    >{userData?.FullName}</Text>
+                                    <View
+                                        style={{
+                                            width: Display.setHeight(4),
+                                            height: Display.setHeight(4),
+                                        }}
+                                    >
+                                        <SvgXml xml={Avatar}
+                                            style={{
+                                                width: Display.setHeight(4),
+                                                height: Display.setHeight(4),
+                                            }}
+                                        />
+                                    </View>
+                                </View>
+                            </>
+                        ) : (
+                            <>
+                                <Button
+                                    title={<CustomLocationButton location={location?.City} />}
+                                    contentContainerStyle={[
+                                        styles.ButtonLocation,
+                                        {
+                                            backgroundColor: "#F4E4CD",
+                                            height: "100%"
+                                        }
+                                    ]}
+                                    style={{
+                                        backgroundColor: "#F4E4CD",
+                                        width: "40%",
+                                        height: 50,
+                                        flexDirection: "row",
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                    }}
+                                    color="#F4E4CD"
+                                    disableElevation={true}
+                                />
+                                <Button
+                                    title="Sign Up"
+                                    onPress={() => navigation.navigate('Registration')}
+                                    color="#FFAF51"
+                                    uppercase={false}
+                                    titleStyle={{ color: "#325962" }}
+                                    style={{
+                                        position: "absolute",
+                                        right: "9%",
+                                    }}
+                                    contentContainerStyle={[
+                                        styles.ButtonSignUp,
+                                        {
+                                            shadowOffset: {
+                                                width: 50,
+                                                height: 50,
+                                            },
+                                            shadowColor: "rgba(0, 0, 0, 1)",
+                                            shadowOpacity: 1,
+                                            shadowRadius: 100,
+                                        }
+                                    ]}
+                                />
+                            </>
+                        )}
                 </View>
             </AppBar>
             <View style={styles.carouselContainer}>
@@ -234,7 +251,7 @@ const HomeScreen = () => {
             <View style={{ width: "100%", height: "0.5%", backgroundColor: "#f1f1f1", marginTop: "3%", marginBottom: 10 }}></View>
             <BrandCardsHome brand={brand} deliveryParams={deliveryParams} />
             <View style={{ width: "100%", height: "0.5%", backgroundColor: "#f1f1f1", marginTop: "3%", marginBottom: 5 }}></View>
-            <View
+            {/* <View
                 style={[
                     styles.Container,
                     {
@@ -249,7 +266,7 @@ const HomeScreen = () => {
                     }
                 ]}
             >
-                <TouchableHighlight activeOpacity={0.6} underlayColor="#DDDDDD" borderRadius={8} onPress={() => navigation.navigate('Splash')}>
+                <TouchableHighlight activeOpacity={0.6} underlayColor="#DDDDDD" borderRadius={8}>
                     <Image source={require('../assets/images/10.png')} style={[styles.Image, { borderRadius: 12 }]} />
                 </TouchableHighlight>
             </View>
@@ -273,7 +290,7 @@ const HomeScreen = () => {
                     }
                 ]}
             >
-                <TouchableHighlight onPress={() => navigation.navigate('Welcome')} activeOpacity={0.6} underlayColor="#DDDDDD" borderRadius={8}>
+                <TouchableHighlight activeOpacity={0.6} underlayColor="#DDDDDD" borderRadius={8}>
                     <Image source={require('../assets/images/11.png')} style={[styles.Image, { borderRadius: 12 }]} />
                 </TouchableHighlight>
             </View>
@@ -284,7 +301,7 @@ const HomeScreen = () => {
             <View style={{ width: "100%", height: "0.5%", backgroundColor: "#f1f1f1" }}></View>
             <View style={styles.Container}>
                 <KidSpecialOffer />
-            </View>
+            </View> */}
         </ScrollView>
     )
 }
@@ -305,7 +322,7 @@ const custonTitleGeneral = () => {
     )
 }
 
-const CustomLocationButton = () => {
+const CustomLocationButton = ({ location }) => {
     return (
         <View style={{ flexDirection: "row" }}>
             <Image
@@ -313,7 +330,7 @@ const CustomLocationButton = () => {
                 style={{
                     height: 40,
                     width: 40,
-                    marginTop: "3%",
+                    marginTop: "2%",
                 }} />
             <Text style={{
                 fontSize: 20,
@@ -321,16 +338,7 @@ const CustomLocationButton = () => {
                 fontWeight: "bold",
                 marginLeft: 5,
                 marginTop: "8%"
-            }}>Location</Text>
-            <SimpleLineIcons
-                name="arrow-down"
-                size={18}
-                color="black"
-                style={{
-                    marginTop: "14%",
-                    marginLeft: "5%"
-                }}
-            />
+            }}>{location ? location : 'Location'}</Text>
         </View>
     )
 }
@@ -347,7 +355,7 @@ const styles = StyleSheet.create({
     },
     AppBar: {
         backgroundColor: '#F4E4CD',
-        height: 135,
+        height: Display.setHeight(15),
         width: '100%',
         justifyContent: 'center',
         alignItems: 'center',
@@ -360,7 +368,7 @@ const styles = StyleSheet.create({
     },
     SearchBar: {
         width: '100%',
-        height: 40,
+        height: Display.setHeight(4.5),
         backgroundColor: 'white',
         borderRadius: 12,
         fontSize: 20,
@@ -378,30 +386,16 @@ const styles = StyleSheet.create({
         opacity: 0.6,
         marginLeft: 10
     },
-    // ButtonLocation: {
-    //     width: "50%",
-    //     height: 40,
-    // },
     Locationbar: {
-        width: '100%',
-        height: 30,
-        position: "absolute",
-        top: 40,
-        left: '3.5%',
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center"
-    },
-    LocationPinHome: {
-        height: 40,
-        width: 40,
-    },
-    LocationText: {
-        fontSize: 20,
-        color: "#325962",
-        fontWeight: "bold",
-        fontFamily: "Poppins-ExtraLightItalic",
-        marginLeft: 5
+        // width: Display.setWidth(90),
+        // height: Display.setHeight(3.5),
+        // position: "absolute",
+        // top: Display.setHeight(4),
+        // left: '5%',
+        // display: "flex",
+        // flexDirection: "row",
+        // alignItems: "center",
+        // justifyContent: 'space-between'
     },
     ButtonSignUp: {
         borderWidth: 1,

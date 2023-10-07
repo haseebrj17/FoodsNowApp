@@ -83,13 +83,13 @@ const DishFormPizza = ({ dish, extras, dips, selectedSize, setSelectedSize, sele
                     onChange={() => handleExtraToggle(extra.Name, price(extra).description)}
                     size={'lg'}
                     style={{
-                        borderRadius: "50%",
+                        borderRadius: Display.setHeight(50),
                     }}
                     _checked={{ backgroundColor: '#324859' }}
                 >
                     <Text
                         style={{
-                            fontSize: 18,
+                            fontSize: Display.setHeight(2),
                             fontWeight: '600',
                             marginTop: Display.setHeight(0.5),
                             marginLeft: 10,
@@ -98,7 +98,7 @@ const DishFormPizza = ({ dish, extras, dips, selectedSize, setSelectedSize, sele
                 </Checkbox>
                 <Text
                     style={{
-                        fontSize: 18,
+                        fontSize: Display.setHeight(2),
                         fontWeight: '600',
                         marginTop: Display.setHeight(0.5),
                     }}
@@ -122,7 +122,7 @@ const DishFormPizza = ({ dish, extras, dips, selectedSize, setSelectedSize, sele
             onDippingsChange(newState);
             return newState;
         });
-    };    
+    };
 
     const renderItemDips = ({ item: dip }) => {
 
@@ -133,15 +133,15 @@ const DishFormPizza = ({ dish, extras, dips, selectedSize, setSelectedSize, sele
             } else if (["Party", "With Fries", "With Fries and Wings"].includes(value)) {
                 description = "PriceXl";
             }
-        
+
             const priceValue = dip.Prices.find(p => p.Description === description).Price;
-        
+
             return {
                 value: priceValue,
                 description: description
             };
         };
-        
+
 
         return (
             <View
@@ -160,13 +160,13 @@ const DishFormPizza = ({ dish, extras, dips, selectedSize, setSelectedSize, sele
                     onChange={() => handleDipToggle(dip.Name, price(dip).description)}
                     size={'lg'}
                     style={{
-                        borderRadius: "50%",
+                        borderRadius: Display.setHeight(50),
                     }}
                     _checked={{ backgroundColor: '#324859' }}
                 >
                     <Text
                         style={{
-                            fontSize: 18,
+                            fontSize: Display.setHeight(2),
                             fontWeight: '600',
                             marginTop: Display.setHeight(0.5),
                             marginLeft: 10,
@@ -175,7 +175,7 @@ const DishFormPizza = ({ dish, extras, dips, selectedSize, setSelectedSize, sele
                 </Checkbox>
                 <Text
                     style={{
-                        fontSize: 18,
+                        fontSize: Display.setHeight(2),
                         fontWeight: '600',
                         marginTop: Display.setHeight(0.5),
                     }}
@@ -223,7 +223,7 @@ const DishFormPizza = ({ dish, extras, dips, selectedSize, setSelectedSize, sele
                                         >
                                             <Text
                                                 style={{
-                                                    fontSize: 18,
+                                                    fontSize: Display.setHeight(2),
                                                     fontWeight: 'bold',
                                                     color: '#000',
                                                 }}
@@ -240,7 +240,7 @@ const DishFormPizza = ({ dish, extras, dips, selectedSize, setSelectedSize, sele
                                             >
                                                 <Text
                                                     style={{
-                                                        fontSize: 14,
+                                                        fontSize: Display.setHeight(1.6),
                                                         fontWeight: '600',
                                                         color: '#325964',
                                                     }}
@@ -250,7 +250,7 @@ const DishFormPizza = ({ dish, extras, dips, selectedSize, setSelectedSize, sele
                                         <Text
                                             style={{
                                                 marginLeft: Display.setHeight(1),
-                                                fontSize: 15,
+                                                fontSize: Display.setHeight(1.7),
                                                 fontWeight: '500',
                                                 color: '#325964',
                                             }}
@@ -270,14 +270,14 @@ const DishFormPizza = ({ dish, extras, dips, selectedSize, setSelectedSize, sele
                                             >
                                                 <Text
                                                     style={{
-                                                        fontSize: 18,
+                                                        fontSize: Display.setHeight(2),
                                                         fontWeight: '700',
                                                         color: '#325964'
                                                     }}
                                                 >Size</Text>
                                                 <Text
                                                     style={{
-                                                        fontSize: 18,
+                                                        fontSize: Display.setHeight(2),
                                                         fontWeight: '700',
                                                         color: '#325964'
                                                     }}
@@ -317,7 +317,7 @@ const DishFormPizza = ({ dish, extras, dips, selectedSize, setSelectedSize, sele
                                                     >
                                                         <Text
                                                             style={{
-                                                                fontSize: 18,
+                                                                fontSize: Display.setHeight(2),
                                                                 fontWeight: '600',
                                                                 marginTop: Display.setHeight(0.5),
                                                                 marginLeft: 10,
@@ -327,7 +327,7 @@ const DishFormPizza = ({ dish, extras, dips, selectedSize, setSelectedSize, sele
                                                 </View>
                                                 <Text
                                                     style={{
-                                                        fontSize: 18,
+                                                        fontSize: Display.setHeight(2),
                                                         fontWeight: '600',
                                                         marginTop: Display.setHeight(0.5),
                                                     }}
@@ -363,7 +363,7 @@ const DishFormPizza = ({ dish, extras, dips, selectedSize, setSelectedSize, sele
                                     >
                                         <Text
                                             style={{
-                                                fontSize: 18,
+                                                fontSize: Display.setHeight(2),
                                                 fontWeight: 'bold',
                                                 color: '#000',
                                             }}
@@ -380,7 +380,7 @@ const DishFormPizza = ({ dish, extras, dips, selectedSize, setSelectedSize, sele
                                         >
                                             <Text
                                                 style={{
-                                                    fontSize: 14,
+                                                    fontSize: Display.setHeight(1.6),
                                                     fontWeight: '600',
                                                     color: '#325964',
                                                 }}
@@ -390,7 +390,7 @@ const DishFormPizza = ({ dish, extras, dips, selectedSize, setSelectedSize, sele
                                     <Text
                                         style={{
                                             marginLeft: Display.setHeight(1),
-                                            fontSize: 15,
+                                            fontSize: Display.setHeight(1.7),
                                             fontWeight: '500',
                                             color: '#325964',
                                         }}
@@ -410,14 +410,14 @@ const DishFormPizza = ({ dish, extras, dips, selectedSize, setSelectedSize, sele
                                         >
                                             <Text
                                                 style={{
-                                                    fontSize: 18,
+                                                    fontSize: Display.setHeight(2),
                                                     fontWeight: '700',
                                                     color: '#325964'
                                                 }}
                                             >Topping</Text>
                                             <Text
                                                 style={{
-                                                    fontSize: 18,
+                                                    fontSize: Display.setHeight(2),
                                                     fontWeight: '700',
                                                     color: '#325964'
                                                 }}
@@ -462,7 +462,7 @@ const DishFormPizza = ({ dish, extras, dips, selectedSize, setSelectedSize, sele
                                     >
                                         <Text
                                             style={{
-                                                fontSize: 18,
+                                                fontSize: Display.setHeight(2),
                                                 fontWeight: 'bold',
                                                 color: '#000',
                                             }}
@@ -479,7 +479,7 @@ const DishFormPizza = ({ dish, extras, dips, selectedSize, setSelectedSize, sele
                                         >
                                             <Text
                                                 style={{
-                                                    fontSize: 14,
+                                                    fontSize: Display.setHeight(1.6),
                                                     fontWeight: '600',
                                                     color: '#325964',
                                                 }}
@@ -489,7 +489,7 @@ const DishFormPizza = ({ dish, extras, dips, selectedSize, setSelectedSize, sele
                                     <Text
                                         style={{
                                             marginLeft: Display.setHeight(1),
-                                            fontSize: 15,
+                                            fontSize: Display.setHeight(1.7),
                                             fontWeight: '500',
                                             color: '#325964',
                                         }}
@@ -509,14 +509,14 @@ const DishFormPizza = ({ dish, extras, dips, selectedSize, setSelectedSize, sele
                                         >
                                             <Text
                                                 style={{
-                                                    fontSize: 18,
+                                                    fontSize: Display.setHeight(2),
                                                     fontWeight: '700',
                                                     color: '#325964'
                                                 }}
                                             >Dip</Text>
                                             <Text
                                                 style={{
-                                                    fontSize: 18,
+                                                    fontSize: Display.setHeight(2),
                                                     fontWeight: '700',
                                                     color: '#325964'
                                                 }}
@@ -539,33 +539,11 @@ const DishFormPizza = ({ dish, extras, dips, selectedSize, setSelectedSize, sele
                         ) : (
                             <></>
                         )}
-
                     </FormControl>
                 </NativeBaseProvider>
             </View>
-            {/* <View
-                style={{
-                    alignSelf: 'center',
-                    margin: Display.setHeight(1)
-                }}
-            >
-                <NativeBaseProvider>
-                    <Checkbox.Group onChange={setGroupValues} value={groupValues} accessibilityLabel="choose numbers">
-                        <Checkbox value="one" my={2}>
-                            <Text>UX Research</Text>
-                        </Checkbox>
-                        <Checkbox value="two">
-                            <Text>UX Research</Text>
-                        </Checkbox>
-                    </Checkbox.Group>
-                </NativeBaseProvider>
-            </View> */}
         </View>
     )
 }
-
-const styles = StyleSheet.create({
-
-})
 
 export default DishFormPizza;

@@ -1375,28 +1375,28 @@ export const KidSpecial = [
 
 export const SplashScreen = [
     {
-        id: 0,
-        title: "Very fast delivery Loreum Ipsum",
-        description: "Anything",
-        image: require('../icons/Splash1.png')
-    },
-    {
-        id: 1,
-        title: "Very Low cost afforable",
-        description: "Anything",
-        image: require('../icons/Splash2.png')
+        id: 3,
+        title: "Multiple restaurant, One Delivery.",
+        description: "Mix and match meals, and get them all in a single order.",
+        image: require('../icons/Splash4.png')
     },
     {
         id: 2,
-        title: "Very authentic Italian ingredients",
-        description: "Anything",
+        title: "Sourced Right, Served Right!",
+        description: "Experience the richness of real ingredients with every delivery.",
         image: require('../icons/Splash3.png')
     },
     {
-        id: 3,
-        title: "Very hot and warm food",
-        description: "Anything",
-        image: require('../icons/Splash4.png')
+        id: 1,
+        title: "Eat More, Spend Less!",
+        description: "Satisfy your cravings and save money, all in one convenient delivery.",
+        image: require('../icons/Splash2.png')
+    },
+    {
+        id: 0,
+        title: "Faster Than Your Cravings!",
+        description: "Ensuring you're always a beat ahead of hunger.",
+        image: require('../icons/Splash1.png')
     },
 ]
 

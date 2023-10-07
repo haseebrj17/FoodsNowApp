@@ -31,7 +31,7 @@ const CodeConfirmationScreen = ({ navigation, route }) => {
     const dispatch = useDispatch()
 
     const [animationData, setAnimationData] = useState({
-        reqCode: 'Enter the 5 digit code send to your phone',
+        reqCode: 'Enter the 6 digit code send to your phone',
         codeDone: 'Code Confirmation',
         color: '#325964',
         name: 'cross',
@@ -50,11 +50,11 @@ const CodeConfirmationScreen = ({ navigation, route }) => {
                     color: '#FFAF51',
                     name: 'check',
                 });
-                StorageService.setToken(response?.data?.Token).then(() => {
+                await StorageService.setToken(response?.data?.Token).then(() => {
                     dispatch(setToken(response?.data?.Token));
                 })
                 const decodedData = jwt_decode(response?.data?.Token)
-                StorageService.setUserData(decodedData).then(() => {
+                await StorageService.setUserData(decodedData).then(() => {
                     dispatch(setUserData(decodedData))
                 })
                 setTimeout(() => {
@@ -139,7 +139,6 @@ const CodeConfirmationScreen = ({ navigation, route }) => {
                         }}
                     >{animationData.codeDone}</Text>
                     <View
-                        flex="0.7"
                         justifyContent='flex-end'
                         alignItems='center'
                         style={{
@@ -148,10 +147,10 @@ const CodeConfirmationScreen = ({ navigation, route }) => {
                     >
                         <View
                             style={{
-                                width: 110,
-                                height: 110,
+                                width: Display.setHeight(11),
+                                height: Display.setHeight(11),
                                 backgroundColor: '#325964',
-                                borderRadius: "100%",
+                                borderRadius: Display.setHeight(5.5),
                                 alignItems: 'center',
                                 justifyContent: 'center',
                             }}

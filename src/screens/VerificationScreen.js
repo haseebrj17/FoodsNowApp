@@ -217,10 +217,10 @@ const VerificationScreen = ({ navigation, oAuthSignUp, inputs }) => {
                     >
                         <View
                             style={{
-                                width: 110,
-                                height: 110,
+                                width: Display.setHeight(11),
+                                height: Display.setHeight(11),
                                 backgroundColor: '#325964',
-                                borderRadius: "100%",
+                                borderRadius: Display.setHeight(11),
                                 alignItems: 'center',
                                 justifyContent: 'center',
                             }}

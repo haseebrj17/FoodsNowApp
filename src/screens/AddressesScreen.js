@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity, Dimensions, FlatList } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Dimensions, FlatList, SectionList } from 'react-native';
 import React, { useEffect, useState } from 'react'
 import { StorageService } from '../services';
 import { Display } from '../utils';
@@ -6,16 +6,21 @@ import AppLoading from 'expo-app-loading';
 import { Swipeable } from 'react-native-gesture-handler';
 import { Button } from 'react-native-paper';
 import { MaterialIcons, Ionicons, EvilIcons, Feather, SimpleLineIcons } from '@expo/vector-icons';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchUserAddresses } from '../actions/UserAddressAction';
+import Skeleton from '../components/Skeleton';
+import { getToken } from '../Store';
 
 const { width, height } = Dimensions.get('screen');
 
-const AddresseButton = ({ onpress }) => {
+const AddresseButton = ({ onpress, loadingAddress }) => {
     return <Button
         name='locationButton'
         title="Sign Up"
         mode='contained'
-        buttonColor='#FFAF51'
-        textColor='#325964'
+        buttonColor={loadingAddress ? '#f1f1f1' : '#FFAF51'}
+        textColor={loadingAddress ? '#696969' : '#325964'}
+        disabled={loadingAddress ? true : false}
         uppercase={false}
         onPress={onpress}
         style={{
@@ -33,7 +38,7 @@ const AddresseButton = ({ onpress }) => {
             fontWeight: '700',
             letterSpacing: 1,
         }}
-    >Add New Addresse</Button>
+    >Add New Address</Button>
 }
 
 const AddressesScreen = ({ navigation }) => {
@@ -41,37 +46,47 @@ const AddressesScreen = ({ navigation }) => {
     const [isReady, setIsReady] = useState(false);
     const [address, setAddress] = useState(null)
     const [flatListAddress, setFlatListAddress] = useState(null);
+    const [Id, setId] = useState(null);
+    const [franchiseId, setFranchiseId] = useState(null);
+    const [paymentMethod, setPaymentMethod] = useState("cash");
+    const [selectedAddressId, setSelectedAddressId] = useState(null);
 
-    const fetchUserAddress = async () => {
-        try {
-            const userAddresses = await StorageService.getAddress();
+    const dispatch = useDispatch();
 
-            if (userAddresses) {
-                setAddress(userAddresses)
-                setFlatListAddress([userAddresses]);
-            } else {
-                console.log("No addresses found in Storage Service");
-            }
+    useEffect(() => {
+        const FetchAddresses = async () => {
+            const Data = await StorageService.getUserData();
+            const { Id } = JSON.parse(Data);
+            setId(Id);
+            const LocationData = await StorageService.getLocation();
+            const FranchiseId = LocationData.FranchiseId
+            setFranchiseId(FranchiseId)
+        };
 
-        } catch (error) {
-            console.error(error);
-        } finally {
-            setIsReady(true);
+        FetchAddresses();
+    });
+
+    const token = useSelector(getToken);
+
+    useEffect(() => {
+        if (Id) {
+            dispatch(fetchUserAddresses(Id, token));
+        } else {
+            console.log("User Id not available");
         }
-    };
+    }, [Id, token]);
 
-    console.log(address)
-    console.log(flatListAddress)
+    const { addresses, loadingAddress, error } = useSelector(
+        (state) => state.addressState
+    );
 
-    if (!isReady) {
-        return (
-            <AppLoading
-                startAsync={fetchUserAddress}
-                onFinish={() => setIsReady(true)}
-                onError={console.warn}
-            />
-        );
-    }
+    useEffect(() => {
+        console.log(addresses, loadingAddress, error)
+    }, [addresses])
+
+    const sectionsData = [
+        { title: 'Addresses', data: addresses ? addresses : [] }
+    ];
 
     const rightSwipe = () => {
         return <TouchableOpacity
@@ -110,14 +125,14 @@ const AddressesScreen = ({ navigation }) => {
                 <View
                     style={{
                         width,
-                        height: Display.setHeight(11),
+                        height: Display.setHeight(12),
                         backgroundColor: '#fff',
                         justifyContent: 'center',
                     }}
                 >
                     {/* <TouchableOpacity
                         onPress={() => {
-                            navigation.navigate('LocationDetail', {address})
+                            navigation.navigate('LocationDetail', { addresses })
                         }}
                     > */}
                     <View
@@ -154,21 +169,21 @@ const AddressesScreen = ({ navigation }) => {
                                         fontWeight: "bold",
                                         marginVertical: Display.setHeight(0.5)
                                     }}
-                                >{item.addressJson.name ? item.addressJson.name : ''}, {item.unitNumber ? `Appartment ${item.unitNumber}` : ''}, {item.floorNumber ? `Floor ${item.floorNumber}` : ''}</Text>
+                                >{item?.StreetAddress} {item?.House}, Appartment {item?.UnitNumber}, Floor {item?.FloorNumber}</Text>
                                 <Text
                                     style={{
                                         fontSize: 14,
                                         fontWeight: '600',
                                         color: '#7f7f7f'
                                     }}
-                                >{item.addressJson.city ? item.addressJson.city : ''}</Text>
+                                >{item?.City?.Name}</Text>
                                 <Text
                                     style={{
                                         fontSize: 12,
                                         fontWeight: '400',
                                         color: '#7f7f7f'
                                     }}
-                                >{item.notes ? item.notes : ''}</Text>
+                                >{item?.Notes}</Text>
                             </View>
                         </View>
                         <View
@@ -196,89 +211,323 @@ const AddressesScreen = ({ navigation }) => {
     }
 
     return (
-        <View
-            style={{
-                width,
-                height,
-                backgroundColor: '#fff'
-            }}
-        >
-            <View
-                style={{
-                    width,
-                    height: height * 0.12,
-                    backgroundColor: '#F4E4CD',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexDirection: 'row'
-                }}
-            >
-                <TouchableOpacity
-                    onPress={() => {
-                        if (navigation.canGoBack()) {
-                            navigation.goBack();
-                        } else {
-                            navigation.navigate('Account');
-                        }
-                    }}
-                    style={{
-                        position: "absolute",
-                        left: '1%',
-                        top: "10%",
-                        marginTop: 35,
-                        zIndex: 999,
-                    }}
-                >
-                    <MaterialIcons
-                        name="keyboard-arrow-left"
-                        size={50}
-                        color="#325962"
-                    />
-                </TouchableOpacity>
-                <Text
-                    style={{
-                        fontSize: 20,
-                        fontWeight: 'bold',
-                        marginTop: 35,
-                        color: "#325962",
-                    }}
-                >Addresses</Text>
-            </View>
-            <View
-                style={{
-                    width,
-                    height: height * (0.88)
-                }}
-            >
-                <FlatList
-                    data={flatListAddress}
-                    keyExtractor={(item, index) => item._id + ''}
-                    renderItem={renderItem}
-                />
-            </View>
-            <View
-                style={{
-                    height: Display.setHeight(15),
-                    width,
-                    backgroundColor: '#fff',
-                    position: 'absolute',
-                    bottom: '0%'
-                }}
-            >
-                <View
-                    style={{
-                        width,
-                        height: Display.setHeight(0.1),
-                        backgroundColor: '#f1f1f1',
-                    }}
-                />
-                <AddresseButton
-                    onpress={() => {
-                        navigation.navigate('Main')
-                    }}
-                />
-            </View>
-        </View>
+        <>
+            {
+                loadingAddress ? (
+                    <View
+                        style={{
+                            backgroundColor: '#fff',
+                            width,
+                            height
+                        }}
+                    >
+                        <View
+                            style={{
+                                width,
+                                height: height * 0.12,
+                                backgroundColor: '#F4E4CD',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                flexDirection: 'row'
+                            }}
+                        >
+                            <TouchableOpacity
+                                onPress={() => {
+                                    if (navigation.canGoBack()) {
+                                        navigation.goBack();
+                                    } else {
+                                        navigation.navigate('Account');
+                                    }
+                                }}
+                                style={{
+                                    position: "absolute",
+                                    left: '1%',
+                                    top: "10%",
+                                    marginTop: 35,
+                                    zIndex: 999,
+                                }}
+                            >
+                                <MaterialIcons
+                                    name="keyboard-arrow-left"
+                                    size={50}
+                                    color="#325962"
+                                />
+                            </TouchableOpacity>
+                            <Text
+                                style={{
+                                    fontSize: 20,
+                                    fontWeight: 'bold',
+                                    marginTop: 35,
+                                    color: "#325962",
+                                }}
+                            >Addresses</Text>
+                        </View>
+                        <View
+                            style={{
+                                width: "100%",
+                                alignItems: "center",
+                                justifyContent: "center",
+                            }}>
+                            <View
+                                style={{
+                                    width: "90%",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    flexDirection: "column",
+                                }}>
+                                <Skeleton
+                                    height={Display.setHeight(10)}
+                                    width={Display.setWidth(90)}
+                                    style={{ margin: 10, borderRadius: 12 }}
+                                />
+                                <View
+                                    style={{
+                                        flexDirection: "row",
+                                        position: "absolute",
+                                        left: "5%",
+                                        top: "20%",
+                                    }}>
+                                    <View
+                                        style={{
+                                            padding: 4,
+                                            flexDirection: "row",
+                                            width: "100%",
+                                        }}>
+                                        <View
+                                            style={{
+                                                width: "10%",
+                                                alignItems: "flex-start",
+                                                justifyContent: "center",
+                                            }}>
+                                            <Skeleton
+                                                height={Display.setHeight(2.5)}
+                                                width={Display.setHeight(2.5)}
+                                                style={{
+                                                    borderRadius: 5,
+                                                    marginTop: Display.setHeight(0.5),
+                                                }}
+                                                backgroundColor={"rgba(256, 256, 256, 1)"}
+                                            />
+                                        </View>
+                                        <View
+                                            style={{
+                                                width: "75%",
+                                            }}>
+                                            <Skeleton
+                                                height={Display.setHeight(2)}
+                                                width={Display.setHeight(25)}
+                                                style={{
+                                                    borderRadius: 5,
+                                                    marginTop: Display.setHeight(0.5),
+                                                }}
+                                                backgroundColor={"rgba(256, 256, 256, 1)"}
+                                            />
+                                            <Skeleton
+                                                height={Display.setHeight(1)}
+                                                width={Display.setHeight(10)}
+                                                style={{
+                                                    borderRadius: 5,
+                                                    marginTop: Display.setHeight(0.5),
+                                                }}
+                                                backgroundColor={"rgba(256, 256, 256, 1)"}
+                                            />
+                                            <Skeleton
+                                                height={Display.setHeight(1.6)}
+                                                width={Display.setHeight(12)}
+                                                style={{
+                                                    borderRadius: 5,
+                                                    marginTop: Display.setHeight(0.5),
+                                                }}
+                                                backgroundColor={"rgba(256, 256, 256, 1)"}
+                                            />
+                                        </View>
+                                    </View>
+                                </View>
+                            </View>
+                            <View
+                                style={{
+                                    width: "90%",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    flexDirection: "column",
+                                }}>
+                                <Skeleton
+                                    height={Display.setHeight(10)}
+                                    width={Display.setWidth(90)}
+                                    style={{ margin: 10, borderRadius: 12 }}
+                                />
+                                <View
+                                    style={{
+                                        flexDirection: "row",
+                                        position: "absolute",
+                                        left: "5%",
+                                        top: "20%",
+                                    }}>
+                                    <View
+                                        style={{
+                                            padding: 4,
+                                            flexDirection: "row",
+                                            width: "100%",
+                                        }}>
+                                        <View
+                                            style={{
+                                                width: "10%",
+                                                alignItems: "flex-start",
+                                                justifyContent: "center",
+                                            }}>
+                                            <Skeleton
+                                                height={Display.setHeight(2.5)}
+                                                width={Display.setHeight(2.5)}
+                                                style={{
+                                                    borderRadius: 5,
+                                                    marginTop: Display.setHeight(0.5),
+                                                }}
+                                                backgroundColor={"rgba(256, 256, 256, 1)"}
+                                            />
+                                        </View>
+                                        <View
+                                            style={{
+                                                width: "75%",
+                                            }}>
+                                            <Skeleton
+                                                height={Display.setHeight(2)}
+                                                width={Display.setHeight(25)}
+                                                style={{
+                                                    borderRadius: 5,
+                                                    marginTop: Display.setHeight(0.5),
+                                                }}
+                                                backgroundColor={"rgba(256, 256, 256, 1)"}
+                                            />
+                                            <Skeleton
+                                                height={Display.setHeight(1)}
+                                                width={Display.setHeight(10)}
+                                                style={{
+                                                    borderRadius: 5,
+                                                    marginTop: Display.setHeight(0.5),
+                                                }}
+                                                backgroundColor={"rgba(256, 256, 256, 1)"}
+                                            />
+                                            <Skeleton
+                                                height={Display.setHeight(1.6)}
+                                                width={Display.setHeight(12)}
+                                                style={{
+                                                    borderRadius: 5,
+                                                    marginTop: Display.setHeight(0.5),
+                                                }}
+                                                backgroundColor={"rgba(256, 256, 256, 1)"}
+                                            />
+                                        </View>
+                                    </View>
+                                </View>
+                            </View>
+                        </View>
+                        <View
+                            style={{
+                                height: Display.setHeight(15),
+                                width,
+                                backgroundColor: '#fff',
+                                position: 'absolute',
+                                bottom: '0%'
+                            }}
+                        >
+                            <View
+                                style={{
+                                    width,
+                                    height: Display.setHeight(0.1),
+                                    backgroundColor: '#f1f1f1',
+                                }}
+                            />
+                            <AddresseButton
+                                loadingAddress={loadingAddress}
+                                onpress={() => {
+                                    navigation.navigate('LocationAccess')
+                                }}
+                            />
+                        </View>
+                    </View>
+                ) : (
+                    <View
+                        style={{
+                            flex: 1,
+                            backgroundColor: '#fff',
+                        }}
+                    >
+                        <View
+                            style={{
+                                height: Display.setHeight(12),
+                                backgroundColor: '#F4E4CD',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                flexDirection: 'row',
+                            }}
+                        >
+                            <TouchableOpacity
+                                onPress={() => {
+                                    if (navigation.canGoBack()) {
+                                        navigation.goBack();
+                                    } else {
+                                        navigation.navigate('Account');
+                                    }
+                                }}
+                                style={{
+                                    position: "absolute",
+                                    left: '1%',
+                                    top: "10%",
+                                    marginTop: 35,
+                                    zIndex: 999,
+                                }}
+                            >
+                                <MaterialIcons
+                                    name="keyboard-arrow-left"
+                                    size={50}
+                                    color="#325962"
+                                />
+                            </TouchableOpacity>
+                            <Text
+                                style={{
+                                    fontSize: 20,
+                                    fontWeight: 'bold',
+                                    marginTop: 35,
+                                    color: "#325962",
+                                }}
+                            >Addresses</Text>
+                        </View>
+                        <SectionList
+                            style={{
+                                flex: 1,
+                                marginBottom: Display.setHeight(15) // Adjust for the fixed footer
+                            }}
+                            sections={sectionsData}
+                            keyExtractor={(item, index) => index.toString()}
+                            renderItem={renderItem}
+                        />
+                        <View
+                            style={{
+                                position: 'absolute',
+                                bottom: 0,
+                                left: 0,
+                                right: 0,
+                                height: Display.setHeight(11),
+                                backgroundColor: '#fff',
+                            }}
+                        >
+                            <View
+                                style={{
+                                    width: '100%',
+                                    height: Display.setHeight(0.1),
+                                    backgroundColor: '#f1f1f1',
+                                }}
+                            />
+                            <AddresseButton
+                                onpress={() => {
+                                    navigation.navigate('LocationAccess')
+                                }}
+                            />
+                        </View>
+                    </View>
+
+                )}
+        </>
     )
 }
 
