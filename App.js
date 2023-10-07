@@ -3,6 +3,8 @@ import { Provider } from "react-redux";
 import { Store } from './src/Store';
 import ActiveTabContext from "./src/context/ActiveTabContext";
 import { useState } from "react";
+import { enableScreens } from 'react-native-screens';
+enableScreens();
 
 disableYellowBox = true
 disableRedBox = true

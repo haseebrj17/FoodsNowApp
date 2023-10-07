@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image, Dimensions, ScrollView, FlatList } from 'react-native';
+import { Text, View, TouchableOpacity, Dimensions, FlatList } from 'react-native';
 import { Button } from '@react-native-material/core';
-import { FormControl, Radio, Checkbox, WarningOutlineIcon, NativeBaseProvider, extendTheme } from 'native-base';
-import { FontAwesome, MaterialCommunityIcons, AntDesign } from '@expo/vector-icons';
+import { FormControl, Radio, Checkbox, NativeBaseProvider } from 'native-base';
 import { Display } from '../utils';
 import Separator from './Separator';
 
@@ -141,7 +140,6 @@ const DishFormPizza = ({ dish, extras, dips, selectedSize, setSelectedSize, sele
                 description: description
             };
         };
-
 
         return (
             <View
@@ -430,8 +428,11 @@ const DishFormPizza = ({ dish, extras, dips, selectedSize, setSelectedSize, sele
                                         }}
                                     >
                                         <FlatList
+                                            onLayout={() => { }}
+                                            nestedScrollEnabled
+                                            removeClippedSubviews={false}
+                                            listKey={(item, index) => 'D' + index.toString()}
                                             data={extras}
-                                            keyExtractor={(_, index) => index.toString()}
                                             renderItem={renderItemExtras}
                                         />
                                     </View>
@@ -529,8 +530,11 @@ const DishFormPizza = ({ dish, extras, dips, selectedSize, setSelectedSize, sele
                                         }}
                                     >
                                         <FlatList
+                                            onLayout={() => { }}
+                                            nestedScrollEnabled
+                                            removeClippedSubviews={false}
+                                            listKey={(item, index) => 'D' + index.toString()}
                                             data={dips}
-                                            keyExtractor={(_, index) => index.toString()}
                                             renderItem={renderItemDips}
                                         />
                                     </View>

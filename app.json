@@ -9,7 +9,7 @@
     "icon": "./src/assets/BN_LOGO.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./src/assets/SplashGreen.gif",
+      "image": "./src/assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#325964"
     },
@@ -35,7 +35,7 @@
       "runtimeVersion": {
         "policy": "sdkVersion"
       },
-      "useNextNotificationsApi": true
+      "package": "co.foodsnow.FoodsNowApp"
     },
     "web": {
       "favicon": "./src/assets/BN_LOGO.png"

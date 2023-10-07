@@ -1,25 +1,16 @@
 import React, { forwardRef, useImperativeHandle, useRef, useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image, Dimensions, ScrollView, FlatList, SectionList, Animated, Easing } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image, Dimensions, ScrollView, FlatList, SectionList, Animated } from 'react-native';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { Button } from '@react-native-material/core';
-import { RadioButton } from 'react-native-paper';
 import { FontAwesome, MaterialCommunityIcons, AntDesign, Entypo } from '@expo/vector-icons';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
-import { Input, NativeBaseProvider } from 'native-base';
-import { LinearGradient } from 'expo-linear-gradient';
-import { CheckBox } from '@rneui/base';
-import { FormControl } from 'native-base';
-import { createAvatar } from '@dicebear/core';
-import { adventurer, thumbs } from '@dicebear/collection';
-import { SvgXml } from 'react-native-svg';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Display } from '../utils';
 import DishFormPizza from './DishFormPizza';
 import Separator from './Separator';
 import { addToCart } from '../actions/CartAction';
 import { useNavigation } from '@react-navigation/native';
 import { db } from '../SqlLiteDB';
-import { RestaurantService } from '../services';
 
 const { width, height } = Dimensions.get('window')
 
@@ -258,7 +249,7 @@ const AddToCartModal = forwardRef((props, ref) => {
                                     flexDirection: 'row',
                                     margin: Display.setHeight(0.5)
                                 }}
-                                key={index}
+                                key={index.toString()}
                             >
                                 <Entypo name="dot-single" size={24} color="black"
                                     style={{
@@ -352,6 +343,10 @@ const AddToCartModal = forwardRef((props, ref) => {
     const ReviewsRoute = () => (
         <ScrollView style={{ height: Display.setHeight(40), overflow: 'scroll' }}>
             <FlatList
+                onLayout={() => { }}
+                nestedScrollEnabled
+                removeClippedSubviews={false}
+                listKey={(item, index) => 'D' + index.toString()}
                 aria-expanded="false"
                 data={review}
                 renderItem={renderComment}
@@ -425,62 +420,10 @@ const AddToCartModal = forwardRef((props, ref) => {
                     </View>
                     <View style={styles.divider} />
                     <SectionList
+                        onLayout={() => { }}
+                        nestedScrollEnabled
                         removeClippedSubviews={false}
-                        // sections={[
-                        //     {
-                        //         data: [
-                        //             <View
-                        //                 key="details"
-                        //                 style={{
-                        //                     width: "100%",
-                        //                     height: Display.setHeight(45),
-                        //                     flexDirection: "column",
-                        //                 }}
-                        //             >
-                        //                 <TabView
-                        //                     navigationState={{ index, routes }}
-                        //                     renderScene={SceneMap({
-                        //                         details: DetailsRoute,
-                        //                         reviews: ReviewsRoute,
-                        //                     })}
-                        //                     onIndexChange={setIndex}
-                        //                     initialLayout={{ width: width }}
-                        //                     renderTabBar={props => (
-                        //                         <TabBar
-                        //                             {...props}
-                        //                             indicatorStyle={{ backgroundColor: '#FFAF51' }}
-                        //                             style={{ backgroundColor: '#fff' }}
-                        //                             labelStyle={{ color: '#325962', fontSize: Display.setHeight(2.2) }}
-                        //                         />
-                        //                     )}
-                        //                 />
-                        //                 <View style={styles.divider} />
-                        //             </View>
-                        //         ]
-                        //     },
-                        //     {
-                        //         title: "Customize",
-                        //         data: [
-                        //             <DishFormPizza
-                        //                 key="customize"
-                        //                 dish={dish ? dish : ''}
-                        //                 extras={extras}
-                        //                 dips={dips}
-                        //                 onSizeChange={handleSizeChange}
-                        //                 onToppingsChange={handleToppingsChange}
-                        //                 onDippingsChange={handleDippingsChange}
-                        //                 selectedSize={selectedSize}
-                        //                 setSelectedSize={setSelectedSize}
-                        //                 selectedExtras={selectedExtras}
-                        //                 setSelectedExtras={setSelectedExtras}
-                        //                 selectedDips={selectedDips}
-                        //                 setSelectedDips={setSelectedDips}
-                        //             />
-                        //         ]
-                        //     }
-                        // ]}
-                        // ref={sectionListRef}
-                        // renderItem={({ item }) => item}
+                        listKey={(item, index) => 'D' + index.toString()}
                         sections={[
                             {
                                 key: "details",
