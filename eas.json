@@ -4,6 +4,9 @@
   },
   "build": {
     "development": {
+      "env": {
+        "GOOGLE_LOCATION_AUTO_COMPLETE": "AIzaSyDN5sODZpClUKsZLCHNXQkVvJgc2dgGGQ0"
+      },
       "distribution": "internal",
       "android": {
         "gradleCommand": ":app:assembleDebug"
@@ -14,10 +17,16 @@
       "channel": "development"
     },
     "preview": {
+      "env": {
+        "GOOGLE_LOCATION_AUTO_COMPLETE": "AIzaSyDN5sODZpClUKsZLCHNXQkVvJgc2dgGGQ0"
+      },
       "distribution": "internal",
       "channel": "preview"
     },
     "production": {
+      "env": {
+        "GOOGLE_LOCATION_AUTO_COMPLETE": "AIzaSyDN5sODZpClUKsZLCHNXQkVvJgc2dgGGQ0"
+      },
       "channel": "production"
     }
   },
