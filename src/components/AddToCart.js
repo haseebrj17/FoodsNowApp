@@ -347,7 +347,7 @@ const AddToCartModal = forwardRef((props, ref) => {
                 nestedScrollEnabled
                 removeClippedSubviews={false}
                 listKey={(item, index) => 'D' + index.toString()}
-                aria-expanded="false"
+                aria-expanded={false}
                 data={review}
                 renderItem={renderComment}
                 style={[styles.scene, {

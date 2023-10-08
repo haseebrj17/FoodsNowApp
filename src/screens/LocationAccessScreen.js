@@ -263,7 +263,7 @@ const LocationAccessScreen = ({ navigation }) => {
                     style={{
                         zIndex: 9999,
                         position: 'absolute',
-                        bottom: '10%',
+                        bottom: '25%',
                         right: '3%',
                         width: Display.setHeight(6),
                         height: Display.setHeight(6),
@@ -543,7 +543,7 @@ const styles = StyleSheet.create({
         width: Display.setHeight(9),
         height: Display.setHeight(9),
         position: 'absolute',
-        bottom: '8%',
+        bottom: '22%',
         left: '1.5%',
         borderRadius: 10,
     },

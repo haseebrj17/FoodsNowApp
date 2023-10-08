@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Dimensions, TouchableOpacity, ScrollView, FlatList, Animated, Alert, Platform } from 'react-native';
+import { StyleSheet, Text, View, Dimensions, TouchableOpacity, ScrollView, FlatList, Animated, Alert, Platform, TextInput } from 'react-native';
 import React, { useState, useEffect, useRef } from 'react';
 import MapView, { PROVIDER_GOOGLE, Callout, Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
@@ -92,7 +92,7 @@ const LocationDetailScreen = ({ route, navigation }) => {
     const address = route.params.address;
     const selectedLocation = route.params.selectedLocation;
 
-console.log(address)
+    console.log(address)
 
     const dispatch = useDispatch()
 
@@ -100,21 +100,11 @@ console.log(address)
 
     const processAddressAddition = async (inputs, token) => {
         try {
-            // Fetch user data
-            const data = await StorageService.getUserData();
-            const parsedData = JSON.parse(data);
-            setUserId(parsedData.Id);
 
-            // Update the inputs state with the CustomerId
-            const updatedInputs = {
-                ...inputs,
-                CustomerId: parsedData.Id
-            };
-
-            console.log(updatedInputs)
+            console.log(inputs)
 
             // Handle address addition
-            const response = await dispatch(addUserAddress({ inputs: updatedInputs, token }));
+            const response = await dispatch(addUserAddress({ inputs: inputs, token }));
             if (response === "OK") {
                 navigation.navigate('Main');
             } else {
@@ -401,7 +391,7 @@ console.log(address)
                     style={{
                         alignItems: 'center',
                         height: HEIGHT,
-                        marginBottom: Display.setHeight(10)
+                        marginBottom: Display.setHeight(15)
                     }}
                 >
                     <View
@@ -532,12 +522,16 @@ console.log(address)
                                     alignItems: 'center',
                                 }}
                             >
-                                <Text
+                                <TextInput
+                                    value={address.streetNumber}
+                                    onChangeText={text => handleOnchange(text, 'streetNumber')}
                                     style={{
-                                        fontSize: Display.setHeight(1.6),
-                                        fontWeight: '600',
+                                        marginVertical: 5,
+                                        fontSize: 14,
+                                        color: "grey",
                                     }}
-                                >{address.streetNumber}</Text>
+                                    placeholder='House'
+                                />
                             </View>
                             <View
                                 style={{
@@ -551,12 +545,16 @@ console.log(address)
                                     alignItems: 'center',
                                 }}
                             >
-                                <Text
+                                <TextInput
+                                    value={address.street}
+                                    onChangeText={text => handleOnchange(text, 'street')}
                                     style={{
-                                        fontSize: Display.setHeight(1.6),
-                                        fontWeight: '600',
+                                        marginVertical: 5,
+                                        fontSize: 14,
+                                        color: "grey",
                                     }}
-                                >{address.street}</Text>
+                                    placeholder='Street name'
+                                />
                             </View>
                         </View>
                         <Input
@@ -660,12 +658,12 @@ console.log(address)
                     width,
                     backgroundColor: '#fff',
                     position: 'absolute',
-                    bottom: Platform.OS === 'ios' ? '0%' : '5%'
+                    bottom: Platform.OS === 'ios' ? '0%' : '10%'
                 }}
             >
                 <Separator
-                        width={Display.setWidth(100)}
-                        height={Display.setHeight(0.1)}
+                    width={Display.setWidth(100)}
+                    height={Display.setHeight(0.1)}
                 />
                 <AddresseButton
                     onpress={() => {
