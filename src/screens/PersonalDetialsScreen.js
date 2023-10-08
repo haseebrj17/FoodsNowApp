@@ -3,14 +3,12 @@ import React, { useEffect, useState } from 'react'
 import { StorageService } from '../services';
 import { Display } from '../utils';
 import { MaterialIcons, SimpleLineIcons } from '@expo/vector-icons';
-import AppLoading from 'expo-app-loading';
 import * as Google from 'expo-auth-session/providers/google';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import { useAuthRequest } from 'expo-auth-session';
 import * as AuthSession from 'expo-auth-session';
 import GoogleIcon from '../assets/icons/Google';
 import AppleIcon from '../assets/icons/Apple';
-import * as SplashScreen from 'expo-splash-screen';
 import Skeleton from '../components/Skeleton';
 
 const { width, height } = Dimensions.get('screen');
