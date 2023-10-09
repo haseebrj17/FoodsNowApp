@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Dimensions, ImageBackground, TouchableOpacity, Image, Keyboard, Alert } from 'react-native'
+import { StyleSheet, Text, View, Dimensions, ImageBackground, Platform, TouchableOpacity, Image, Keyboard, Alert, KeyboardAvoidingView, TouchableWithoutFeedback } from 'react-native'
 import React, { useState } from 'react'
 import { TextInput } from 'react-native-paper'
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
@@ -166,199 +166,207 @@ const LoginScreen = () => {
     };
 
     return (
-        <View
+        <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             style={{
-                backgroundColor: '#325962',
                 flex: 1
-            }}
-        >
-            <View
-                style={{
-                    backgroundColor: '#f1f1f1'
-                }}
-            >
+            }}>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <View
                     style={{
-                        width: width,
-                        height: width / 4,
-                        backgroundColor: '#f1f1f1',
-                        overflow: 'hidden',
-                        borderBottomLeftRadius: 75,
-                    }}
-                >
-                    <Image
-                        source={require('../assets/images/pattern15.png')}
-                        style={{
-                            width: width,
-                            height: width / 4,
-                            aspectRatio: 2000 / 500,
-                            borderBottomLeftRadius: 75,
-                        }}
-                    />
-                </View>
-            </View>
-            <View
-                style={{
-                    flex: 1,
-                    overflow: 'hidden'
-                }}
-            >
-                <Image
-                    source={require('../assets/images/pattern15.png')}
-                    style={{
-                        ...StyleSheet.absoluteFillObject,
-                        width: width,
-                        height: width / 4,
-                        aspectRatio: 2000 / 500,
-                    }}
-                />
-                <View
-                    style={{
-                        borderRadius: 75,
-                        borderTopLeftRadius: 0,
-                        backgroundColor: '#f1f1f1',
-                        flex: 1,
-                        alignItems: 'center',
-                        justifyContent: 'center',
+                        backgroundColor: '#325962',
+                        flex: 1
                     }}
                 >
                     <View
                         style={{
-                            width: "80%",
-                            height: width,
-                            alignSelf: 'center',
+                            backgroundColor: '#f1f1f1'
                         }}
                     >
-                        <Text
+                        <View
                             style={{
-                                fontSize: Display.setHeight(4),
-                                fontWeight: 'bold',
-                                color: '#325962',
+                                width: width,
+                                height: width / 4,
+                                backgroundColor: '#f1f1f1',
+                                overflow: 'hidden',
+                                borderBottomLeftRadius: 75,
+                            }}
+                        >
+                            <Image
+                                source={require('../assets/images/pattern15.png')}
+                                style={{
+                                    width: width,
+                                    height: width / 4,
+                                    aspectRatio: 2000 / 500,
+                                    borderBottomLeftRadius: 75,
+                                }}
+                            />
+                        </View>
+                    </View>
+                    <View
+                        style={{
+                            flex: 1,
+                            overflow: 'hidden'
+                        }}
+                    >
+                        <Image
+                            source={require('../assets/images/pattern15.png')}
+                            style={{
+                                ...StyleSheet.absoluteFillObject,
+                                width: width,
+                                height: width / 4,
+                                aspectRatio: 2000 / 500,
+                            }}
+                        />
+                        <View
+                            style={{
+                                borderRadius: 75,
+                                borderTopLeftRadius: 0,
+                                backgroundColor: '#f1f1f1',
+                                flex: 1,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                            }}
+                        >
+                            <View
+                                style={{
+                                    width: "80%",
+                                    height: width,
+                                    alignSelf: 'center',
+                                }}
+                            >
+                                <Text
+                                    style={{
+                                        fontSize: Display.setHeight(4),
+                                        fontWeight: 'bold',
+                                        color: '#325962',
+                                        alignSelf: 'center',
+                                        margin: Display.setHeight(1),
+                                        marginBottom: Display.setHeight(5)
+                                    }}
+                                >Login</Text>
+                                <NativeBaseProvider>
+                                    <FormControl isRequired>
+                                        <Input
+                                            onChangeText={text => handleOnchange(text, 'email')}
+                                            onFocus={() => handleError(null, 'email')}
+                                            iconName="email-outline"
+                                            label="Email"
+                                            placeholder="Enter your email address"
+                                            error={errors.email}
+                                        />
+                                        <Input
+                                            onChangeText={text => handleOnchange(text, 'password')}
+                                            onFocus={() => handleError(null, 'password')}
+                                            iconName="lock-outline"
+                                            label="Password"
+                                            placeholder="Enter your password"
+                                            error={errors.password}
+                                            password
+                                        />
+                                        <Button title="Log In" onPress={validate} />
+                                    </FormControl>
+                                </NativeBaseProvider>
+                            </View>
+                        </View>
+                    </View>
+                    <View
+                        style={{
+                            height: Display.setHeight(17),
+                            backgroundColor: '#325962'
+                        }}
+                    >
+                        <View
+                            style={{
+                                flexDirection: 'column',
+                                justifyContent: 'center',
+                                alignItems: 'center',
                                 alignSelf: 'center',
-                                margin: Display.setHeight(1),
-                                marginBottom: Display.setHeight(5)
                             }}
-                        >Login</Text>
-                        <NativeBaseProvider>
-                            <FormControl isRequired>
-                                <Input
-                                    onChangeText={text => handleOnchange(text, 'email')}
-                                    onFocus={() => handleError(null, 'email')}
-                                    iconName="email-outline"
-                                    label="Email"
-                                    placeholder="Enter your email address"
-                                    error={errors.email}
-                                />
-                                <Input
-                                    onChangeText={text => handleOnchange(text, 'password')}
-                                    onFocus={() => handleError(null, 'password')}
-                                    iconName="lock-outline"
-                                    label="Password"
-                                    placeholder="Enter your password"
-                                    error={errors.password}
-                                    password
-                                />
-                                <Button title="Log In" onPress={validate} />
-                            </FormControl>
-                        </NativeBaseProvider>
-                    </View>
-                </View>
-            </View>
-            <View
-                style={{
-                    height: Display.setHeight(17),
-                    backgroundColor: '#325962'
-                }}
-            >
-                <View
-                    style={{
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        alignSelf: 'center',
-                    }}
-                >
-                    <View
-                        style={{
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            justifyContent: 'space-evenly',
-                            margin: Display.setHeight(1),
-                        }}
-                    >
-                        <Text
-                            style={{
-                                fontWeight: "500",
-                                fontSize: Display.setHeight(1.8),
-                                color: '#f1f1f1'
-                            }}
-                        >Sign in with</Text>
-                    </View>
-                    <View
-                        style={{
-                            width: '60%',
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            justifyContent: 'space-evenly'
-                        }}
-                    >
-                        <TouchableOpacity onPress={handleGoogleLogin}>
+                        >
                             <View
                                 style={{
-                                    width: Display.setHeight(5),
-                                    height: Display.setHeight(5),
-                                    borderRadius: Display.setHeight(2.5),
-                                    backgroundColor: '#f1f1f1',
-                                    justifyContent: 'center',
+                                    flexDirection: 'row',
                                     alignItems: 'center',
+                                    justifyContent: 'space-evenly',
+                                    margin: Display.setHeight(1),
                                 }}
                             >
-                                <GoogleIcon size={Display.setHeight(3)} />
+                                <Text
+                                    style={{
+                                        fontWeight: "500",
+                                        fontSize: Display.setHeight(1.8),
+                                        color: '#f1f1f1'
+                                    }}
+                                >Sign in with</Text>
                             </View>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={handleAppleLogin}>
                             <View
                                 style={{
-                                    width: Display.setHeight(5),
-                                    height: Display.setHeight(5),
-                                    borderRadius: Display.setHeight(2.5),
-                                    backgroundColor: '#f1f1f1',
-                                    justifyContent: 'center',
+                                    width: '60%',
+                                    flexDirection: 'row',
                                     alignItems: 'center',
+                                    justifyContent: 'space-evenly'
                                 }}
                             >
-                                <AppleIcon size={Display.setHeight(3)} />
+                                <TouchableOpacity onPress={handleGoogleLogin}>
+                                    <View
+                                        style={{
+                                            width: Display.setHeight(5),
+                                            height: Display.setHeight(5),
+                                            borderRadius: Display.setHeight(2.5),
+                                            backgroundColor: '#f1f1f1',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                        }}
+                                    >
+                                        <GoogleIcon size={Display.setHeight(3)} />
+                                    </View>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={handleAppleLogin}>
+                                    <View
+                                        style={{
+                                            width: Display.setHeight(5),
+                                            height: Display.setHeight(5),
+                                            borderRadius: Display.setHeight(2.5),
+                                            backgroundColor: '#f1f1f1',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                        }}
+                                    >
+                                        <AppleIcon size={Display.setHeight(3)} />
+                                    </View>
+                                </TouchableOpacity>
                             </View>
-                        </TouchableOpacity>
-                    </View>
-                    <View
-                        style={{
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            justifyContent: 'space-evenly',
-                            margin: Display.setHeight(2.5),
-                        }}
-                    >
-                        <Text
-                            style={{
-                                fontWeight: "500",
-                                fontSize: Display.setHeight(2),
-                                color: '#f1f1f1'
-                            }}
-                        >Don't have an account? </Text>
-                        <TouchableOpacity
-                            onPress={() => navigation.navigate('Registration')}
-                        ><Text
-                            style={{
-                                fontWeight: "500",
-                                fontSize: Display.setHeight(2),
-                                color: '#FFAF51'
-                            }}
-                        >Sign Up</Text></TouchableOpacity>
+                            <View
+                                style={{
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-evenly',
+                                    margin: Display.setHeight(2.5),
+                                }}
+                            >
+                                <Text
+                                    style={{
+                                        fontWeight: "500",
+                                        fontSize: Display.setHeight(2),
+                                        color: '#f1f1f1'
+                                    }}
+                                >Don't have an account? </Text>
+                                <TouchableOpacity
+                                    onPress={() => navigation.navigate('Registration')}
+                                ><Text
+                                    style={{
+                                        fontWeight: "500",
+                                        fontSize: Display.setHeight(2),
+                                        color: '#FFAF51'
+                                    }}
+                                >Sign Up</Text></TouchableOpacity>
+                            </View>
+                        </View>
                     </View>
                 </View>
-            </View>
-        </View>
+            </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
     )
 }
 

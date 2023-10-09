@@ -6,7 +6,7 @@
     "owner": "foodsnowgmbh",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./src/assets/BN_LOGO.png",
+    "icon": "./src/assets/BN_Published_LOGO.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./src/assets/splash.png",
@@ -29,7 +29,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./src/assets/BN_LOGO.png",
+        "foregroundImage": "./src/assets/BN_Published_LOGO.png",
         "backgroundColor": "#ffffff"
       },
       "runtimeVersion": {
@@ -38,7 +38,7 @@
       "package": "co.foodsnow.FoodsNowApp"
     },
     "web": {
-      "favicon": "./src/assets/BN_LOGO.png"
+      "favicon": "./src/assets/BN_Published_LOGO.png"
     },
     "extra": {
       "eas": {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, Alert, Dimensions, Image, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Alert, Dimensions, Platform, Image, StyleSheet, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView } from 'react-native';
 import axios from 'axios';
 import FlagItem from '../components/FlagItem';
 import Button from '../components/Button';
@@ -73,153 +73,161 @@ const CodeConfirmationScreen = ({ navigation, route }) => {
 
 
     return (
-        <View
+        <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             style={{
-                backgroundColor: '#325962',
                 flex: 1
-            }}
-        >
-            <View
-                style={{
-                    backgroundColor: '#f1f1f1'
-                }}
-            >
+            }}>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <View
                     style={{
-                        width: width,
-                        height: width / 4,
-                        backgroundColor: '#f1f1f1',
-                        overflow: 'hidden',
-
+                        backgroundColor: '#325962',
+                        flex: 1
                     }}
                 >
-                    <Image
-                        source={require('../assets/images/pattern15.png')}
-                        style={{
-                            width: width,
-                            height: width / 4,
-                            aspectRatio: 2000 / 500,
-                        }}
-                    />
-                </View>
-            </View>
-            <View
-                style={{
-                    flex: 1,
-                    overflow: 'hidden'
-                }}
-            >
-                <Image
-                    source={require('../assets/images/pattern15.png')}
-                    style={{
-                        ...StyleSheet.absoluteFillObject,
-                        width: width,
-                        height: width / 4,
-                        aspectRatio: 2000 / 500,
-                    }}
-                />
-                <View
-                    style={{
-                        borderRadius: 75,
-                        backgroundColor: '#f1f1f1',
-                        flex: 1,
-                        alignItems: 'center',
-                        justifyContent: 'flex-start',
-                    }}
-                >
-                    <Text
-                        style={{
-                            fontSize: 36,
-                            fontWeight: 'bold',
-                            color: '#325962',
-                            alignSelf: 'center',
-                            margin: 20,
-                            position: 'absolute',
-                            top: "0%",
-                        }}
-                    >{animationData.codeDone}</Text>
                     <View
-                        justifyContent='flex-end'
-                        alignItems='center'
                         style={{
-                            marginTop: 150
+                            backgroundColor: '#f1f1f1'
                         }}
                     >
                         <View
                             style={{
-                                width: Display.setHeight(11),
-                                height: Display.setHeight(11),
-                                backgroundColor: '#325964',
-                                borderRadius: Display.setHeight(5.5),
-                                alignItems: 'center',
-                                justifyContent: 'center',
+                                width: width,
+                                height: width / 4,
+                                backgroundColor: '#f1f1f1',
+                                overflow: 'hidden',
+
                             }}
                         >
                             <Image
-                                source={require('../assets/icons/shield.png')}
+                                source={require('../assets/images/pattern15.png')}
                                 style={{
-                                    width: 80,
-                                    height: 80
-                                }}
-                            />
-                            <Entypo name={animationData.name} size={40} color={animationData.color}
-                                style={{
-                                    position: 'absolute'
+                                    width: width,
+                                    height: width / 4,
+                                    aspectRatio: 2000 / 500,
                                 }}
                             />
                         </View>
-                        <Text
+                    </View>
+                    <View
+                        style={{
+                            flex: 1,
+                            overflow: 'hidden'
+                        }}
+                    >
+                        <Image
+                            source={require('../assets/images/pattern15.png')}
                             style={{
-                                fontSize: 16,
-                                fontWeight: "600",
-                                color: "#6b7280",
-                                margin: 20
+                                ...StyleSheet.absoluteFillObject,
+                                width: width,
+                                height: width / 4,
+                                aspectRatio: 2000 / 500,
                             }}
-                        >{animationData.reqCode}</Text>
+                        />
                         <View
-                            width={width * 0.9}
-                            height='50%'
-                            justifyContent='flex-end'
+                            style={{
+                                borderRadius: 75,
+                                backgroundColor: '#f1f1f1',
+                                flex: 1,
+                                alignItems: 'center',
+                                justifyContent: 'flex-start',
+                            }}
                         >
-                            <Input
-                                iconName='lock-outline'
-                                value={code}
-                                onChangeText={setCode}
-                                placeholder="Verification Code"
-                                keyboardType="numeric"
-                            />
-                            <Button 
-                                disabled={ codeData?.code ? false : true }
-                                color={ codeData?.code ? "#325964" : "#d9d9d9" }
-                            title='Confirm' onPress={handleConfirmCode} />
+                            <Text
+                                style={{
+                                    fontSize: 36,
+                                    fontWeight: 'bold',
+                                    color: '#325962',
+                                    alignSelf: 'center',
+                                    margin: 20,
+                                    position: 'absolute',
+                                    top: "0%",
+                                }}
+                            >{animationData.codeDone}</Text>
+                            <View
+                                justifyContent='flex-end'
+                                alignItems='center'
+                                style={{
+                                    marginTop: 150
+                                }}
+                            >
+                                <View
+                                    style={{
+                                        width: Display.setHeight(11),
+                                        height: Display.setHeight(11),
+                                        backgroundColor: '#325964',
+                                        borderRadius: Display.setHeight(5.5),
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                    }}
+                                >
+                                    <Image
+                                        source={require('../assets/icons/shield.png')}
+                                        style={{
+                                            width: 80,
+                                            height: 80
+                                        }}
+                                    />
+                                    <Entypo name={animationData.name} size={40} color={animationData.color}
+                                        style={{
+                                            position: 'absolute'
+                                        }}
+                                    />
+                                </View>
+                                <Text
+                                    style={{
+                                        fontSize: 16,
+                                        fontWeight: "600",
+                                        color: "#6b7280",
+                                        margin: 20
+                                    }}
+                                >{animationData.reqCode}</Text>
+                                <View
+                                    width={width * 0.9}
+                                    height='50%'
+                                    justifyContent='flex-end'
+                                >
+                                    <Input
+                                        iconName='lock-outline'
+                                        value={code}
+                                        onChangeText={setCode}
+                                        placeholder="Verification Code"
+                                        keyboardType="numeric"
+                                    />
+                                    <Button
+                                        disabled={codeData?.code ? false : true}
+                                        color={codeData?.code ? "#325964" : "#d9d9d9"}
+                                        title='Confirm' onPress={handleConfirmCode} />
+                                </View>
+                            </View>
+                        </View>
+                    </View>
+                    <View
+                        style={{
+                            height: 170,
+                            backgroundColor: '#325962'
+                        }}
+                    >
+                        <View
+                            style={{
+                                flexDirection: 'column',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                alignSelf: 'center',
+                                margin: Display.setHeight(7),
+                            }}
+                        >
+                            <Text
+                                style={{
+                                    fontSize: Display.setHeight(2),
+                                    color: '#FFAF51',
+                                }}
+                            >Terms and Coditions are applied</Text>
                         </View>
                     </View>
                 </View>
-            </View>
-            <View
-                style={{
-                    height: 170,
-                    backgroundColor: '#325962'
-                }}
-            >
-                <View
-                    style={{
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        alignSelf: 'center',
-                        margin: Display.setHeight(7),
-                    }}
-                >
-                    <Text
-                        style={{
-                            fontSize: Display.setHeight(2),
-                            color: '#FFAF51',
-                        }}
-                    >Terms and Coditions are applied</Text>
-                </View>
-            </View>
-        </View>
+            </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
     );
 };
 
