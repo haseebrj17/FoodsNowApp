@@ -141,18 +141,24 @@ const WelcomeScreen = () => {
         return () => clearInterval(interval);
     }, [currentIndex]);
 
+    const getItemLayout = (data, index) => ({
+        length: width, // Length of the item
+        offset: width * index, // Starting position of the item
+        index, // Index of the item
+    });
+
     const renderItem = ({ item, index }) => {
         return (
             <>
                 <View
                     key={index.toString()}
-                    style={{ width, alignItems: 'center', paddingBottom: 20 }}
+                    style={{ width, alignItems: 'center', paddingBottom: Display.setHeight(2) }}
                 >
                     <View style={{ flex: 0.7, justifyContent: 'center' }}>
                         <Image source={item.image} style={{ width: width / 1.8, height: height / 1.8, resizeMode: 'contain' }} />
                     </View>
-                    <View style={{ flex: 0.3 }}>
-                        <Text style={{ fontWeight: '800', fontSize: 28, marginBottom: 10, color: 'white', marginTop: 30, }}>{item.title}</Text>
+                    <View style={{ flex: 0.3, padding: Display.setHeight(2) }}>
+                        <Text style={{ fontWeight: '800', fontSize: Display.setHeight(3.5), marginBottom: Display.setHeight(1.2), color: 'white', marginTop: Display.setHeight(3.4), }}>{item.title}</Text>
                         <Text style={{ fontWeight: '300', color: 'white' }}>{item.description}</Text>
                     </View>
                 </View>
@@ -190,6 +196,7 @@ const WelcomeScreen = () => {
                 data={splashData}
                 keyExtractor={(_, index) => index.toString()}
                 horizontal
+                getItemLayout={getItemLayout}
                 showsHorizontalScrollIndicator={false}
                 renderItem={renderItem}
                 scrollEventThrottle={32}
@@ -197,7 +204,7 @@ const WelcomeScreen = () => {
                     [{ nativeEvent: { contentOffset: { x: scrollX } } }],
                     { useNativeDriver: false },
                 )}
-                contentContainerStyle={{ paddingBottom: 100 }}
+                contentContainerStyle={{ paddingBottom: Display.setHeight(12) }}
                 pagingEnabled
             />
             <Indicator scrollX={scrollX} />

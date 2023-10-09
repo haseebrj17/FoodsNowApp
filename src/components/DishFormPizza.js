@@ -428,8 +428,7 @@ const DishFormPizza = ({ dish, extras, dips, selectedSize, setSelectedSize, sele
                                         }}
                                     >
                                         <FlatList
-                                            onLayout={() => { }}
-                                            nestedScrollEnabled
+                                            nestedScrollEnabled={true}
                                             removeClippedSubviews={false}
                                             listKey={(item, index) => 'D' + index.toString()}
                                             data={extras}
@@ -530,8 +529,7 @@ const DishFormPizza = ({ dish, extras, dips, selectedSize, setSelectedSize, sele
                                         }}
                                     >
                                         <FlatList
-                                            onLayout={() => { }}
-                                            nestedScrollEnabled
+                                            nestedScrollEnabled={true}
                                             removeClippedSubviews={false}
                                             listKey={(item, index) => 'D' + index.toString()}
                                             data={dips}

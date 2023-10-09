@@ -1,6 +1,7 @@
 import { View, Image, Text, FlatList, StyleSheet } from "react-native";
 import {LinearGradient} from 'expo-linear-gradient';
 import { Button } from "@react-native-material/core";
+import { Display } from "../utils";
 
 const DataTrackingScreen = ({ navigation }) => {
     return (
@@ -64,62 +65,62 @@ const styles = StyleSheet.create({
         height: '100%'
     },
     image: {
-        width: 80,
-        height: 80,
+        width: Display.setHeight(9),
+        height: Display.setHeight(9),
         alignSelf: 'center',
-        marginBottom: 18,
+        marginBottom: Display.setHeight(2),
     },
     heading: {
-        fontSize: 24,
+        fontSize: Display.setHeight(2.8),
         fontWeight: 'bold',
         color: '#325962',
         alignSelf: 'center',
-        marginBottom: 12,
+        marginBottom: Display.setHeight(1.6),
         letterSpacing: 1.5,
     },
     subHeading: {
-        fontSize: 13,
+        fontSize: Display.setHeight(1.6),
         fontWeight: 'bold',
         color: '#325962',
         alignSelf: 'center',
-        marginBottom: 10,
+        marginBottom: Display.setHeight(1.2),
         textAlign: 'center',
-        lineHeight: 20,
+        lineHeight: Display.setHeight(2.5),
     },
     note: {
-        marginTop: 40,
+        marginTop: Display.setHeight(5),
     },
     noteBox: {
         flexDirection: 'row',
         width: "80%",
-        height: 60,
+        height: Display.setHeight(7.2),
         alignItems: 'center',
-        margin: 10,
+        margin: Display.setHeight(1.2),
     },
     noteImage: {
-        width: 40,
-        height: 40,
+        width: Display.setHeight(5),
+        height: Display.setHeight(5),
     },
     noteText: {
-        fontSize: 12,
+        fontSize: Display.setHeight(1.4),
         fontWeight: 'bold',
         color: '#325962',
-        marginLeft: 20,
-        lineHeight: 18,
+        marginLeft: Display.setHeight(2.2),
+        lineHeight: Display.setHeight(2.1),
     },
     buttonTitle: {
         letterSpacing: 2,
-        fontSize: 12,
+        fontSize: Display.setHeight(1.5),
         fontWeight: 'bold'
     },
     buttonText: {
-        fontSize: 12,
+        fontSize: Display.setHeight(1.5),
         fontWeight: 'bold',
         color: '#325962',
-        marginBottom: 35,
-        marginTop: 40,
+        marginBottom: Display.setHeight(3.7),
+        marginTop: Display.setHeight(4.2),
         textAlign: 'center',
-        lineHeight: 18,
+        lineHeight: Display.setHeight(2.1),
     }
 })
 

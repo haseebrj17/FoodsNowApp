@@ -306,6 +306,7 @@ const AddToCartModal = forwardRef((props, ref) => {
                     <View style={styles.divider} />
                     <SectionList
                         removeClippedSubviews={false}
+                        nestedScrollEnabled={true}
                         sections={[
                             {
                                 key: "details",
