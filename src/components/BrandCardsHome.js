@@ -155,7 +155,7 @@ const BrandCardsHome = ({ brand, deliveryParams }) => {
                         flex: 1,
                         margin: Display.setHeight(1),
                         height: width * 0.35,
-                        marginBottom: Display.setHeight(1.3),
+                        marginBottom: Display.setHeight(1.8),
                     }}
                 >
                     <View
@@ -207,7 +207,7 @@ const BrandCardsHome = ({ brand, deliveryParams }) => {
         <View>
             {loading ? (
                 <View>
-                    <Skeleton height={Display.setHeight(2.5)} width={Display.setHeight(35)} style={{ alignSelf: 'center', marginBottom: 5, borderRadius: 6 }} />
+                    <Skeleton height={Display.setHeight(2.5)} width={Display.setHeight(35)} style={{ alignSelf: 'center', marginBottom: Display.setHeight(1.2), borderRadius: 6 }} />
                     <View
                         style={{
                             width: '100%',
@@ -224,9 +224,9 @@ const BrandCardsHome = ({ brand, deliveryParams }) => {
                                 flexDirection: 'row'
                             }}
                         >
-                            <Skeleton height={Display.setHeight(14)} width={Display.setHeight(11.5)} style={{ margin: 10, borderRadius: 12 }} />
-                            <Skeleton height={Display.setHeight(14)} width={Display.setHeight(11.5)} style={{ margin: 10, borderRadius: 12 }} />
-                            <Skeleton height={Display.setHeight(14)} width={Display.setHeight(11.5)} style={{ margin: 10, borderRadius: 12 }} />
+                            <Skeleton height={Display.setHeight(14)} width={Display.setHeight(11.5)} style={{ margin: Display.setHeight(1.2), borderRadius: 12 }} />
+                            <Skeleton height={Display.setHeight(14)} width={Display.setHeight(11.5)} style={{ margin: Display.setHeight(1.2), borderRadius: 12 }} />
+                            <Skeleton height={Display.setHeight(14)} width={Display.setHeight(11.5)} style={{ margin: Display.setHeight(1.2), borderRadius: 12 }} />
                         </View>
                         <View
                             style={{
@@ -236,12 +236,12 @@ const BrandCardsHome = ({ brand, deliveryParams }) => {
                                 flexDirection: 'row'
                             }}
                         >
-                            <Skeleton height={Display.setHeight(14)} width={Display.setHeight(11.5)} style={{ margin: 10, borderRadius: 12 }} />
-                            <Skeleton height={Display.setHeight(14)} width={Display.setHeight(11.5)} style={{ margin: 10, borderRadius: 12 }} />
-                            <Skeleton height={Display.setHeight(14)} width={Display.setHeight(11.5)} style={{ margin: 10, borderRadius: 12 }} />
+                            <Skeleton height={Display.setHeight(14)} width={Display.setHeight(11.5)} style={{ margin: Display.setHeight(1.2), borderRadius: 12 }} />
+                            <Skeleton height={Display.setHeight(14)} width={Display.setHeight(11.5)} style={{ margin: Display.setHeight(1.2), borderRadius: 12 }} />
+                            <Skeleton height={Display.setHeight(14)} width={Display.setHeight(11.5)} style={{ margin: Display.setHeight(1.2), borderRadius: 12 }} />
                         </View>
                         <View>
-                            <Skeleton height={50} width={240} style={{ margin: 10, borderRadius: 12 }} />
+                            <Skeleton height={Display.setHeight(5.8)} width={Display.setHeight(28)} style={{ margin: Display.setHeight(1.2), borderRadius: 12 }} />
                         </View>
                     </View>
                 </View>
@@ -252,9 +252,8 @@ const BrandCardsHome = ({ brand, deliveryParams }) => {
                             flex: 1,
                             justifyContent: 'center',
                             alignSelf: 'center',
-                            marginBottom: 1,
+                            marginBottom: Display.setHeight(0.1),
                             width: width * 0.9,
-                            // Removed the dynamic HEIGHT, replaced with a static height or remove it entirely
                         }}
                     >
                         <Text style={{
@@ -265,7 +264,6 @@ const BrandCardsHome = ({ brand, deliveryParams }) => {
                             marginBottom: 1,
                         }}>Alles in unserem Food Court, in EINER Lieferung!</Text>
                         <FlatList
-                            // Display only the first 6 brands
                             data={brands ? formatData(brands.slice(0, 6), column) : null}
                             renderItem={renderItem}
                             numColumns={column}

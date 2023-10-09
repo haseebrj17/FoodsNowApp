@@ -222,20 +222,9 @@ const HomeScreen = () => {
                                     titleStyle={{ color: "#325962" }}
                                     style={{
                                         position: "absolute",
-                                        right: "9%",
+                                        right: "2%",
                                     }}
-                                    contentContainerStyle={[
-                                        styles.ButtonSignUp,
-                                        {
-                                            shadowOffset: {
-                                                width: 50,
-                                                height: 50,
-                                            },
-                                            shadowColor: "rgba(0, 0, 0, 1)",
-                                            shadowOpacity: 1,
-                                            shadowRadius: 100,
-                                        }
-                                    ]}
+                                    contentContainerStyle={styles.ButtonSignUp}
                                 />
                             </>
                         )}
@@ -251,57 +240,6 @@ const HomeScreen = () => {
             <View style={{ width: "100%", height: "0.5%", backgroundColor: "#f1f1f1", marginTop: "3%", marginBottom: 10 }}></View>
             <BrandCardsHome brand={brand} deliveryParams={deliveryParams} />
             <View style={{ width: "100%", height: "0.5%", backgroundColor: "#f1f1f1", marginTop: "3%", marginBottom: 5 }}></View>
-            {/* <View
-                style={[
-                    styles.Container,
-                    {
-                        backgroundColor: "red",
-                        width: "90%",
-                        height: undefined,
-                        justifyContent: "center",
-                        alignItems: "center",
-                        alignSelf: "center",
-                        borderRadius: 12,
-                        marginBottom: 5,
-                    }
-                ]}
-            >
-                <TouchableHighlight activeOpacity={0.6} underlayColor="#DDDDDD" borderRadius={8}>
-                    <Image source={require('../assets/images/10.png')} style={[styles.Image, { borderRadius: 12 }]} />
-                </TouchableHighlight>
-            </View>
-            <View style={{ width: "100%", height: "0.5%", backgroundColor: "#f1f1f1", }} />
-            <View style={styles.Container}>
-                <BuyGetOfferList />
-            </View>
-            <View style={{ width: "100%", height: "0.5%", backgroundColor: "#f1f1f1", marginTop: "3%", marginBottom: 5 }}></View>
-            <View
-                style={[
-                    styles.Container,
-                    {
-                        backgroundColor: "red",
-                        width: "90%",
-                        height: undefined,
-                        justifyContent: "center",
-                        alignItems: "center",
-                        alignSelf: "center",
-                        borderRadius: 12,
-                        marginBottom: 5,
-                    }
-                ]}
-            >
-                <TouchableHighlight activeOpacity={0.6} underlayColor="#DDDDDD" borderRadius={8}>
-                    <Image source={require('../assets/images/11.png')} style={[styles.Image, { borderRadius: 12 }]} />
-                </TouchableHighlight>
-            </View>
-            <View style={{ width: "100%", height: "0.5%", backgroundColor: "#f1f1f1" }}></View>
-            <View style={styles.Container}>
-                <ChefRecommendation />
-            </View>
-            <View style={{ width: "100%", height: "0.5%", backgroundColor: "#f1f1f1" }}></View>
-            <View style={styles.Container}>
-                <KidSpecialOffer />
-            </View> */}
         </ScrollView>
     )
 }
@@ -332,8 +270,10 @@ const CustomLocationButton = ({ location }) => {
                     width: 40,
                     marginTop: "2%",
                 }} />
-            <Text style={{
-                fontSize: 20,
+            <Text 
+            numberOfLines={1}
+            style={{
+                fontSize: Display.setHeight(2),
                 color: "#325962",
                 fontWeight: "bold",
                 marginLeft: 5,
@@ -371,10 +311,10 @@ const styles = StyleSheet.create({
         height: Display.setHeight(4.5),
         backgroundColor: 'white',
         borderRadius: 12,
-        fontSize: 20,
+        fontSize: Display.setHeight(2.2),
         borderColor: 'rgba(50, 89, 98, 0.4)',
         borderWidth: 1,
-        marginTop: 30,
+        marginTop: Display.setHeight(2.8),
         shadowColor: 'black',
         shadowOffset: { width: 10, height: 100 },
         justifyContent: 'center',
@@ -385,17 +325,6 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         opacity: 0.6,
         marginLeft: 10
-    },
-    Locationbar: {
-        // width: Display.setWidth(90),
-        // height: Display.setHeight(3.5),
-        // position: "absolute",
-        // top: Display.setHeight(4),
-        // left: '5%',
-        // display: "flex",
-        // flexDirection: "row",
-        // alignItems: "center",
-        // justifyContent: 'space-between'
     },
     ButtonSignUp: {
         borderWidth: 1,

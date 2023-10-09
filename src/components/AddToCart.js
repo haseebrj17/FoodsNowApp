@@ -10,6 +10,7 @@ import Separator from './Separator';
 import { addToCart } from '../actions/CartAction';
 import { useNavigation } from '@react-navigation/native';
 import { db } from '../SqlLiteDB';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const { width, height } = Dimensions.get('window')
 
@@ -255,14 +256,6 @@ const AddToCartModal = forwardRef((props, ref) => {
 
     const snapPoints = ["100%"]
 
-    const scrollToSection = (sectionTitle) => {
-        const sectionIndex = sectionTitle === "Customize" ? 1 : 0;
-        sectionListRef.current.scrollToLocation({
-            sectionIndex,
-            itemIndex: 1,
-        });
-    };
-
     return (
         <BottomSheetModal
             ref={modalRef}
@@ -304,98 +297,99 @@ const AddToCartModal = forwardRef((props, ref) => {
                         <DeliveryPrice price={deliveryParams ? deliveryParams.deliverCharges : ''} />
                     </View>
                     <View style={styles.divider} />
-                    <SectionList
-                        removeClippedSubviews={false}
-                        nestedScrollEnabled={true}
-                        sections={[
-                            {
-                                key: "details",
-                                data: [{ type: "details" }],
-                                title: "Details"
-                            },
-                            {
-                                title: "Customize",
-                                data: [
+                    <ScrollView horizontal={false} style={{ flex: 1 }}>
+                        <ScrollView
+                            horizontal={true}
+                            contentContainerStyle={{ width: '100%', height: '100%' }}
+                        >
+                            <SectionList
+                                sections={[
                                     {
-                                        type: "customize",
-                                        dish: dish ? dish : '',
-                                        extras: extras,
-                                        dips: dips,
-                                        onSizeChange: handleSizeChange,
-                                        onToppingsChange: handleToppingsChange,
-                                        onDippingsChange: handleDippingsChange,
-                                        selectedSize: selectedSize,
-                                        setSelectedSize: setSelectedSize,
-                                        selectedExtras: selectedExtras,
-                                        setSelectedExtras: setSelectedExtras,
-                                        selectedDips: selectedDips,
-                                        setSelectedDips: setSelectedDips
+                                        key: "details",
+                                        data: [{ type: "details" }],
+                                        title: "Details"
+                                    },
+                                    {
+                                        title: "Customize",
+                                        data: [
+                                            {
+                                                type: "customize",
+                                                dish: dish ? dish : '',
+                                                extras: extras,
+                                                dips: dips,
+                                                onSizeChange: handleSizeChange,
+                                                onToppingsChange: handleToppingsChange,
+                                                onDippingsChange: handleDippingsChange,
+                                                selectedSize: selectedSize,
+                                                setSelectedSize: setSelectedSize,
+                                                selectedExtras: selectedExtras,
+                                                setSelectedExtras: setSelectedExtras,
+                                                selectedDips: selectedDips,
+                                                setSelectedDips: setSelectedDips
+                                            }
+                                        ]
                                     }
-                                ]
-                            }
-                        ]}
-                        ref={sectionListRef}
-                        renderItem={({ item }) => {
-                            if (item.type === "details") {
-                                return (
-                                    <>
-                                        <DetailsRoute dish={dish} />
-                                        <Separator width={Display.setWidth(100)} height={Display.setHeight(0.1)} />
-                                    </>
-                                );
-                            } else if (item.type === "customize") {
-                                return (
-                                    <DishFormPizza
-                                        dish={item.dish ? item.dish : ''}
-                                        extras={item.extras}
-                                        dips={item.dips}
-                                        onSizeChange={item.onSizeChange}
-                                        onToppingsChange={item.onToppingsChange}
-                                        onDippingsChange={item.onDippingsChange}
-                                        selectedSize={item.selectedSize}
-                                        setSelectedSize={item.setSelectedSize}
-                                        selectedExtras={item.selectedExtras}
-                                        setSelectedExtras={item.setSelectedExtras}
-                                        selectedDips={item.selectedDips}
-                                        setSelectedDips={item.setSelectedDips}
-                                    />
-                                );
-                            }
-                        }}
-                        renderSectionHeader={({ section }) => section.title ?
-                            <TouchableOpacity
-                                onPress={() => scrollToSection(section.title)}
-                            >
-                                <View
-                                    style={{
-                                        width,
-                                        height: Display.setHeight(6),
-                                        flexDirection: 'column',
-                                        alignItems: 'center',
-                                        justifyContent: 'flex-end',
-                                        backgroundColor: '#fff'
-                                    }}
-                                >
-                                    <Text
-                                        style={{
-                                            fontSize: Display.setHeight(2),
-                                            fontWeight: '300',
-                                            lineHeight: Display.setHeight(5.5),
-                                            color: '#325964',
-                                        }}
-                                    >{section.title}</Text>
+                                ]}
+                                ref={sectionListRef}
+                                renderItem={({ item }) => {
+                                    if (item.type === "details") {
+                                        return (
+                                            <>
+                                                <DetailsRoute dish={dish} />
+                                                <Separator width={Display.setWidth(100)} height={Display.setHeight(0.1)} />
+                                            </>
+                                        );
+                                    } else if (item.type === "customize") {
+                                        return (
+                                            <DishFormPizza
+                                                dish={item.dish ? item.dish : ''}
+                                                extras={item.extras}
+                                                dips={item.dips}
+                                                onSizeChange={item.onSizeChange}
+                                                onToppingsChange={item.onToppingsChange}
+                                                onDippingsChange={item.onDippingsChange}
+                                                selectedSize={item.selectedSize}
+                                                setSelectedSize={item.setSelectedSize}
+                                                selectedExtras={item.selectedExtras}
+                                                setSelectedExtras={item.setSelectedExtras}
+                                                selectedDips={item.selectedDips}
+                                                setSelectedDips={item.setSelectedDips}
+                                            />
+                                        );
+                                    }
+                                }}
+                                renderSectionHeader={({ section }) => section.title ?
                                     <View
                                         style={{
                                             width,
-                                            height: 2,
-                                            backgroundColor: '#FFAF51'
+                                            height: Display.setHeight(6),
+                                            flexDirection: 'column',
+                                            alignItems: 'center',
+                                            justifyContent: 'flex-end',
+                                            backgroundColor: '#fff'
                                         }}
                                     >
+                                        <Text
+                                            style={{
+                                                fontSize: Display.setHeight(2),
+                                                fontWeight: '300',
+                                                lineHeight: Display.setHeight(5.5),
+                                                color: '#325964',
+                                            }}
+                                        >{section.title}</Text>
+                                        <View
+                                            style={{
+                                                width,
+                                                height: 2,
+                                                backgroundColor: '#FFAF51'
+                                            }}
+                                        >
+                                        </View>
                                     </View>
-                                </View>
-                            </TouchableOpacity>
-                            : null}
-                    />
+                                    : null}
+                            />
+                        </ScrollView>
+                    </ScrollView>
                 </View>
                 <View
                     style={{
