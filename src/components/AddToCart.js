@@ -1,9 +1,8 @@
 import React, { forwardRef, useImperativeHandle, useRef, useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image, Dimensions, ScrollView, FlatList, SectionList, Animated } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image, Dimensions, SectionList } from 'react-native';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { Button } from '@react-native-material/core';
 import { FontAwesome, MaterialCommunityIcons, AntDesign, Entypo } from '@expo/vector-icons';
-import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import { useDispatch } from 'react-redux';
 import { Display } from '../utils';
 import DishFormPizza from './DishFormPizza';
@@ -13,6 +12,106 @@ import { useNavigation } from '@react-navigation/native';
 import { db } from '../SqlLiteDB';
 
 const { width, height } = Dimensions.get('window')
+
+const DetailsRoute = ({ dish }) => (
+    <View style={{ height: Display.setHeight(40), overflow: 'scroll' }}>
+        <View style={[styles.scene, { backgroundColor: 'white' }]} >
+            <Text
+                style={{
+                    fontSize: Display.setHeight(1.9),
+                    fontWeight: 'bold',
+                    color: '#000',
+                    marginLeft: Display.setHeight(1),
+                    marginTop: Display.setHeight(2),
+                }}
+            >Description</Text>
+            <Text
+                style={{
+                    fontSize: Display.setHeight(1.5),
+                    fontWeight: '400',
+                    color: '#000',
+                    marginLeft: 10,
+                    marginTop: Display.setHeight(0.5),
+                    marginBottom: Display.setHeight(1),
+                }}
+            >
+                {dish.Detail}
+            </Text>
+            <Text
+                style={{
+                    fontSize: Display.setHeight(1.9),
+                    fontWeight: 'bold',
+                    color: '#000',
+                    marginLeft: Display.setHeight(1),
+                    marginTop: Display.setHeight(2),
+                }}
+            >Ingredients</Text>
+            <Text
+                style={{
+                    fontSize: Display.setHeight(1.5),
+                    fontWeight: '400',
+                    color: '#000',
+                    marginLeft: Display.setHeight(1),
+                    marginTop: Display.setHeight(0.5),
+                }}
+            >
+                {dish.IngredientDetail}
+            </Text>
+            <Text
+                style={{
+                    fontSize: Display.setHeight(1.9),
+                    fontWeight: 'bold',
+                    color: '#000',
+                    marginLeft: Display.setHeight(1),
+                    marginTop: Display.setHeight(2),
+                }}
+            >Allergien</Text>
+            {
+                dish.Allergies.map((allergyItem, index) => {
+                    return (
+                        <View
+                            style={{
+                                flexDirection: 'row',
+                                margin: Display.setHeight(0.5)
+                            }}
+                            key={index}
+                        >
+                            <Entypo name="dot-single" size={24} color="black"
+                                style={{
+                                    marginLeft: Display.setHeight(1),
+                                }}
+                            />
+                            <Text
+                                style={{
+                                    fontSize: Display.setHeight(1.7),
+                                    fontWeight: '600',
+                                    color: '#000',
+                                    marginLeft: Display.setHeight(0),
+                                    marginTop: Display.setHeight(0.8),
+                                }}
+                                key={index}
+                            >
+                                {allergyItem.Allergy.Description}
+                            </Text>
+                        </View>
+                    )
+                })
+            }
+        </View>
+    </View>
+);
+
+const ListPrices = ({ dish, selectedSize }) => {
+    const sortedPrices = [...dish.Prices].sort((a, b) => {
+        return a.Description === 'Normal' ? -1 : 1;
+    });
+    const normalPrice = sortedPrices.find(price => price.Description === selectedSize);
+    return (
+        <Text style={[styles.SubTextPrice, { marginTop: 5 }]}>
+            €{normalPrice ? normalPrice.Price : 'N/A'}
+        </Text>
+    );
+}
 
 const DeliveryPrice = ({ price }) => {
     if (price === 0) {
@@ -62,26 +161,6 @@ const AddToCartModal = forwardRef((props, ref) => {
 
     const deliveryParams = props.deliveryParams
 
-    const brandId = props.brandId
-
-    ////////// Cart Icon Animation //////////
-
-    // Define the height and margin of your button
-    const buttonHeight = 50;
-    const buttonRightMargin = 20;
-    const buttonBottomMargin = 20;
-
-    // Define the position of the cart icon
-    const cartIconPositionY = -800; // Adjust based on your layout
-
-    const buttonPositionX = width - buttonRightMargin;
-    const buttonPositionY = height - buttonHeight - buttonBottomMargin;
-    const cartIconPositionX = buttonPositionX;
-
-    const dotPosition = useRef(new Animated.Value(0)).current;
-
-    const cartIconOpacity = useRef(new Animated.Value(0)).current;
-
     ////////// Review and Star Mean //////////
 
     const sectionListRef = React.useRef(null);
@@ -93,12 +172,6 @@ const AddToCartModal = forwardRef((props, ref) => {
         const mean = sum / (starArray?.length ?? 1);
         return parseFloat(mean.toFixed(1));
     }
-
-    const [review, setReview] = useState(dish?.reviewComment);
-
-    useEffect(() => {
-        setReview(dish?.reviewComment);
-    }, [dish]);
 
     useImperativeHandle(ref, () => ({
         present: () => {
@@ -182,194 +255,6 @@ const AddToCartModal = forwardRef((props, ref) => {
 
     const snapPoints = ["100%"]
 
-    const [index, setIndex] = React.useState(0);
-    const [routes] = React.useState([
-        { key: 'details', title: 'Details' },
-        { key: 'reviews', title: 'Reviews' },
-    ]);
-
-    const DetailsRoute = () => (
-        <View style={{ height: Display.setHeight(40), overflow: 'scroll' }}>
-            <View style={[styles.scene, { backgroundColor: 'white' }]} >
-                <Text
-                    style={{
-                        fontSize: Display.setHeight(1.9),
-                        fontWeight: 'bold',
-                        color: '#000',
-                        marginLeft: Display.setHeight(1),
-                        marginTop: Display.setHeight(2),
-                    }}
-                >Description</Text>
-                <Text
-                    style={{
-                        fontSize: Display.setHeight(1.5),
-                        fontWeight: '400',
-                        color: '#000',
-                        marginLeft: 10,
-                        marginTop: Display.setHeight(0.5),
-                        marginBottom: Display.setHeight(1),
-                    }}
-                >
-                    {dish.Detail}
-                </Text>
-                <Text
-                    style={{
-                        fontSize: Display.setHeight(1.9),
-                        fontWeight: 'bold',
-                        color: '#000',
-                        marginLeft: Display.setHeight(1),
-                        marginTop: Display.setHeight(2),
-                    }}
-                >Ingredients</Text>
-                <Text
-                    style={{
-                        fontSize: Display.setHeight(1.5),
-                        fontWeight: '400',
-                        color: '#000',
-                        marginLeft: Display.setHeight(1),
-                        marginTop: Display.setHeight(0.5),
-                    }}
-                >
-                    {dish.IngredientDetail}
-                </Text>
-                <Text
-                    style={{
-                        fontSize: Display.setHeight(1.9),
-                        fontWeight: 'bold',
-                        color: '#000',
-                        marginLeft: Display.setHeight(1),
-                        marginTop: Display.setHeight(2),
-                    }}
-                >Allergien</Text>
-                {
-                    dish.Allergies.map((allergyItem, index) => {
-                        return (
-                            <View
-                                style={{
-                                    flexDirection: 'row',
-                                    margin: Display.setHeight(0.5)
-                                }}
-                                key={index.toString()}
-                            >
-                                <Entypo name="dot-single" size={24} color="black"
-                                    style={{
-                                        marginLeft: Display.setHeight(1),
-                                    }}
-                                />
-                                <Text
-                                    style={{
-                                        fontSize: Display.setHeight(1.7),
-                                        fontWeight: '600',
-                                        color: '#000',
-                                        marginLeft: Display.setHeight(0),
-                                        marginTop: Display.setHeight(0.8),
-                                    }}
-                                    key={index}
-                                >
-                                    {allergyItem.Allergy.Description}
-                                </Text>
-                            </View>
-                        )
-                    })
-                }
-            </View>
-        </View>
-    );
-
-    const [expanded, setExpanded] = useState(false);
-    const renderComment = ({ item: comment }) => {
-
-        const toggleExpansion = () => {
-            setExpanded(!expanded);
-        };
-
-        const commentStyle = expanded ? {} : { numberOfLines: 2 };
-
-        return (
-            <View
-                style={{
-                    width: '90%',
-                    minHeight: 60,
-                    backgroundColor: '#f1f1f1',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'flex-start',
-                    alignSelf: 'center',
-                    borderRadius: 10,
-                    shadowColor: '#000',
-                    shadowOffset: {
-                        width: 0,
-                        height: 2,
-                    },
-                    shadowOpacity: 0.23,
-                    shadowRadius: 2.62,
-                    elevation: 4,
-                    marginBottom: 20,
-                    padding: 10,
-                }}
-            >
-                <View
-                    style={{
-                        width: Display.setHeight(6),
-                        height: Display.setHeight(6),
-                        borderRadius: Display.setHeight(3),
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        marginRight: 10,
-                        backgroundColor: '#fff',
-                    }}
-                >
-                    <FontAwesome name="user" size={24} color="black" />
-                </View>
-                <View style={{ flex: 1 }}>
-                    <Text
-                        style={{
-                            fontSize: Display.setHeight(1.6),
-                            color: '#325962',
-                            fontWeight: '500',
-                            marginBottom: 2,
-                        }}
-                    >
-                        {comment.user}  <FontAwesome name="star" size={15} color="#FFAF51" /> {comment.star}
-                    </Text>
-                    <Text style={[{ fontSize: Display.setHeight(1.4), color: '#000', fontWeight: '400' }, commentStyle]}>
-                        {comment.comment}
-                    </Text>
-                </View>
-            </View>
-        );
-    };
-
-    const ReviewsRoute = () => (
-        <ScrollView style={{ height: Display.setHeight(40), overflow: 'scroll' }}>
-            <FlatList
-                onLayout={() => { }}
-                nestedScrollEnabled
-                removeClippedSubviews={false}
-                listKey={(item, index) => 'D' + index.toString()}
-                aria-expanded={false}
-                data={review}
-                renderItem={renderComment}
-                style={[styles.scene, {
-                    width: "100%",
-                    height: "100%",
-                }]}
-            />
-        </ScrollView>
-    );
-
-    const ListPrices = () => {
-        const sortedPrices = [...dish.Prices].sort((a, b) => {
-            return a.Description === 'Normal' ? -1 : 1;
-        });
-        const normalPrice = sortedPrices.find(price => price.Description === selectedSize);
-        return (
-            <Text style={[styles.SubTextPrice, { marginTop: 5 }]}>
-                €{normalPrice ? normalPrice.Price : 'N/A'}
-            </Text>
-        );
-    }
-
     const scrollToSection = (sectionTitle) => {
         const sectionIndex = sectionTitle === "Customize" ? 1 : 0;
         sectionListRef.current.scrollToLocation({
@@ -405,7 +290,7 @@ const AddToCartModal = forwardRef((props, ref) => {
                 <View style={styles.modalContent}>
                     <View style={styles.infoContainer}>
                         <Text style={styles.dishName}>{dish ? dish.Name : ''}</Text>
-                        <ListPrices />
+                        <ListPrices dish={dish} selectedSize={selectedSize} />
                     </View>
                     <View style={styles.reviewContainer}>
                         <View style={styles.reviewItem}>
@@ -420,14 +305,12 @@ const AddToCartModal = forwardRef((props, ref) => {
                     </View>
                     <View style={styles.divider} />
                     <SectionList
-                        onLayout={() => { }}
-                        nestedScrollEnabled
                         removeClippedSubviews={false}
-                        listKey={(item, index) => 'D' + index.toString()}
                         sections={[
                             {
                                 key: "details",
-                                data: [{ type: "details" }]
+                                data: [{ type: "details" }],
+                                title: "Details"
                             },
                             {
                                 title: "Customize",
@@ -454,26 +337,10 @@ const AddToCartModal = forwardRef((props, ref) => {
                         renderItem={({ item }) => {
                             if (item.type === "details") {
                                 return (
-                                    <View style={{ width: "100%", height: Display.setHeight(45), flexDirection: "column" }}>
-                                        <TabView
-                                            navigationState={{ index, routes }}
-                                            renderScene={SceneMap({
-                                                details: DetailsRoute,
-                                                reviews: ReviewsRoute,
-                                            })}
-                                            onIndexChange={setIndex}
-                                            initialLayout={{ width: width }}
-                                            renderTabBar={props => (
-                                                <TabBar
-                                                    {...props}
-                                                    indicatorStyle={{ backgroundColor: '#FFAF51' }}
-                                                    style={{ backgroundColor: '#fff' }}
-                                                    labelStyle={{ color: '#325962', fontSize: Display.setHeight(2.2) }}
-                                                />
-                                            )}
-                                        />
-                                        <View style={styles.divider} />
-                                    </View>
+                                    <>
+                                        <DetailsRoute dish={dish} />
+                                        <Separator width={Display.setWidth(100)} height={Display.setHeight(0.1)} />
+                                    </>
                                 );
                             } else if (item.type === "customize") {
                                 return (
