@@ -24,6 +24,6 @@ FOODSNOW GmbH<a name="TOP"></a>
       
 ### To run the application ###
     
-      npm start -c
+      npx expo start --clear
       
       
