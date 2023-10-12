@@ -32,6 +32,14 @@ const CartScreen = ({ navigation }) => {
         dispatch(getCartItems());
     }, [dispatch]);
 
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            dispatch(getCartItems());
+        });
+
+        return unsubscribe;
+    }, [navigation, dispatch]);
+
     const { cart, isLoading, error, subLoading, isDecrementing } = useSelector(
         (state) => state.cartState
     );

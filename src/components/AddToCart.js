@@ -7,7 +7,7 @@ import { useDispatch } from 'react-redux';
 import { Display } from '../utils';
 import DishFormPizza from './DishFormPizza';
 import Separator from './Separator';
-import { addToCart } from '../actions/CartAction';
+import { addToCart, getCartItems } from '../actions/CartAction';
 import { useNavigation } from '@react-navigation/native';
 import { db } from '../SqlLiteDB';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -15,7 +15,12 @@ import { ScrollView } from 'react-native-gesture-handler';
 const { width, height } = Dimensions.get('window')
 
 const DetailsRoute = ({ dish }) => (
-    <View style={{ height: Display.setHeight(40), overflow: 'scroll' }}>
+    <View
+        style={{
+
+            overflow: 'scroll'
+        }}
+    >
         <View style={[styles.scene, { backgroundColor: 'white' }]} >
             <Text
                 style={{
@@ -58,17 +63,22 @@ const DetailsRoute = ({ dish }) => (
             >
                 {dish.IngredientDetail}
             </Text>
-            <Text
-                style={{
-                    fontSize: Display.setHeight(1.9),
-                    fontWeight: 'bold',
-                    color: '#000',
-                    marginLeft: Display.setHeight(1),
-                    marginTop: Display.setHeight(2),
-                }}
-            >Allergien</Text>
             {
-                dish.Allergies.map((allergyItem, index) => {
+                dish?.Allergies?.length > 0 ? (
+                    <Text
+                        style={{
+                            fontSize: Display.setHeight(1.9),
+                            fontWeight: 'bold',
+                            color: '#000',
+                            marginLeft: Display.setHeight(1),
+                            marginTop: Display.setHeight(2),
+                        }}
+                    >Allergien</Text>
+                ) : (
+                    <></>
+                )}
+            {
+                dish?.Allergies?.map((allergyItem, index) => {
                     return (
                         <View
                             style={{
@@ -243,13 +253,15 @@ const AddToCartModal = forwardRef((props, ref) => {
         dispatch(addToCart({ dishId, selectedSize, selectedExtras, selectedDips, quantity }))
             .then((result) => {
                 if (result === 'OK') {
-                    setQuantity(1)
+                    setQuantity(1);
+                    dispatch(getCartItems())
                     modalRef.current.dismiss();
                 }
             })
             .catch((error) => {
                 console.error('Error adding to cart:', error);
-            })
+                // You can handle the error here, e.g., show an error message to the user.
+            });
     };
 
     ///////////// BottomSheet Handler /////////////

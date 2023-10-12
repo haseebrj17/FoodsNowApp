@@ -45,209 +45,181 @@ export const endDecrementing = () => ({
     type: END_DECREMENTING,
 })
 
+const INSERT_INTO_CART_QUERY = 'INSERT INTO cart (product_id, quantity) VALUES (?, ?);';
+const DELETE_CART_ITEM_QUERY = 'DELETE FROM cart WHERE id = ?;';
+const SELECT_ALL_CART_ITEMS_QUERY = 'SELECT * FROM cart;';
+const INCREMENT_CART_ITEM_QUANTITY_QUERY = 'UPDATE cart SET quantity = quantity + 1 WHERE id = ?;';
+const SELECT_CART_ITEM_QUANTITY_QUERY = 'SELECT quantity FROM cart WHERE id = ?;';
+const DECREMENT_CART_ITEM_QUANTITY_QUERY = 'UPDATE cart SET quantity = quantity - 1 WHERE id = ?;';
+const DELETE_ALL_FROM_CART_QUERY = 'DELETE FROM cart;';
+
 export const addToCart = ({ dishId, selectedSize, selectedExtras, selectedDips, quantity }) => (dispatch) => {
     dispatch(addToCartStart());
-    return new Promise((resolve, reject) => {
-        const product = {
-            dishId: dishId,
-            selectedSize: selectedSize,
-            selectedToppings: selectedExtras,
-            selectedDippings: selectedDips,
-        };
-
-        const serializedProduct = JSON.stringify(product);
-
-        console.log("Serialized Product:", serializedProduct);
-        console.log("Quantity:", quantity);
-
-        // Ensure that serializedProduct goes to product_id column and quantity goes to quantity column
-        db.transaction(
-            (tx) => {
-                tx.executeSql(
-                    'INSERT INTO cart (product_id, quantity) VALUES (?, ?);',
-                    [serializedProduct, quantity], // Make sure the order is correct
-                    (_, resultSet) => {
-                        const cartItem = {
-                            product: {
-                                dishId: dishId,
-                                selectedSize: selectedSize,
-                                selectedExtras: selectedExtras,
-                                selectedDips: selectedDips,
-                            },
-                            quantity: quantity,
-                        };
-                        dispatch(addToCartSuccess(cartItem));
-                        resolve('OK');
-                    },
-                    (_, error) => {
-                        console.log("Database error:", error);
-                        dispatch(addToCartFailure(error));
-                        reject(error);
-                        return true;
-                    }
-                );
-            },
-            (error) => {
-                console.log("Transaction error:", error);
-                reject(error);
-            },
-            () => {
-                resolve('OK');
-            }
-        );
+    return new Promise(async (resolve, reject) => {
+        try {
+            const product = {
+                dishId: dishId,
+                selectedSize: selectedSize,
+                selectedToppings: selectedExtras,
+                selectedDippings: selectedDips,
+            };
+            const serializedProduct = JSON.stringify(product);
+            await db.transaction(
+                (tx) => {
+                    tx.executeSql(
+                        INSERT_INTO_CART_QUERY,
+                        [serializedProduct, quantity],
+                        (_, resultSet) => {
+                            const cartItem = {
+                                product: product,
+                                quantity: quantity,
+                            };
+                            dispatch(addToCartSuccess(cartItem));
+                            resolve('OK');
+                        },
+                        (_, error) => {
+                            console.error("Error adding to cart:", error.message);
+                            dispatch(addToCartFailure(error));
+                            reject(error);
+                        }
+                    );
+                }
+            );
+        } catch (error) {
+            console.error("Database or Transaction error:", error.message);
+            reject(error);
+        }
     });
 };
 
-export const removeFromCart = (cartItemId) => (dispatch) => {
-    db.transaction(
-        (tx) => {
+
+export const removeFromCart = (cartItemId) => async (dispatch) => {
+    try {
+        await db.transaction((tx) => {
             tx.executeSql(
-                'DELETE FROM cart WHERE id = ?;',
+                DELETE_CART_ITEM_QUERY,
                 [cartItemId],
-                null,
+                () => {
+                    dispatch(getCartItems());
+                },
                 (_, error) => {
-                    // Handle error here, if needed
-                    console.log("Database error while removing cart item:", error);
-                    return true; // Stop the transaction if an error occurs
+                    console.error("Error removing cart item:", error.message);
+                    throw error;
                 }
             );
-        },
-        (error) => {
-            // Handle transaction error here, if needed
-            console.log("Transaction error while removing cart item:", error);
-        },
-        () => {
-            // Refresh the cart items after successful removal
-            dispatch(getCartItems());
-        }
-    );
+        });
+    } catch (error) {
+        console.error("Transaction error:", error.message);
+    }
 };
 
-export const getCartItems = () => (dispatch) => {
-    db.transaction(
-        (tx) => {
+export const getCartItems = () => async (dispatch) => {
+    try {
+        await db.transaction((tx) => {
             tx.executeSql(
-                'SELECT * FROM cart;',
+                SELECT_ALL_CART_ITEMS_QUERY,
                 [],
                 (_, { rows }) => {
-                    const cartItems = rows._array.map(item => {
-                        return {
-                            id: item.id,
-                            product_id: item.product_id, // directly use product_id without parsing
-                            quantity: item.quantity
-                        };
-                    });
+                    const cartItems = rows._array.map(item => ({
+                        id: item.id,
+                        product_id: item.product_id,
+                        quantity: item.quantity
+                    }));
                     dispatch({ type: GET_CART_ITEMS, payload: cartItems });
                 },
                 (_, error) => {
-                    // Handle error here, if needed
-                    console.log("Database error while getting cart items:", error);
-                    return true; // Stop the transaction if an error occurs
+                    console.error("Error getting cart items:", error.message);
+                    throw error;
                 }
             );
-        },
-        (error) => {
-            // Handle transaction error here, if needed
-            console.log("Transaction error while getting cart items:", error);
-        }
-    );
+        });
+    } catch (error) {
+        console.error("Transaction error:", error.message);
+    }
 };
 
-export const incrementQuantity = (cartItemId) => (dispatch) => {
+export const incrementQuantity = (cartItemId) => async (dispatch) => {
     dispatch(setSubLoading());
-    db.transaction(
-        (tx) => {
+    try {
+        await db.transaction((tx) => {
             tx.executeSql(
-                'UPDATE cart SET quantity = quantity + 1 WHERE id = ?;',
+                INCREMENT_CART_ITEM_QUANTITY_QUERY,
                 [cartItemId],
-                (_, resultSet) => {
+                () => {
                     dispatch(getCartItems());
                     dispatch(unsetSubLoading());
                 },
                 (_, error) => {
-                    console.log("Database error while incrementing quantity:", error);
+                    console.error("Error incrementing quantity:", error.message);
                     dispatch(unsetSubLoading());
-                    return true;
+                    throw error;
                 }
             );
-        },
-        (error) => {
-            console.log("Transaction error while incrementing quantity:", error);
-            dispatch(unsetSubLoading());
-        }
-    );
+        });
+    } catch (error) {
+        console.error("Transaction error:", error.message);
+        dispatch(unsetSubLoading());
+    }
 };
 
-export const decrementQuantity = (cartItemId) => (dispatch) => {
+export const decrementQuantity = (cartItemId) => async (dispatch) => {
     dispatch(setSubLoading());
-    return new Promise((resolve, reject) => {
-        db.transaction(
+    try {
+        await db.transaction(async (tx) => {
+            tx.executeSql(
+                SELECT_CART_ITEM_QUANTITY_QUERY,
+                [cartItemId],
+                (_, { rows }) => {
+                    const currentQuantity = rows._array[0].quantity;
+                    if (currentQuantity === 1) {
+                        dispatch(removeFromCart(cartItemId));
+                        dispatch(unsetSubLoading());
+                    } else {
+                        tx.executeSql(
+                            DECREMENT_CART_ITEM_QUANTITY_QUERY,
+                            [cartItemId],
+                            () => {
+                                dispatch(getCartItems());
+                                dispatch(unsetSubLoading());
+                            },
+                            (_, error) => {
+                                console.error("Error decrementing quantity:", error.message);
+                                dispatch(unsetSubLoading());
+                                throw error;
+                            }
+                        );
+                    }
+                },
+                (_, error) => {
+                    console.error("Error checking item quantity:", error.message);
+                    dispatch(unsetSubLoading());
+                    throw error;
+                }
+            );
+        });
+    } catch (error) {
+        console.error("Transaction error:", error.message);
+        dispatch(unsetSubLoading());
+    }
+};
+
+export const clearCart = () => async (dispatch) => {
+    try {
+        await db.transaction(
             (tx) => {
                 tx.executeSql(
-                    'SELECT quantity FROM cart WHERE id = ?;',
-                    [cartItemId],
-                    (_, { rows }) => {
-                        if (rows._array[0].quantity === 1) {
-                            dispatch(removeFromCart(cartItemId));
-                            dispatch(unsetSubLoading());
-                            resolve();
-                        } else {
-                            tx.executeSql(
-                                'UPDATE cart SET quantity = quantity - 1 WHERE id = ?;',
-                                [cartItemId],
-                                (_, resultSet) => {
-                                    dispatch(getCartItems());
-                                    dispatch(unsetSubLoading());
-                                    resolve();
-                                },
-                                (_, error) => {
-                                    console.log("Database error while decrementing quantity:", error);
-                                    dispatch(unsetSubLoading());
-                                    reject(error);
-                                    return true;
-                                }
-                            );
-                        }
-                    },
+                    DELETE_ALL_FROM_CART_QUERY,
+                    [],
+                    null,
                     (_, error) => {
-                        console.log("Database error while checking item quantity:", error);
-                        dispatch(unsetSubLoading());
-                        reject(error);
-                        return true;
+                        console.error("Error clearing cart:", error.message);
+                        throw error;
                     }
                 );
-            },
-            (error) => {
-                console.log("Transaction error while decrementing quantity:", error);
-                dispatch(unsetSubLoading());
-                reject(error);
-            },
-            () => {
-                dispatch(unsetSubLoading());
-                resolve();
             }
         );
-    });
-};
-
-export const clearCart = () => (dispatch) => {
-    db.transaction(
-        (tx) => {
-            tx.executeSql(
-                'DELETE FROM cart;',
-                [],
-                null,
-                (_, error) => {
-                    console.log("Database error while clearing cart:", error);
-                    return true;
-                }
-            );
-        },
-        (error) => {
-            console.log("Transaction error while clearing cart:", error);
-        },
-        () => {
-            dispatch(getCartItems());
-        }
-    );
+        dispatch(getCartItems());
+    } catch (error) {
+        console.error("Database or Transaction error:", error.message);
+    }
 };
