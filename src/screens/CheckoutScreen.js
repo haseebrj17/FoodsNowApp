@@ -852,30 +852,30 @@ const CheckoutScreen = ({ route, navigation }) => {
                                 </View>
                             </View>
                         </View>
+                        <View
+                            style={{
+                                width: width * 0.8,
+                                height: Display.setHeight(10),
+                                alignSelf: 'center',
+                                alignItems: "center",
+                                justifyContent: "center",
+                                marginBottom: Display.setHeight(3)
+                            }}
+                        >
+                            <Separator
+                                width={Display.setWidth(100)}
+                                height={Display.setHeight(0.1)}
+                            />
+                            <Button
+                                disabled={selectedAddressId === null ? true : false}
+                                color={selectedAddressId === null ? '#696969' : '#325964'}
+                                title={'Place Order'}
+                                onPress={() => handleOrder(inputs)}
+                            />
+                        </View>
                     </>
                 }
             />
-            <View
-                style={{
-                    width: width * 0.8,
-                    height: Display.setHeight(10),
-                    alignSelf: 'center',
-                    alignItems: "center",
-                    justifyContent: "center",
-                    marginBottom: Display.setHeight(3)
-                }}
-            >
-                <Separator
-                    width={Display.setWidth(100)}
-                    height={Display.setHeight(0.1)}
-                />
-                <Button
-                    disabled={selectedAddressId === null ? true : false}
-                    color={selectedAddressId === null ? '#696969' : '#325964'}
-                    title={'Place Order'}
-                    onPress={() => handleOrder(inputs)}
-                />
-            </View>
         </View>
     );
 };

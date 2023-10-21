@@ -25,11 +25,13 @@
     },
     "production": {
       "android": {
-        "gradleCommand": ":app:assembleRelease"
+        "buildType": "app-bundle",
+        "autoIncrement": "version"
       },
       "ios": {
         "buildConfiguration": "Release",
-        "distribution": "store"
+        "distribution": "store",
+        "autoIncrement": "version"
       },
       "env": {
         "GOOGLE_LOCATION_AUTO_COMPLETE": "AIzaSyDN5sODZpClUKsZLCHNXQkVvJgc2dgGGQ0"
