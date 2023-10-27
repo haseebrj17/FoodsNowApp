@@ -6,10 +6,10 @@
     "owner": "foodsnowgmbh",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./src/assets/icon.png",
+    "icon": "./src/assets/BN_Published_LOGO.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./src/assets/SplashGreen.gif",
+      "image": "./src/assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#325964"
     },
@@ -30,7 +30,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./src/assets/adaptive-icon.png",
+        "foregroundImage": "./src/assets/BN_Published_LOGO.png",
         "backgroundColor": "#ffffff"
       },
       "runtimeVersion": {
@@ -41,10 +41,11 @@
           "apiKey": "AIzaSyBVNfVNStn3IlWxShOoS3a1FkzWVcuyq1E"
         }
       },
+      "package": "co.foodsnow.FoodsNowApp",
       "useNextNotificationsApi": true
     },
     "web": {
-      "favicon": "./src/assets/favicon.png"
+      "favicon": "./src/assets/BN_Published_LOGO.png"
     },
     "extra": {
       "eas": {

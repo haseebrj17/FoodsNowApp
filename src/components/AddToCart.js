@@ -7,7 +7,7 @@ import { useDispatch } from 'react-redux';
 import { Display } from '../utils';
 import DishFormPizza from './DishFormPizza';
 import Separator from './Separator';
-import { addToCart } from '../actions/CartAction';
+import { addToCart, getCartItems } from '../actions/CartAction';
 import { useNavigation } from '@react-navigation/native';
 import { db } from '../SqlLiteDB';
 
@@ -57,17 +57,22 @@ const DetailsRoute = ({ dish }) => (
             >
                 {dish.IngredientDetail}
             </Text>
-            <Text
-                style={{
-                    fontSize: Display.setHeight(1.9),
-                    fontWeight: 'bold',
-                    color: '#000',
-                    marginLeft: Display.setHeight(1),
-                    marginTop: Display.setHeight(2),
-                }}
-            >Allergien</Text>
             {
-                dish.Allergies.map((allergyItem, index) => {
+                dish?.Allergies?.length > 0 ? (
+                    <Text
+                        style={{
+                            fontSize: Display.setHeight(1.9),
+                            fontWeight: 'bold',
+                            color: '#000',
+                            marginLeft: Display.setHeight(1),
+                            marginTop: Display.setHeight(2),
+                        }}
+                    >Allergien</Text>
+                ) : (
+                    <></>
+                )}
+            {
+                dish?.Allergies?.map((allergyItem, index) => {
                     return (
                         <View
                             style={{
@@ -243,6 +248,7 @@ const AddToCartModal = forwardRef((props, ref) => {
             .then((result) => {
                 if (result === 'OK') {
                     setQuantity(1)
+                    dispatch(getCartItems())
                     modalRef.current.dismiss();
                 }
             })

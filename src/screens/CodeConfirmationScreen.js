@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, Alert, Dimensions, Image, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Alert, Dimensions, Image, StyleSheet, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView } from 'react-native';
 import axios from 'axios';
 import FlagItem from '../components/FlagItem';
 import Button from '../components/Button';
