@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { View, Dimensions, StyleSheet, Image, Animated, Text, TouchableOpacity } from 'react-native';
+import { View, Dimensions, StyleSheet, Image, Animated, Text, TouchableOpacity, Platform } from 'react-native';
 import { Divider, Searchbar } from 'react-native-paper'
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
@@ -9,7 +9,7 @@ import { MaterialIcons, Ionicons, EvilIcons, Feather } from '@expo/vector-icons'
 import { useFonts } from 'expo-font';
 import { Display } from '../utils';
 import { Fonts } from '../assets/constants';
-import { GOOGLE_LOCATION_AUTO_COMPLETE } from '@env'
+import { GOOGLE_LOCATION_AUTO_COMPLETE_IOS, GOOGLE_LOCATION_AUTO_COMPLETE_ANDROID } from '@env'
 import { BottomSheetModal, BottomSheetModalProvider, BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 import { NativeBaseProvider } from 'native-base';
 import { Input } from '@rneui/base';
@@ -485,10 +485,8 @@ const LocationAccessScreen = ({ navigation }) => {
                                     bottomSheetModalRef.current.close();
                                 }}
                                 query={{
-                                    key: GOOGLE_LOCATION_AUTO_COMPLETE,
+                                    key: Platform.OS === 'ios' ? GOOGLE_LOCATION_AUTO_COMPLETE_IOS : GOOGLE_LOCATION_AUTO_COMPLETE_ANDROID,
                                     language: "de",
-                                    // components: "country:de",
-                                    // radius: 30000,
                                     GooglePlacesSearchQuery: { rankby: 'distance' },
                                     location: `${selectedLocation?.latitude}, ${selectedLocation?.longitude}`
                                 }}
