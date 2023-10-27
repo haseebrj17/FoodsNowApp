@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "FoodsNowApp",
-    "slug": "FoodsNowApp",
+    "name": "Bytez Now",
+    "slug": "BytezNow",
     "scheme": "foodsnowapp",
     "owner": "foodsnowgmbh",
-    "version": "1.0.1",
+    "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./src/assets/BN_Published_LOGO.png",
     "userInterfaceStyle": "light",
@@ -17,14 +17,15 @@
       "fallbackToCacheTimeout": 0,
       "url": "https://u.expo.dev/6986621b-e55a-439e-8625-fe6e914a0658"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "co.foodsnow.FoodsNowApp",
       "runtimeVersion": {
         "policy": "sdkVersion"
+      },
+      "config": {
+        "googleMapsApiKey": "AIzaSyDDBLnxNZqy3oW5zwMOP1SgsoGsa6TSHtc"
       }
     },
     "android": {
@@ -35,7 +36,13 @@
       "runtimeVersion": {
         "policy": "sdkVersion"
       },
-      "package": "co.foodsnow.FoodsNowApp"
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyBVNfVNStn3IlWxShOoS3a1FkzWVcuyq1E"
+        }
+      },
+      "package": "co.foodsnow.FoodsNowApp",
+      "useNextNotificationsApi": true
     },
     "web": {
       "favicon": "./src/assets/BN_Published_LOGO.png"
