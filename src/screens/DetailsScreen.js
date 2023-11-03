@@ -632,7 +632,7 @@ const DetailsScreen = ({ route }) => {
                                         margin: 10,
                                         color: '#325962'
                                     }}>
-                                        Sort and Filter
+                                        Sortieren/Filtern
                                     </Text>
                                 </View>
                                 <View style={{
@@ -647,7 +647,7 @@ const DetailsScreen = ({ route }) => {
                                         fontWeight: '500',
                                         color: '#325962'
                                     }}>
-                                        Low to High Price
+                                        Niedriger bis hoher Preis
                                     </Text>
                                     <Switch
                                         trackColor={{ false: '#767577', true: '#325962' }}
@@ -669,7 +669,7 @@ const DetailsScreen = ({ route }) => {
                                         fontWeight: '500',
                                         color: '#325962'
                                     }}>
-                                        High to Low Price
+                                        Hoher bis niedriger Preis
                                     </Text>
                                     <Switch
                                         trackColor={{ false: '#767577', true: '#325962' }}
@@ -691,7 +691,7 @@ const DetailsScreen = ({ route }) => {
                                         fontWeight: '500',
                                         color: '#325962'
                                     }}>
-                                        Low to High Spice
+                                        Niedrig bis hoch Gewürz
                                     </Text>
                                     <Switch
                                         trackColor={{ false: '#767577', true: '#325962' }}
@@ -713,7 +713,7 @@ const DetailsScreen = ({ route }) => {
                                         fontWeight: '500',
                                         color: '#325962'
                                     }}>
-                                        High to Low Spice
+                                        Hoch bis Niedrig Gewürz
                                     </Text>
                                     <Switch
                                         trackColor={{ false: '#767577', true: '#325962' }}
@@ -735,7 +735,7 @@ const DetailsScreen = ({ route }) => {
                                         fontWeight: '500',
                                         color: '#325962'
                                     }}>
-                                        Sort by name
+                                        Nach Name sortieren
                                     </Text>
                                     <Switch
                                         trackColor={{ false: '#767577', true: '#325962' }}
@@ -815,7 +815,7 @@ const DetailsScreen = ({ route }) => {
                                                 <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', left: '4%' }}
                                                     onPress={handlePresentModal}
                                                 >
-                                                    <Text style={{ marginRight: 3, color: '#325962', opacity: 0.6 }}>Sort/Filter</Text>
+                                                    <Text style={{ marginRight: 3, color: '#325962', opacity: 0.6 }}>Sortieren/Filtern</Text>
                                                     <Icon
                                                         name="sliders"
                                                         type="font-awesome"
@@ -866,11 +866,11 @@ const DetailsScreen = ({ route }) => {
                                 >
                                     <Text
                                         style={{
-                                            fontSize: Display.setHeight(1.8),
+                                            fontSize: Display.setHeight(1.6),
                                             fontWeight: 700,
                                             color: '#325964'
                                         }}
-                                    >Total items in cart: {cart?.length}</Text>
+                                    >Artikel insgesamt: {cart?.length}</Text>
                                 </View>
                                 <Button
                                     onPress={() => navigation.navigate('Cart')}
@@ -913,11 +913,11 @@ const CustomTitleCart = ({ CartItem }) => {
             <Text
                 style={{
                     color: "#325962",
-                    fontSize: Display.setHeight(1.7),
-                    fontWeight: 800
+                    fontSize: Display.setHeight(1.6),
+                    fontWeight: 600
                 }}
-            >View Cart </Text>
-            <MaterialIcons name="shopping-cart" size={28} color="#325964" />
+            >Warenkorb ansehen</Text>
+            <MaterialIcons name="shopping-cart" size={25} color="#325964" />
         </View>
     )
 }

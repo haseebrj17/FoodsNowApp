@@ -290,7 +290,7 @@ const BrandScreen = ({ route }) => {
                                 marginTop: 35,
                                 color: "#325962",
                             }}
-                        >Brands</Text>
+                        >Marken</Text>
                     </View>
                     <View
                         style={{

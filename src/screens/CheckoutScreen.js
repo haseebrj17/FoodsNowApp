@@ -78,14 +78,14 @@ const CheckoutScreen = ({ route, navigation }) => {
             if (response.status) {
                 dispatch(clearCart());
                 navigation.navigate('OrderConfirmation');
-                Alert.alert('Order Placed', 'Your order was successfully placed.');
+                Alert.alert('Bestellung aufgegeben', 'Ihre Bestellung wurde erfolgreich aufgegeben.');
             } else {
-                Alert.alert('Error', 'An error occurred while placing your order.');
+                Alert.alert('Fehler', 'Bei Ihrer Bestellung ist ein Fehler aufgetreten.');
                 throw new Error(`Unexpected response: ${response.message}`);
             }
         } catch (error) {
             console.error('Error:', error);
-            Alert.alert('Error', 'An error occurred while placing your order.');
+            Alert.alert('Fehler', 'Bei Ihrer Bestellung ist ein Fehler aufgetreten.');
         }
     };
 
@@ -95,7 +95,6 @@ const CheckoutScreen = ({ route, navigation }) => {
     })
 
     useEffect(() => {
-        // Update inputs whenever Id, selectedAddressId, franchiseId or deliveryDetails changes
         setInputs(prevState => ({
             ...prevState,
             CustomerId: Id,
@@ -459,7 +458,7 @@ const CheckoutScreen = ({ route, navigation }) => {
                                 color: "#325964",
                                 fontWeight: "bold",
                             }}>
-                            Grand Total
+                            Gesamtbetrag
                         </Text>
                         <Text
                             style={{
@@ -481,8 +480,8 @@ const CheckoutScreen = ({ route, navigation }) => {
     };
 
     const sectionsData = [
-        { title: "My Cart", data: cartData ? cartData : [] },
-        { title: "Addresses", data: addresses ? addresses : [] },
+        { title: "Mein Einkaufswagen", data: cartData ? cartData : [] },
+        { title: "Adressen", data: addresses ? addresses : [] },
     ];
 
     return (
@@ -497,7 +496,7 @@ const CheckoutScreen = ({ route, navigation }) => {
                 sections={sectionsData}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item, section }) =>
-                    section.title === "My Cart" ? (
+                    section.title === "Mein Einkaufswagen" ? (
                         <RenderItem item={item} />
                     ) : (
                         <RenderAddressItem item={item} />
@@ -586,7 +585,7 @@ const CheckoutScreen = ({ route, navigation }) => {
                                             marginTop: Display.setHeight(2),
                                             marginLeft: Display.setHeight(2),
                                         }}>
-                                        Delivery Instructions
+                                        Anweisungen zur Lieferung
                                     </Text>
                                     <View
                                         style={{
@@ -596,7 +595,7 @@ const CheckoutScreen = ({ route, navigation }) => {
                                     >
                                         <Input
                                             onChangeText={text => handleOnchange(text, 'Instructions')}
-                                            placeholder="Note to rider - e.g. landmark"
+                                            placeholder="Hinweis für den Fahrer - z.B. Landmarke"
                                         />
                                     </View>
                                     <Separator
@@ -633,7 +632,7 @@ const CheckoutScreen = ({ route, navigation }) => {
                                             fontWeight: "bold",
                                             margin: Display.setHeight(2),
                                         }}>
-                                        Delivery Options
+                                        Lieferoptionen
                                     </Text>
                                     <View style={{ flex: 1 }}>
                                         <NativeBaseProvider>
@@ -674,7 +673,7 @@ const CheckoutScreen = ({ route, navigation }) => {
                                                                 marginLeft: 10,
                                                                 color: "#325964",
                                                             }}>
-                                                            Deliver Now
+                                                            Jetzt liefern
                                                         </Text>
                                                     </TouchableOpacity>
                                                     <TouchableOpacity
@@ -699,7 +698,7 @@ const CheckoutScreen = ({ route, navigation }) => {
                                                                 marginLeft: 10,
                                                                 color: "#325964",
                                                             }}>
-                                                            Schedule Delivery
+                                                            Zeitplan Lieferung
                                                         </Text>
                                                     </TouchableOpacity>
                                                 </Radio.Group>
@@ -748,7 +747,7 @@ const CheckoutScreen = ({ route, navigation }) => {
                                             fontWeight: "bold",
                                             margin: Display.setHeight(2),
                                         }}>
-                                        Payment Options
+                                        Zahlungsoptionen
                                     </Text>
                                     <View style={{ flex: 1 }}>
                                         <NativeBaseProvider>
@@ -776,7 +775,7 @@ const CheckoutScreen = ({ route, navigation }) => {
                                                         <Radio
                                                             value="cash"
                                                             size="lg"
-                                                            accessibilityLabel="Cash on Delivery"
+                                                            accessibilityLabel="Nachnahme"
                                                             _checked={{
                                                                 backgroundColor: "#325964",
                                                                 color: "#325964",
@@ -789,7 +788,7 @@ const CheckoutScreen = ({ route, navigation }) => {
                                                                 marginLeft: 10,
                                                                 color: "#325964",
                                                             }}>
-                                                            Cash on Delivery
+                                                            Nachnahme
                                                         </Text>
                                                     </TouchableOpacity>
                                                     <TouchableOpacity
@@ -801,7 +800,7 @@ const CheckoutScreen = ({ route, navigation }) => {
                                                         <Radio
                                                             value="online"
                                                             size="lg"
-                                                            accessibilityLabel="Online Payment"
+                                                            accessibilityLabel="Online-Zahlung"
                                                             _checked={{
                                                                 backgroundColor: "#325964",
                                                                 color: "#325964",
@@ -814,7 +813,7 @@ const CheckoutScreen = ({ route, navigation }) => {
                                                                 marginLeft: 10,
                                                                 color: "#325964",
                                                             }}>
-                                                            Online Payment
+                                                            Online-Zahlung
                                                         </Text>
                                                     </TouchableOpacity>
                                                 </Radio.Group>
@@ -837,7 +836,7 @@ const CheckoutScreen = ({ route, navigation }) => {
                                                         fontSize: 16,
                                                         fontWeight: 'bold'
                                                     }}>
-                                                        We will be launching this feature soon
+                                                        Wir werden diese Funktion bald einführen
                                                     </Text>
                                                 </View>
                                             </Animated.View>
@@ -863,9 +862,9 @@ const CheckoutScreen = ({ route, navigation }) => {
                             }}
                         >
                             <Button
-                                disabled={ selectedAddressId === null ? true : false }
-                                color={ selectedAddressId === null ? '#696969' : '#325964' }
-                                title={'Place Order'}
+                                disabled={selectedAddressId === null ? true : false}
+                                color={selectedAddressId === null ? '#696969' : '#325964'}
+                                title={'Bestellung aufgeben'}
                                 onPress={() => handleOrder(inputs)}
                             />
                         </View>

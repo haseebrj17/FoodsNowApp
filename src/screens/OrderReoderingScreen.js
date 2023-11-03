@@ -52,7 +52,7 @@ const OrderReoderingScreen = ({ navigation }) => {
                         color: '#325964',
                         marginTop: 3
                     }}
-                >Reorder</Text>
+                >Nachbestellung</Text>
             </View>
         </TouchableOpacity>
     }
@@ -100,7 +100,6 @@ const OrderReoderingScreen = ({ navigation }) => {
                             >
                                 <View>
                                     {
-                                        // Only display the first two products
                                         item?.Products.slice(0, 2).map((i, index) => (
                                             <Text
                                                 key={index}
@@ -141,14 +140,14 @@ const OrderReoderingScreen = ({ navigation }) => {
                                             fontWeight: '400',
                                             color: '#696969'
                                         }}
-                                    >Total Bill: {item.TotalBill}</Text>
+                                    >Gesamtrechnung: {item.TotalBill}</Text>
                                     <Text
                                         style={{
                                             fontSize: Display.setHeight(1.4),
                                             fontWeight: '400',
                                             color: '#696969'
                                         }}
-                                    >Total Items: {item.TotalItems}</Text>
+                                    >Artikel insgesamt: {item.TotalItems}</Text>
                                 </View>
                             </View>
                         </View>
@@ -208,7 +207,7 @@ const OrderReoderingScreen = ({ navigation }) => {
                                     marginTop: 35,
                                     color: "#325962",
                                 }}
-                            >Orders</Text>
+                            >Bestellungen</Text>
                         </View>
                         <View
                             style={{
@@ -417,7 +416,7 @@ const OrderReoderingScreen = ({ navigation }) => {
                                     marginTop: 35,
                                     color: "#325962",
                                 }}
-                            >Orders</Text>
+                            >Bestellungen</Text>
                         </View>
                         <View
                             style={{

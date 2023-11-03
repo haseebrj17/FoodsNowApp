@@ -108,14 +108,14 @@ const VerificationScreen = ({ navigation, oAuthSignUp, inputs }) => {
 
     let color = '#325964';
     let Name = 'block'
-    let reqPhone = 'Please enter your Phone number for verification';
+    let reqPhone = 'Bitte geben Sie Ihre Telefonnummer zur Überprüfung ein';
 
     const validate = () => {
         Keyboard.dismiss();
         let isValid = true;
 
         if (!phoneInputs.phone) {
-            handleError('Please input phone number', 'phone');
+            handleError('Bitte Telefonnummer eingeben', 'Telefon');
             isValid = false;
         }
 
@@ -129,16 +129,16 @@ const VerificationScreen = ({ navigation, oAuthSignUp, inputs }) => {
         try {
             await AuthenicationService.phoneVerification({ phoneInputs, selectedCountry }).then(response => {
                 if (response?.status) {
-                    reqPhone = 'Code sent to your phone number, plase enter the code'
+                    reqPhone = 'Code wird an Ihre Handynummer geschickt, bitte geben Sie den Code ein'
                     Name = 'outbox'
                     color = '#FFAF51'
                     setCodeSent(true)
                 } else {
-                    Alert.alert('Error', 'Unable to send verification code.');
+                    Alert.alert('Fehler', 'Überprüfungscode kann nicht gesendet werden.');
                 }
             })
         } catch (error) {
-            Alert.alert('Error', 'Unable to send verification code.');
+            Alert.alert('Fehler', 'Überprüfungscode kann nicht gesendet werden.');
         }
     };
 
@@ -209,7 +209,7 @@ const VerificationScreen = ({ navigation, oAuthSignUp, inputs }) => {
                             position: 'absolute',
                             top: "0%",
                         }}
-                    >Verification</Text>
+                    >Verifizierung</Text>
                     <View
                         flex="0.7"
                         justifyContent='flex-end'
@@ -242,8 +242,9 @@ const VerificationScreen = ({ navigation, oAuthSignUp, inputs }) => {
                             style={{
                                 fontSize: 16,
                                 fontWeight: "600",
-                                color: "#000",
-                                margin: 20
+                                color: "#325964",
+                                margin: 20,
+                                textAlign: 'center',
                             }}
                         >{reqPhone}</Text>
                         {
@@ -266,7 +267,7 @@ const VerificationScreen = ({ navigation, oAuthSignUp, inputs }) => {
                                                 }
                                                 style={styles.inputText}
                                                 iconName="phone-outline"
-                                                placeholder="Enter your phone number"
+                                                placeholder="Geben Sie Ihre Handynummer ein"
                                                 error={errors.phone}
                                             />
                                         </View>
@@ -278,7 +279,7 @@ const VerificationScreen = ({ navigation, oAuthSignUp, inputs }) => {
                                             style={styles.signinButton}
                                             activeOpacity={0.8}
                                             onPress={validate}>
-                                            <Text style={styles.signinButtonText}>Contiue</Text>
+                                            <Text style={styles.signinButtonText}>Weiter</Text>
                                         </TouchableOpacity>
                                     </View>
                                     {isDropdownOpen && (
@@ -353,7 +354,7 @@ const VerificationScreen = ({ navigation, oAuthSignUp, inputs }) => {
                                                 }
                                                 style={styles.inputText}
                                                 iconName="phone-outline"
-                                                placeholder="Enter your phone number"
+                                                placeholder="Geben Sie Ihre Handynummer ein"
                                                 error={errors.phone}
                                             />
                                         </View>
@@ -365,7 +366,7 @@ const VerificationScreen = ({ navigation, oAuthSignUp, inputs }) => {
                                             style={styles.signinButton}
                                             activeOpacity={0.8}
                                             onPress={validate}>
-                                            <Text style={styles.signinButtonText}>Contiue</Text>
+                                            <Text style={styles.signinButtonText}>Weiter</Text>
                                         </TouchableOpacity>
                                     </View>
                                     {isDropdownOpen && (

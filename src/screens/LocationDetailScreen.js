@@ -22,22 +22,22 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 const labelData = [
     {
-        name: 'Home',
+        name: 'Heim',
         iconName: 'home-outline',
         tag: 'Home'
     },
     {
-        name: 'Work',
+        name: 'Arbeit',
         iconName: 'briefcase-outline',
         tag: 'Work'
     },
     {
-        name: 'Friend',
+        name: 'Freund',
         iconName: 'person-outline',
         tag: 'Friend'
     },
     {
-        name: "Other",
+        name: "Andere",
         iconName: "add",
         tag: ''
     },
@@ -57,7 +57,7 @@ const CustomCallout = () => {
                 fontWeight: '600',
                 color: '#f1f1f1'
             }}
-        >Tap to edit location</Text>
+        >Tippen Sie auf , um den Ort zu bearbeiten</Text>
     </TouchableOpacity>
 }
 
@@ -85,7 +85,7 @@ const AddresseButton = ({ onpress }) => {
             fontWeight: '700',
             letterSpacing: 1,
         }}
-    >Add Address</Button>
+    >Adresse Hinzufügen</Button>
 }
 
 const LocationDetailScreen = ({ route, navigation }) => {
@@ -122,7 +122,7 @@ console.log(address)
             }
         } catch (error) {
             console.error('Error:', error);
-            Alert.alert('Error', 'An error occurred while adding the address.');
+            Alert.alert('Fehler', 'Beim Hinzufügen der Adresse ist ein Fehler aufgetreten.');
             navigation.navigate('Main');
         }
     };
@@ -347,11 +347,11 @@ console.log(address)
                                     style={{
                                         left: '-5%',
                                         top: '90%',
-                                        fontSize: Display.setHeight(1),
+                                        fontSize: Display.setHeight(0.8),
                                         fontWeight: '600',
                                         color: '#f1f1f1'
                                     }}
-                                >Tap to edit location</Text>
+                                >Zum Bearbeiten tippen</Text>
                                 <SimpleLineIcons
                                     name="arrow-right"
                                     size={Display.setHeight(1.5)}
@@ -436,7 +436,7 @@ console.log(address)
                                     fontSize: 14,
                                     fontWeight: '400'
                                 }}
-                            >Your rider will deliver to the pinned location. You can edit your written address for more accuracy.</Text>
+                            >Ihr Fahrer liefert an die angegebene Adresse. Sie können Ihre schriftliche Adresse für mehr Genauigkeit bearbeiten.</Text>
                         </View>
                     </View>
                     <View
@@ -451,7 +451,7 @@ console.log(address)
                                 fontWeight: 'bold',
                                 color: '#325964',
                             }}
-                        >Add a new address</Text>
+                        >Eine neue Adresse hinzufügen</Text>
                     </View>
                     <View
                         style={{
@@ -562,12 +562,12 @@ console.log(address)
                         <Input
                             keyboardType="numeric"
                             onChangeText={text => handleOnchange(text, 'UnitNumber')}
-                            placeholder="Unit Number"
+                            placeholder="Appartmentnummer"
                         />
                         <Input
                             keyboardType="numeric"
                             onChangeText={text => handleOnchange(text, 'FloorNumber')}
-                            placeholder="Floor Number"
+                            placeholder="Stockwerk Nummer"
                         />
                     </View>
                     <View
@@ -583,14 +583,14 @@ console.log(address)
                                 color: '#325964',
                                 marginTop: Display.setHeight(2)
                             }}
-                        >Set Default</Text>
+                        >Standard einstellen</Text>
                         <Text
                             style={{
                                 fontSize: 13,
                                 lineHeight: 25,
                                 fontWeight: '300'
                             }}
-                        >Add this address as the default address?</Text>
+                        >Diese Adresse als Standardadresse hinzufügen?</Text>
                         <View
                             style={{
                                 width,
@@ -615,17 +615,17 @@ console.log(address)
                                 color: '#325964',
                                 marginTop: Display.setHeight(2)
                             }}
-                        >Delivery instructions</Text>
+                        >Anweisungen für die Lieferung</Text>
                         <Text
                             style={{
                                 fontSize: 13,
                                 lineHeight: 25,
                                 fontWeight: '300'
                             }}
-                        >Give us more information about your address.</Text>
+                        >Geben Sie uns mehr Informationen über Ihre Adresse.</Text>
                         <Input
                             onChangeText={text => handleOnchange(text, 'Notes')}
-                            placeholder="Note to rider - e.g. landmark"
+                            placeholder="Hinweis für den Fahrer - z. B. Landmarke"
                         />
                     </View>
                     <View
@@ -641,7 +641,7 @@ console.log(address)
                                 color: '#325964',
                                 marginTop: Display.setHeight(2)
                             }}
-                        >Add a label</Text>
+                        >Ein Etikett hinzufügen</Text>
                         <FlatList
                             horizontal
                             data={data}

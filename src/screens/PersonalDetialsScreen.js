@@ -1,6 +1,6 @@
-import { StyleSheet, Text, View, Dimensions, TouchableOpacity, ScrollView } from 'react-native'
+import { StyleSheet, Text, View, Dimensions, TouchableOpacity, ScrollView, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { StorageService } from '../services';
+import { AuthenicationService, StorageService } from '../services';
 import { Display } from '../utils';
 import { MaterialIcons, SimpleLineIcons } from '@expo/vector-icons';
 import * as Google from 'expo-auth-session/providers/google';
@@ -10,6 +10,8 @@ import * as AuthSession from 'expo-auth-session';
 import GoogleIcon from '../assets/icons/Google';
 import AppleIcon from '../assets/icons/Apple';
 import Skeleton from '../components/Skeleton';
+import { useDispatch, useSelector } from 'react-redux';
+import { clearToken, clearUserData } from '../actions/GeneralAction';
 
 const { width, height } = Dimensions.get('screen');
 
@@ -20,27 +22,11 @@ const PersonalDetialsScreen = ({ navigation }) => {
     const [isAppleConnected, setAppleConnected] = useState(false);
     const [isReady, setIsReady] = useState(false);
 
+    const dispatch = useDispatch();
 
-    // useEffect(() => {
-    //     StorageService.getUserData().then(userData => {
-    //         setUser(JSON.parse(userData));
-    //     });
-    // }, []);
-
-    // const fetchUserData = async () => {
-    //     try {
-    //         const userData = await StorageService.getUserData();
-    //         if (userData) {
-    //             setUser(JSON.parse(userData));
-    //         } else {
-    //             console.log("No user data found in AsyncStorage");
-    //         }
-    //     } catch (error) {
-    //         console.log(error);
-    //     } finally {
-    //         setIsReady(true);
-    //     }
-    // };
+    const { token } = useSelector(
+        (state) => state.generalState
+    );
 
     useEffect(() => {
         fetchUserData();
@@ -68,6 +54,59 @@ const PersonalDetialsScreen = ({ navigation }) => {
         }
     };
 
+    const handleDeletion = () => {
+        Alert.alert(
+            'Konto löschen',
+            'Sind Sie sicher? Diese Aktion kann nicht rückgängig gemacht werden!',
+            [
+                {
+                    text: 'Cancel',
+                    onPress: () => { },
+                    style: 'cancel'
+                },
+                {
+                    text: 'Delete',
+                    onPress: () => deleteAccount(),
+                    style: 'destructive'
+                }
+            ]);
+
+        const deleteAccount = async () => {
+            try {
+                const response = await AuthenicationService.deleteUserAccount(token);
+                if (response?.status) {
+                    await StorageService.removeData('userData');
+                    await StorageService.removeData('token');
+
+                    await dispatch(clearToken());
+                    await dispatch(clearUserData());
+
+                    Alert.alert(
+                        'Erfolg',
+                        'Ihr Konto wurde erfolgreich gelöscht.',
+                        [{ text: 'OK', onPress: () => navigation.navigate('Main') }],
+                        { cancelable: false }
+                    );
+                } else {
+                    Alert.alert(
+                        'Gescheitert',
+                        'Die Kontolöschung war nicht erfolgreich. Bitte versuchen Sie es später erneut.',
+                        [{ text: 'OK' }],
+                        { cancelable: false }
+                    );
+                }
+            } catch (err) {
+                console.error("Error in deleting account", err);
+                Alert.alert(
+                    'Fehler',
+                    'Bei der Löschung Ihres Kontos ist ein Fehler aufgetreten. Bitte versuchen Sie es später noch einmal.',
+                    [{ text: 'OK' }],
+                    { cancelable: false }
+                );
+            }
+        }
+    }
+
     if (!isReady) {
         return (
             <>
@@ -89,7 +128,7 @@ const PersonalDetialsScreen = ({ navigation }) => {
                                 marginTop: 35,
                                 color: "#325962",
                             }}
-                        >My Cart</Text>
+                        >Persönliche Angaben</Text>
                     </View>
                     <View>
                         <Skeleton height={Display.setHeight(12)} width={Display.setWidth(90)} style={{ borderRadius: 12, alignSelf: 'center', marginTop: Display.setHeight(1.5) }} />
@@ -229,14 +268,14 @@ const PersonalDetialsScreen = ({ navigation }) => {
         } catch (e) {
             if (e.code === 'ERR_CANCELED') {
                 Alert.alert(
-                    'Sign-in Cancelled',
-                    'You cancelled the sign-in process. If this was a mistake, please try again.'
+                    'Anmeldung storniert',
+                    'Sie haben den Anmeldevorgang abgebrochen. Wenn dies ein Fehler war, versuchen Sie es bitte erneut.'
                 );
             } else {
                 console.error(e);
                 Alert.alert(
-                    'An error occurred',
-                    'We encountered an error while trying to sign you in. Please try again.'
+                    'Ein Fehler ist aufgetreten',
+                    'Beim Versuch, Sie anzumelden, ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.'
                 );
             }
         }
@@ -292,7 +331,7 @@ const PersonalDetialsScreen = ({ navigation }) => {
                         marginTop: 35,
                         color: "#325962",
                     }}
-                >Personal Details</Text>
+                >Persönliche Angaben</Text>
             </View>
             <View
                 style={{
@@ -301,10 +340,6 @@ const PersonalDetialsScreen = ({ navigation }) => {
                     alignItems: 'center',
                 }}
             >
-                {/* <Text>{user.fullname}</Text>
-                <Text>{user.email}</Text>
-                <Text>{user.password}</Text>
-                <Text>{user.phone}</Text> */}
                 <View
                     style={{
                         width: "90%",
@@ -346,7 +381,6 @@ const PersonalDetialsScreen = ({ navigation }) => {
                                     color: '#325964'
                                 }}
                             >Name</Text>
-
                         </View>
                         <View
                             style={{
@@ -406,8 +440,7 @@ const PersonalDetialsScreen = ({ navigation }) => {
                                     fontWeight: '500',
                                     color: '#325964'
                                 }}
-                            >Email</Text>
-
+                            >E-Mail</Text>
                         </View>
                         <View
                             style={{
@@ -467,8 +500,7 @@ const PersonalDetialsScreen = ({ navigation }) => {
                                     fontWeight: '500',
                                     color: '#325964'
                                 }}
-                            >Password</Text>
-
+                            >Passwort</Text>
                         </View>
                         <View
                             style={{
@@ -528,7 +560,7 @@ const PersonalDetialsScreen = ({ navigation }) => {
                                     fontWeight: '500',
                                     color: '#325964'
                                 }}
-                            >Mobile Number</Text>
+                            >Handynummer</Text>
 
                         </View>
                         <View
@@ -574,7 +606,7 @@ const PersonalDetialsScreen = ({ navigation }) => {
                                         color: '#325964',
                                         margin: 5
                                     }}
-                                >Verified</Text>
+                                >Verifiziert</Text>
                             </View>
                         </View>
                     </View>
@@ -596,7 +628,7 @@ const PersonalDetialsScreen = ({ navigation }) => {
                         alignSelf: 'flex-start',
                         color: "#325962",
                     }}
-                >Connected Accounts</Text>
+                >Verbundene Konten</Text>
                 <View
                     style={{
                         width: "90%",
@@ -729,7 +761,7 @@ const PersonalDetialsScreen = ({ navigation }) => {
                         alignSelf: 'flex-start',
                         color: "#325962",
                     }}
-                >Delete Account</Text>
+                >Konto löschen</Text>
                 <View
                     style={{
                         width: "90%",
@@ -737,7 +769,9 @@ const PersonalDetialsScreen = ({ navigation }) => {
                         alignItems: 'center',
                     }}
                 >
-                    <TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={() => handleDeletion()}
+                    >
                         <View
                             style={{
                                 width: "100%",
@@ -772,7 +806,7 @@ const PersonalDetialsScreen = ({ navigation }) => {
                                         color: '#FF7074',
                                         fontWeight: '500'
                                     }}
-                                >Delete my account and related data</Text>
+                                >Mein Konto und zugehörige Daten löschen</Text>
                             </View>
                         </View>
                     </TouchableOpacity>

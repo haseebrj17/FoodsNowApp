@@ -90,7 +90,7 @@ const BrandCardsHome = ({ brand, deliveryParams }) => {
                         letterSpacing: 0.2,
                         // marginTop: 2,
                     }}
-                >Explore all Restaurants</Text>
+                >Alle Restaurants erkunden</Text>
             </View>
         )
     }

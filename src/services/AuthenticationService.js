@@ -7,9 +7,6 @@ const AuthRequest = axios.create({
 });
 
 const register = async user => {
-    if (!user?.FullName || !user?.EmailAdress || !user?.ContactNumber || !user?.Password) {
-        return { status: false, message: 'Please fill up all fields' };
-    }
     try {
         let requestBody = {
             Id: null,
@@ -22,6 +19,7 @@ const register = async user => {
             ApiContants.BACKEND_API.REGISTER,
             requestBody
         );
+        console.log(registerResponse)
         if (registerResponse?.status === 200) {
             return {
                 status: true,
@@ -88,7 +86,7 @@ const phoneVerification = async codeData => {
             VerificationCode: codeData?.code,
             Id: codeData?.id
         };
-        console.log(`Request Body ${requestBody}`)
+        console.log(requestBody)
         let verificationResponse = await axios.post(
             `${ApiContants.BACKEND_API.BASE_API_URL}${ApiContants.BACKEND_API.VERIFICATION}`,
             requestBody
@@ -128,4 +126,26 @@ const refreshToken = async () => {
     }
 };
 
-export default { register, login, phoneVerification, checkUserExist, refreshToken };
+const deleteUserAccount = async (token) => {
+    console.log(token)
+    try {
+        let deletionResponse = await axios.post(
+            `${ApiContants.BACKEND_API.BASE_API_URL}${ApiContants.BACKEND_API.DELETE_USER_ACCOUNT}`,
+            {},
+            {
+                headers: authHeader(token),
+            }
+        );
+
+        if (deletionResponse?.status === 200) {
+            return { status: true };
+        } else {
+            return { status: false };
+        }
+    } catch (error) {
+        console.log(error);
+        return { status: false, message: 'Oops! Something went wrong' };
+    }
+};
+
+export default { register, login, phoneVerification, checkUserExist, refreshToken, deleteUserAccount };

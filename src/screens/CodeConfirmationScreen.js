@@ -31,8 +31,8 @@ const CodeConfirmationScreen = ({ navigation, route }) => {
     const dispatch = useDispatch()
 
     const [animationData, setAnimationData] = useState({
-        reqCode: 'Enter the 6 digit code send to your phone',
-        codeDone: 'Code Confirmation',
+        reqCode: 'Geben Sie den 6-stelligen Code ein, der an Ihr Telefon gesendet wird.',
+        codeDone: 'Code-Bestätigung',
         color: '#325964',
         name: 'cross',
     })
@@ -45,8 +45,8 @@ const CodeConfirmationScreen = ({ navigation, route }) => {
 
             if (response?.status) {
                 setAnimationData({
-                    reqCode: 'Phone number successfully verified',
-                    codeDone: 'Verified',
+                    reqCode: 'Rufnummer erfolgreich überprüft',
+                    codeDone: 'Geprüft',
                     color: '#FFAF51',
                     name: 'check',
                 });
@@ -60,166 +60,164 @@ const CodeConfirmationScreen = ({ navigation, route }) => {
                 setTimeout(() => {
                     navigation.navigate('LocationAccess')
                 }, 5000);
-                Alert.alert('Success', 'Your account has been verified!');
+                Alert.alert('Erfolg', 'Ihr Konto wurde verifiziert!');
             } else {
-                Alert.alert('Error', response?.message || 'Invalid verification code.');
+                Alert.alert('Fehler', response?.message || 'Ungültiger Verifizierungscode.');
             }
 
         } catch (error) {
             console.log('Verification error:', error);
-            Alert.alert('Error', 'Unable to verify code.');
+            Alert.alert('Fehler', 'Code kann nicht verifiziert werden.');
         }
     };
 
 
     return (
-        <View
+        <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             style={{
-                backgroundColor: '#325962',
                 flex: 1
-            }}
-        >
-            <View
-                style={{
-                    backgroundColor: '#f1f1f1'
-                }}
-            >
-                <View
-                    style={{
-                        width: width,
-                        height: width / 4,
-                        backgroundColor: '#f1f1f1',
-                        overflow: 'hidden',
+            }}>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <>
 
-                    }}
-                >
-                    <Image
-                        source={require('../assets/images/pattern15.png')}
+                    <View
                         style={{
                             width: width,
                             height: width / 4,
-                            aspectRatio: 2000 / 500,
+                            backgroundColor: '#f1f1f1',
+                            overflow: 'hidden',
                         }}
-                    />
-                </View>
-            </View>
-            <View
-                style={{
-                    flex: 1,
-                    overflow: 'hidden'
-                }}
-            >
-                <Image
-                    source={require('../assets/images/pattern15.png')}
-                    style={{
-                        ...StyleSheet.absoluteFillObject,
-                        width: width,
-                        height: width / 4,
-                        aspectRatio: 2000 / 500,
-                    }}
-                />
-                <View
-                    style={{
-                        borderRadius: 75,
-                        backgroundColor: '#f1f1f1',
-                        flex: 1,
-                        alignItems: 'center',
-                        justifyContent: 'flex-start',
-                    }}
-                >
-                    <Text
-                        style={{
-                            fontSize: 36,
-                            fontWeight: 'bold',
-                            color: '#325962',
-                            alignSelf: 'center',
-                            margin: 20,
-                            position: 'absolute',
-                            top: "0%",
-                        }}
-                    >{animationData.codeDone}</Text>
+                    >
+                        <Image
+                            source={require('../assets/images/pattern15.png')}
+                            style={{
+                                width: width,
+                                height: width / 4,
+                                aspectRatio: 2000 / 500,
+                            }}
+                        />
+                    </View>
                     <View
-                        justifyContent='flex-end'
-                        alignItems='center'
                         style={{
-                            marginTop: 150
+                            flex: 1,
+                            overflow: 'hidden'
+                        }}
+                    >
+                        <Image
+                            source={require('../assets/images/pattern15.png')}
+                            style={{
+                                ...StyleSheet.absoluteFillObject,
+                                width: width,
+                                height: width / 4,
+                                aspectRatio: 2000 / 500,
+                            }}
+                        />
+                        <View
+                            style={{
+                                borderRadius: 75,
+                                backgroundColor: '#f1f1f1',
+                                flex: 1,
+                                alignItems: 'center',
+                                justifyContent: 'flex-start',
+                            }}
+                        >
+                            <Text
+                                style={{
+                                    fontSize: 36,
+                                    fontWeight: 'bold',
+                                    color: '#325962',
+                                    alignSelf: 'center',
+                                    margin: 20,
+                                    position: 'absolute',
+                                    top: "0%",
+                                }}
+                            >{animationData.codeDone}</Text>
+                            <View
+                                justifyContent='flex-end'
+                                alignItems='center'
+                                style={{
+                                    marginTop: 150
+                                }}
+                            >
+                                <View
+                                    style={{
+                                        width: Display.setHeight(11),
+                                        height: Display.setHeight(11),
+                                        backgroundColor: '#325964',
+                                        borderRadius: Display.setHeight(5.5),
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                    }}
+                                >
+                                    <Image
+                                        source={require('../assets/icons/shield.png')}
+                                        style={{
+                                            width: 80,
+                                            height: 80
+                                        }}
+                                    />
+                                    <Entypo name={animationData.name} size={40} color={animationData.color}
+                                        style={{
+                                            position: 'absolute'
+                                        }}
+                                    />
+                                </View>
+                                <Text
+                                    style={{
+                                        fontSize: 16,
+                                        fontWeight: "600",
+                                        color: "#6b7280",
+                                        margin: 20,
+                                        textAlign: 'center'
+                                    }}
+                                >{animationData.reqCode}</Text>
+                                <View
+                                    width={width * 0.9}
+                                    height='50%'
+                                    justifyContent='flex-end'
+                                >
+                                    <Input
+                                        iconName='lock-outline'
+                                        value={code}
+                                        onChangeText={setCode}
+                                        placeholder="Verifizierungscode"
+                                        keyboardType="numeric"
+                                    />
+                                    <Button
+                                        disabled={codeData?.code ? false : true}
+                                        color={codeData?.code ? "#325964" : "#d9d9d9"}
+                                        title='Bestätigen' onPress={handleConfirmCode} />
+                                </View>
+                            </View>
+                        </View>
+                    </View>
+                    <View
+                        style={{
+                            height: 170,
+                            backgroundColor: '#325962'
                         }}
                     >
                         <View
                             style={{
-                                width: Display.setHeight(11),
-                                height: Display.setHeight(11),
-                                backgroundColor: '#325964',
-                                borderRadius: Display.setHeight(5.5),
-                                alignItems: 'center',
+                                flexDirection: 'column',
                                 justifyContent: 'center',
+                                alignItems: 'center',
+                                alignSelf: 'center',
+                                margin: Display.setHeight(7),
                             }}
                         >
-                            <Image
-                                source={require('../assets/icons/shield.png')}
+                            <Text
                                 style={{
-                                    width: 80,
-                                    height: 80
+                                    fontSize: Display.setHeight(2),
+                                    color: '#FFAF51',
                                 }}
-                            />
-                            <Entypo name={animationData.name} size={40} color={animationData.color}
-                                style={{
-                                    position: 'absolute'
-                                }}
-                            />
-                        </View>
-                        <Text
-                            style={{
-                                fontSize: 16,
-                                fontWeight: "600",
-                                color: "#6b7280",
-                                margin: 20
-                            }}
-                        >{animationData.reqCode}</Text>
-                        <View
-                            width={width * 0.9}
-                            height='50%'
-                            justifyContent='flex-end'
-                        >
-                            <Input
-                                iconName='lock-outline'
-                                value={code}
-                                onChangeText={setCode}
-                                placeholder="Verification Code"
-                                keyboardType="numeric"
-                            />
-                            <Button 
-                                disabled={ codeData?.code ? false : true }
-                                color={ codeData?.code ? "#325964" : "#d9d9d9" }
-                            title='Confirm' onPress={handleConfirmCode} />
+                            >Es gelten die allgemeinen Geschäftsbedingungen.</Text>
                         </View>
                     </View>
-                </View>
-            </View>
-            <View
-                style={{
-                    height: 170,
-                    backgroundColor: '#325962'
-                }}
-            >
-                <View
-                    style={{
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        alignSelf: 'center',
-                        margin: Display.setHeight(7),
-                    }}
-                >
-                    <Text
-                        style={{
-                            fontSize: Display.setHeight(2),
-                            color: '#FFAF51',
-                        }}
-                    >Terms and Coditions are applied</Text>
-                </View>
-            </View>
-        </View>
+                </>
+            </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
     );
 };
 

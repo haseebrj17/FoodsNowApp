@@ -214,7 +214,7 @@ const LocationAccessScreen = ({ navigation }) => {
                 fontWeight: '700',
                 letterSpacing: 1,
             }}
-        >Add Address Details</Button>
+        >Adressdetails hinzufügen</Button>
     }
 
     return (
@@ -319,7 +319,7 @@ const LocationAccessScreen = ({ navigation }) => {
                                     color: '#325964',
                                     marginTop: Display.setHeight(2)
                                 }}
-                            >Add a new address</Text>
+                            >Eine neue Adresse hinzufügen</Text>
                         </View>
                         <TouchableOpacity onPress={handlePresentModal} style={{ width: width * 0.9, justifyContent: 'center', alignItems: 'center' }}>
                             <View
@@ -328,7 +328,7 @@ const LocationAccessScreen = ({ navigation }) => {
                                 <View style={styles.SearchBarContainer}>
                                     <Ionicons name="search-sharp" size={24} color="#325962" />
                                     <Text style={styles.SearchBarInput}>
-                                        Enter your address
+                                        Geben Sie Ihre Adresse ein
                                     </Text>
                                 </View>
                             </View>
@@ -425,7 +425,7 @@ const LocationAccessScreen = ({ navigation }) => {
                                         fontSize: Display.setHeight(1.6),
                                         fontWeight: '400'
                                     }}
-                                >Your rider will deliver to the pinned location. You can edit your written address on the next page.</Text>
+                                >Ihr Fahrer liefert an die angegebene Adresse. Sie können Ihre schriftliche Adresse auf der nächsten Seite bearbeiten.</Text>
                             </View>
                         </View>
                         <AddressButton />
@@ -455,7 +455,7 @@ const LocationAccessScreen = ({ navigation }) => {
                             alignItems: 'center'
                         }}>
                             <GooglePlacesAutocomplete
-                                placeholder="Enter your address"
+                                placeholder="Geben Sie Ihre Adresse ein"
                                 fetchDetails={true}
                                 enableHighAccuracyLocation={true}
                                 enablePoweredByContainer={false}
@@ -512,7 +512,6 @@ const LocationAccessScreen = ({ navigation }) => {
                                     description: {
                                         fontSize: 15,
                                         fontWeight: '400',
-                                        fontFamily: 'PBO'
                                     }
                                 }}
                             />

@@ -1,31 +1,37 @@
 {
   "expo": {
     "name": "Bytez Now",
-    "slug": "BytezNow",
+    "slug": "byteznow",
     "scheme": "foodsnowapp",
     "owner": "foodsnowgmbh",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./src/assets/BN_Published_LOGO.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./src/assets/splash.png",
+      "image": "./src/assets/BNSplash500x500.png",
       "resizeMode": "contain",
       "backgroundColor": "#325964"
     },
     "updates": {
       "fallbackToCacheTimeout": 0,
-      "url": "https://u.expo.dev/6986621b-e55a-439e-8625-fe6e914a0658"
+      "url": "https://u.expo.dev/6e8b9def-be82-4462-97b2-c73c73cead01"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "co.foodsnow.FoodsNowApp",
+      "bundleIdentifier": "co.foodsnow.BytezNow",
       "runtimeVersion": {
         "policy": "sdkVersion"
       },
       "config": {
         "googleMapsApiKey": "AIzaSyDDBLnxNZqy3oW5zwMOP1SgsoGsa6TSHtc"
+      },
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "We use your location to offer a personalized experience by showing you nearby restaurants and ensuring accurate delivery services.",
+        "NSLocationAlwaysUsageDescription": "Our app needs to access your location even when not in use to provide ongoing delivery updates and notify you when your order is nearby."
       }
     },
     "android": {
@@ -41,15 +47,14 @@
           "apiKey": "AIzaSyBVNfVNStn3IlWxShOoS3a1FkzWVcuyq1E"
         }
       },
-      "package": "co.foodsnow.FoodsNowApp",
-      "useNextNotificationsApi": true
+      "package": "co.foodsnow.BytezNow"
     },
     "web": {
       "favicon": "./src/assets/BN_Published_LOGO.png"
     },
     "extra": {
       "eas": {
-        "projectId": "6986621b-e55a-439e-8625-fe6e914a0658"
+        "projectId": "6e8b9def-be82-4462-97b2-c73c73cead01"
       }
     }
   }

@@ -1376,29 +1376,30 @@ export const KidSpecial = [
 export const SplashScreen = [
     {
         id: 3,
-        title: "Multiple restaurant, One Delivery.",
-        description: "Mix and match meals, and get them all in a single order.",
+        title: "Mehrere Restaurants, eine Lieferung.",
+        description: "Kombinieren Sie verschiedene Gerichte und erhalten Sie alle in einer einzigen Bestellung.",
         image: require('../icons/Splash4.png')
     },
     {
         id: 2,
-        title: "Sourced Right, Served Right!",
-        description: "Experience the richness of real ingredients with every delivery.",
+        title: "Richtig eingekauft, richtig serviert!",
+        description: "Erleben Sie den Reichtum echter Zutaten bei jeder Lieferung.",
         image: require('../icons/Splash3.png')
     },
     {
         id: 1,
-        title: "Eat More, Spend Less!",
-        description: "Satisfy your cravings and save money, all in one convenient delivery.",
+        title: "Mehr essen, weniger ausgeben!.",
+        description: "Befriedigen Sie Ihre Gelüste und sparen Sie Geld, alles in einer einzigen Lieferung.",
         image: require('../icons/Splash2.png')
     },
     {
         id: 0,
-        title: "Faster Than Your Cravings!",
-        description: "Ensuring you're always a beat ahead of hunger.",
+        title: "Schneller als Ihr Heißhunger!",
+        description: "Damit Sie dem Hunger immer einen Schritt voraus sind.",
         image: require('../icons/Splash1.png')
     },
 ]
+
 
 export const Splash = [
     {
