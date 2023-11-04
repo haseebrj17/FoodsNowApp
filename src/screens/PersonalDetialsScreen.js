@@ -46,6 +46,59 @@ const PersonalDetialsScreen = ({ navigation }) => {
         fetchUserData();
     }, []);
 
+    const handleDeletion = () => {
+        Alert.alert(
+            'Konto löschen',
+            'Sind Sie sicher? Diese Aktion kann nicht rückgängig gemacht werden!',
+            [
+                {
+                    text: 'Cancel',
+                    onPress: () => { },
+                    style: 'cancel'
+                },
+                {
+                    text: 'Delete',
+                    onPress: () => deleteAccount(),
+                    style: 'destructive'
+                }
+            ]);
+
+        const deleteAccount = async () => {
+            try {
+                const response = await AuthenicationService.deleteUserAccount(token);
+                if (response?.status) {
+                    await StorageService.removeData('userData');
+                    await StorageService.removeData('token');
+
+                    await dispatch(clearToken());
+                    await dispatch(clearUserData());
+
+                    Alert.alert(
+                        'Erfolg',
+                        'Ihr Konto wurde erfolgreich gelöscht.',
+                        [{ text: 'OK', onPress: () => navigation.navigate('Main') }],
+                        { cancelable: false }
+                    );
+                } else {
+                    Alert.alert(
+                        'Gescheitert',
+                        'Die Kontolöschung war nicht erfolgreich. Bitte versuchen Sie es später erneut.',
+                        [{ text: 'OK' }],
+                        { cancelable: false }
+                    );
+                }
+            } catch (err) {
+                console.error("Error in deleting account", err);
+                Alert.alert(
+                    'Fehler',
+                    'Bei der Löschung Ihres Kontos ist ein Fehler aufgetreten. Bitte versuchen Sie es später noch einmal.',
+                    [{ text: 'OK' }],
+                    { cancelable: false }
+                );
+            }
+        }
+    }
+
     const fetchUserData = async () => {
         try {
             const userData = await StorageService.getUserData();
@@ -89,7 +142,7 @@ const PersonalDetialsScreen = ({ navigation }) => {
                                 marginTop: 35,
                                 color: "#325962",
                             }}
-                        >My Cart</Text>
+                        >Persönliche Angaben</Text>
                     </View>
                     <View>
                         <Skeleton height={Display.setHeight(12)} width={Display.setWidth(90)} style={{ borderRadius: 12, alignSelf: 'center', marginTop: Display.setHeight(1.5) }} />
@@ -292,7 +345,7 @@ const PersonalDetialsScreen = ({ navigation }) => {
                         marginTop: 35,
                         color: "#325962",
                     }}
-                >Personal Details</Text>
+                >Persönliche Angaben</Text>
             </View>
             <View
                 style={{
@@ -301,10 +354,6 @@ const PersonalDetialsScreen = ({ navigation }) => {
                     alignItems: 'center',
                 }}
             >
-                {/* <Text>{user.fullname}</Text>
-                <Text>{user.email}</Text>
-                <Text>{user.password}</Text>
-                <Text>{user.phone}</Text> */}
                 <View
                     style={{
                         width: "90%",
@@ -346,7 +395,6 @@ const PersonalDetialsScreen = ({ navigation }) => {
                                     color: '#325964'
                                 }}
                             >Name</Text>
-
                         </View>
                         <View
                             style={{
@@ -406,8 +454,7 @@ const PersonalDetialsScreen = ({ navigation }) => {
                                     fontWeight: '500',
                                     color: '#325964'
                                 }}
-                            >Email</Text>
-
+                            >E-Mail</Text>
                         </View>
                         <View
                             style={{
@@ -467,8 +514,7 @@ const PersonalDetialsScreen = ({ navigation }) => {
                                     fontWeight: '500',
                                     color: '#325964'
                                 }}
-                            >Password</Text>
-
+                            >Passwort</Text>
                         </View>
                         <View
                             style={{
@@ -528,8 +574,7 @@ const PersonalDetialsScreen = ({ navigation }) => {
                                     fontWeight: '500',
                                     color: '#325964'
                                 }}
-                            >Mobile Number</Text>
-
+                            >Handynummer</Text>
                         </View>
                         <View
                             style={{
@@ -574,7 +619,7 @@ const PersonalDetialsScreen = ({ navigation }) => {
                                         color: '#325964',
                                         margin: 5
                                     }}
-                                >Verified</Text>
+                                >Verifiziert</Text>
                             </View>
                         </View>
                     </View>
@@ -596,7 +641,7 @@ const PersonalDetialsScreen = ({ navigation }) => {
                         alignSelf: 'flex-start',
                         color: "#325962",
                     }}
-                >Connected Accounts</Text>
+                >Verbundene Konten</Text>
                 <View
                     style={{
                         width: "90%",
@@ -729,7 +774,7 @@ const PersonalDetialsScreen = ({ navigation }) => {
                         alignSelf: 'flex-start',
                         color: "#325962",
                     }}
-                >Delete Account</Text>
+                >Konto löschen</Text>
                 <View
                     style={{
                         width: "90%",
@@ -737,7 +782,9 @@ const PersonalDetialsScreen = ({ navigation }) => {
                         alignItems: 'center',
                     }}
                 >
-                    <TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={() => handleDeletion()}
+                    >
                         <View
                             style={{
                                 width: "100%",
@@ -772,7 +819,7 @@ const PersonalDetialsScreen = ({ navigation }) => {
                                         color: '#FF7074',
                                         fontWeight: '500'
                                     }}
-                                >Delete my account and related data</Text>
+                                >Mein Konto und zugehörige Daten löschen</Text>
                             </View>
                         </View>
                     </TouchableOpacity>

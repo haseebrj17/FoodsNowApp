@@ -37,7 +37,7 @@ const AddresseButton = ({ onpress, loadingAddress }) => {
             fontWeight: '700',
             letterSpacing: 1,
         }}
-    >Add New Address</Button>
+    >Neue Adresse hinzufügen</Button>
 }
 
 const AddressesScreen = ({ navigation }) => {
@@ -111,7 +111,7 @@ const AddressesScreen = ({ navigation }) => {
                         color: '#325964',
                         marginTop: 3
                     }}
-                >Delete</Text>
+                >Löschen</Text>
             </View>
         </TouchableOpacity>
     }
@@ -168,7 +168,7 @@ const AddressesScreen = ({ navigation }) => {
                                         fontWeight: "bold",
                                         marginVertical: Display.setHeight(0.5)
                                     }}
-                                >{item?.StreetAddress} {item?.House}, Appartment {item?.UnitNumber}, Floor {item?.FloorNumber}</Text>
+                                >{item?.StreetAddress} {item?.House}, Appartment {item?.UnitNumber}, Stockwerk {item?.FloorNumber}</Text>
                                 <Text
                                     style={{
                                         fontSize: 14,
@@ -259,7 +259,7 @@ const AddressesScreen = ({ navigation }) => {
                                     marginTop: 35,
                                     color: "#325962",
                                 }}
-                            >Addresses</Text>
+                            >Adressen</Text>
                         </View>
                         <View
                             style={{
@@ -489,7 +489,7 @@ const AddressesScreen = ({ navigation }) => {
                                     marginTop: 35,
                                     color: "#325962",
                                 }}
-                            >Addresses</Text>
+                            >Adressen</Text>
                         </View>
                         <SectionList
                             style={{

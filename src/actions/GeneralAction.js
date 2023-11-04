@@ -44,6 +44,20 @@ export const setUserData = userData => {
     };
 };
 
+export const clearToken = () => {
+    return {
+        type: SET_TOKEN,
+        payload: '',
+    };
+};
+
+export const clearUserData = () => {
+    return {
+        type: SET_USER_DATA,
+        payload: {},
+    };
+};
+
 export const appStart = () => {
     return async (dispatch, getState) => {
         try {

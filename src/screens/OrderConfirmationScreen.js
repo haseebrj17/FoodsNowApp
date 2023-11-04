@@ -88,7 +88,7 @@ const OrderConfirmationScreen = ({ navigation }) => {
                         color: '#325964',
                         marginBottom: Display.setHeight(3)
                     }}
-                >Order was placed successfully</Text>
+                >Auftrag wurde erfolgreich erteilt</Text>
                 <Separator height={Display.setHeight(0.1)} color={'#f1f1f1'} width={width} />
                 <View
                     style={{
@@ -112,7 +112,7 @@ const OrderConfirmationScreen = ({ navigation }) => {
                                 marginTop: Display.setHeight(2)
                             }}
                         >
-                            Order Status
+                            Status der Bestellung
                         </Text>
                         <View
                             style={{
@@ -146,16 +146,9 @@ const OrderConfirmationScreen = ({ navigation }) => {
                                         fontSize: Display.setHeight(1.3),
                                         fontWeight: '400'
                                     }}
-                                >We will try to deliver your order as soon as possible. Our chefs are working on your order once there is a change in the order status we will notify you.</Text>
+                                >Wir werden versuchen, Ihre Bestellung so schnell wie möglich zu liefern. Unsere Köche arbeiten an Ihrer Bestellung, sobald sich der Status der Bestellung ändert, werden wir Sie benachrichtigen.</Text>
                             </View>
                         </View>
-                        <Text
-                            style={{
-
-                            }}
-                        >
-
-                        </Text>
                     </View>
                 </View>
             </View>

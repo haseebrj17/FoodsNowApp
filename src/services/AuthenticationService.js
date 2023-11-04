@@ -128,4 +128,26 @@ const refreshToken = async () => {
     }
 };
 
-export default { register, login, phoneVerification, checkUserExist, refreshToken };
+const deleteUserAccount = async (token) => {
+    console.log(token)
+    try {
+        let deletionResponse = await axios.post(
+            `${ApiContants.BACKEND_API.BASE_API_URL}${ApiContants.BACKEND_API.DELETE_USER_ACCOUNT}`,
+            {},
+            {
+                headers: authHeader(token),
+            }
+        );
+
+        if (deletionResponse?.status === 200) {
+            return { status: true };
+        } else {
+            return { status: false };
+        }
+    } catch (error) {
+        console.log(error);
+        return { status: false, message: 'Oops! Something went wrong' };
+    }
+};
+
+export default { register, login, phoneVerification, checkUserExist, refreshToken, deleteUserAccount };

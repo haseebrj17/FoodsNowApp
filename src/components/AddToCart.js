@@ -30,7 +30,7 @@ const DetailsRoute = ({ dish }) => (
                     marginLeft: Display.setHeight(1),
                     marginTop: Display.setHeight(2),
                 }}
-            >Description</Text>
+            >Beschreibung</Text>
             <Text
                 style={{
                     fontSize: Display.setHeight(1.5),
@@ -51,7 +51,7 @@ const DetailsRoute = ({ dish }) => (
                     marginLeft: Display.setHeight(1),
                     marginTop: Display.setHeight(2),
                 }}
-            >Ingredients</Text>
+            >Zutaten</Text>
             <Text
                 style={{
                     fontSize: Display.setHeight(1.5),
@@ -140,7 +140,7 @@ const DeliveryPrice = ({ price }) => {
                     fontWeight: '500',
                     color: '#325962'
                 }}
-            > Free Delivery</Text>
+            > Kostenlose Lieferung</Text>
         </View>
     }
     return <View
@@ -322,7 +322,7 @@ const AddToCartModal = forwardRef((props, ref) => {
                                         title: "Details"
                                     },
                                     {
-                                        title: "Customize",
+                                        title: "Anpassen",
                                         data: [
                                             {
                                                 type: "customize",
@@ -449,7 +449,7 @@ const AddToCartModal = forwardRef((props, ref) => {
                             style={{
                                 width: '50%',
                             }}
-                            title="Add to Cart"
+                            title="In den Warenkorb"
                             color="#FFAF51"
                             titleStyle={styles.buttonTitle}
                             uppercase={false}

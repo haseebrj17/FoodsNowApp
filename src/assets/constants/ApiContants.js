@@ -30,10 +30,7 @@ const BACKEND_API = {
     ORDER: '/PlaceOrder',
     GET_ORDER: '/GetCustomerOrders',
     USER_EXIST: '/User',
-    // REFRESH_TOKEN: '/refresh-token',
-    // CART: '/cart',
-    // FOOD: '/food',
-    // BOOKMARK: '/bookmark',
+    DELETE_USER_ACCOUNT: '/DeleteMyAccount'
 };
 
 export default { COUNTRY_FLAG, BACKEND_API, STATIC_IMAGE }

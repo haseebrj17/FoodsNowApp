@@ -31,8 +31,8 @@ const CodeConfirmationScreen = ({ navigation, route }) => {
     const dispatch = useDispatch()
 
     const [animationData, setAnimationData] = useState({
-        reqCode: 'Enter the 6 digit code send to your phone',
-        codeDone: 'Code Confirmation',
+        reqCode: 'Geben Sie den 6-stelligen Code ein, der an Ihr Telefon gesendet wird.',
+        codeDone: 'Code-Bestätigung',
         color: '#325964',
         name: 'cross',
     })
@@ -40,13 +40,12 @@ const CodeConfirmationScreen = ({ navigation, route }) => {
     const handleConfirmCode = async () => {
         try {
             const response = await AuthenticationService.phoneVerification(codeData);
-            // console.log(codeData, response)
             setIsLoading(false);
 
             if (response?.status) {
                 setAnimationData({
-                    reqCode: 'Phone number successfully verified',
-                    codeDone: 'Verified',
+                    reqCode: 'Rufnummer erfolgreich überprüft',
+                    codeDone: 'Geprüft',
                     color: '#FFAF51',
                     name: 'check',
                 });
@@ -60,16 +59,17 @@ const CodeConfirmationScreen = ({ navigation, route }) => {
                 setTimeout(() => {
                     navigation.navigate('LocationAccess')
                 }, 5000);
-                Alert.alert('Success', 'Your account has been verified!');
+                Alert.alert('Erfolg', 'Ihr Konto wurde verifiziert!');
             } else {
-                Alert.alert('Error', response?.message || 'Invalid verification code.');
+                Alert.alert('Fehler', response?.message || 'Ungültiger Verifizierungscode.');
             }
 
         } catch (error) {
             console.log('Verification error:', error);
-            Alert.alert('Error', 'Unable to verify code.');
+            Alert.alert('Fehler', 'Code kann nicht verifiziert werden.');
         }
     };
+
 
 
     return (
@@ -197,7 +197,7 @@ const CodeConfirmationScreen = ({ navigation, route }) => {
                                     <Button
                                         disabled={codeData?.code ? false : true}
                                         color={codeData?.code ? "#325964" : "#d9d9d9"}
-                                        title='Confirm' onPress={handleConfirmCode} />
+                                        title='Bestätigen' onPress={handleConfirmCode} />
                                 </View>
                             </View>
                         </View>
@@ -222,7 +222,7 @@ const CodeConfirmationScreen = ({ navigation, route }) => {
                                     fontSize: Display.setHeight(2),
                                     color: '#FFAF51',
                                 }}
-                            >Terms and Coditions are applied</Text>
+                            >Es gelten die allgemeinen Geschäftsbedingungen.</Text>
                         </View>
                     </View>
                 </View>

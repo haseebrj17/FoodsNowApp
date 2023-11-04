@@ -225,7 +225,7 @@ const DishFormPizza = ({ dish, extras, dips, selectedSize, setSelectedSize, sele
                                                     fontWeight: 'bold',
                                                     color: '#000',
                                                 }}
-                                            >Please choose a size</Text>
+                                            >Bitte wählen Sie die Größe</Text>
                                             <View
                                                 style={{
                                                     width: Display.setHeight(9),
@@ -242,7 +242,7 @@ const DishFormPizza = ({ dish, extras, dips, selectedSize, setSelectedSize, sele
                                                         fontWeight: '600',
                                                         color: '#325964',
                                                     }}
-                                                >Required</Text>
+                                                >Erforderlich</Text>
                                             </View>
                                         </View>
                                         <Text
@@ -252,7 +252,7 @@ const DishFormPizza = ({ dish, extras, dips, selectedSize, setSelectedSize, sele
                                                 fontWeight: '500',
                                                 color: '#325964',
                                             }}
-                                        >Select 1</Text>
+                                        >Wählen Sie 1</Text>
                                         <View
                                             style={{
                                                 alignSelf: 'center',
@@ -272,14 +272,14 @@ const DishFormPizza = ({ dish, extras, dips, selectedSize, setSelectedSize, sele
                                                         fontWeight: '700',
                                                         color: '#325964'
                                                     }}
-                                                >Size</Text>
+                                                >Größe</Text>
                                                 <Text
                                                     style={{
                                                         fontSize: Display.setHeight(2),
                                                         fontWeight: '700',
                                                         color: '#325964'
                                                     }}
-                                                >Price</Text>
+                                                >Preis</Text>
                                             </View>
                                         </View>
                                     </View>
@@ -365,7 +365,7 @@ const DishFormPizza = ({ dish, extras, dips, selectedSize, setSelectedSize, sele
                                                 fontWeight: 'bold',
                                                 color: '#000',
                                             }}
-                                        >Please choose toppings</Text>
+                                        >Bitte wählen Sie Toppings</Text>
                                         <View
                                             style={{
                                                 width: Display.setHeight(9),
@@ -392,7 +392,7 @@ const DishFormPizza = ({ dish, extras, dips, selectedSize, setSelectedSize, sele
                                             fontWeight: '500',
                                             color: '#325964',
                                         }}
-                                    >Select any</Text>
+                                    >Beliebig wählen</Text>
                                     <View
                                         style={{
                                             alignSelf: 'center',
@@ -419,7 +419,7 @@ const DishFormPizza = ({ dish, extras, dips, selectedSize, setSelectedSize, sele
                                                     fontWeight: '700',
                                                     color: '#325964'
                                                 }}
-                                            >Price</Text>
+                                            >Preis</Text>
                                         </View>
                                     </View>
                                     <View
@@ -466,7 +466,7 @@ const DishFormPizza = ({ dish, extras, dips, selectedSize, setSelectedSize, sele
                                                 fontWeight: 'bold',
                                                 color: '#000',
                                             }}
-                                        >Please choose dips</Text>
+                                        >Bitte wählen Sie Dips</Text>
                                         <View
                                             style={{
                                                 width: Display.setHeight(9),
@@ -493,7 +493,7 @@ const DishFormPizza = ({ dish, extras, dips, selectedSize, setSelectedSize, sele
                                             fontWeight: '500',
                                             color: '#325964',
                                         }}
-                                    >Select any</Text>
+                                    >Beliebig wählen</Text>
                                     <View
                                         style={{
                                             alignSelf: 'center',
@@ -520,7 +520,7 @@ const DishFormPizza = ({ dish, extras, dips, selectedSize, setSelectedSize, sele
                                                     fontWeight: '700',
                                                     color: '#325964'
                                                 }}
-                                            >Price</Text>
+                                            >Preis</Text>
                                         </View>
                                     </View>
                                     <View

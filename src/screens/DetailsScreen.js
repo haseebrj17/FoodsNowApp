@@ -400,7 +400,7 @@ const DetailsScreen = ({ route }) => {
                         </View>
                         <Button
                             onPress={() => handleCart(dishes)}
-                            title="Add to Cart"
+                            title="In den Warenkorb"
                             color="#FFAF51"
                             titleStyle={{ color: "#325962", fontSize: Display.setHeight(1.2), fontWeight: 800 }}
                             uppercase={false}
@@ -632,7 +632,7 @@ const DetailsScreen = ({ route }) => {
                                         margin: 10,
                                         color: '#325962'
                                     }}>
-                                        Sort and Filter
+                                        Sortieren/Filtern
                                     </Text>
                                 </View>
                                 <View style={{
@@ -647,7 +647,7 @@ const DetailsScreen = ({ route }) => {
                                         fontWeight: '500',
                                         color: '#325962'
                                     }}>
-                                        Low to High Price
+                                        Niedriger bis hoher Preis
                                     </Text>
                                     <Switch
                                         trackColor={{ false: '#767577', true: '#325962' }}
@@ -669,7 +669,7 @@ const DetailsScreen = ({ route }) => {
                                         fontWeight: '500',
                                         color: '#325962'
                                     }}>
-                                        High to Low Price
+                                        Hoher bis niedriger Preis
                                     </Text>
                                     <Switch
                                         trackColor={{ false: '#767577', true: '#325962' }}
@@ -691,7 +691,7 @@ const DetailsScreen = ({ route }) => {
                                         fontWeight: '500',
                                         color: '#325962'
                                     }}>
-                                        Low to High Spice
+                                        Niedrig bis hoch Gewürz
                                     </Text>
                                     <Switch
                                         trackColor={{ false: '#767577', true: '#325962' }}
@@ -713,7 +713,7 @@ const DetailsScreen = ({ route }) => {
                                         fontWeight: '500',
                                         color: '#325962'
                                     }}>
-                                        High to Low Spice
+                                        Hoch bis Niedrig Gewürz
                                     </Text>
                                     <Switch
                                         trackColor={{ false: '#767577', true: '#325962' }}
@@ -735,7 +735,7 @@ const DetailsScreen = ({ route }) => {
                                         fontWeight: '500',
                                         color: '#325962'
                                     }}>
-                                        Sort by name
+                                        Nach Name sortieren
                                     </Text>
                                     <Switch
                                         trackColor={{ false: '#767577', true: '#325962' }}

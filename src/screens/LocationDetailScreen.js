@@ -22,22 +22,22 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 const labelData = [
     {
-        name: 'Home',
+        name: 'Heim',
         iconName: 'home-outline',
         tag: 'Home'
     },
     {
-        name: 'Work',
+        name: 'Arbeit',
         iconName: 'briefcase-outline',
         tag: 'Work'
     },
     {
-        name: 'Friend',
+        name: 'Freund',
         iconName: 'person-outline',
         tag: 'Friend'
     },
     {
-        name: "Other",
+        name: "Andere",
         iconName: "add",
         tag: ''
     },
@@ -57,14 +57,13 @@ const CustomCallout = () => {
                 fontWeight: '600',
                 color: '#f1f1f1'
             }}
-        >Tap to edit location</Text>
+        >Tippen Sie auf, um den Ort zu bearbeiten</Text>
     </TouchableOpacity>
 }
 
 const AddresseButton = ({ onpress }) => {
     return <Button
         name='locationButton'
-        title="Sign Up"
         mode='contained'
         buttonColor='#FFAF51'
         textColor='#325964'
@@ -85,7 +84,7 @@ const AddresseButton = ({ onpress }) => {
             fontWeight: '700',
             letterSpacing: 1,
         }}
-    >Add Address</Button>
+    >Adresse Hinzufügen</Button>
 }
 
 const LocationDetailScreen = ({ route, navigation }) => {
@@ -341,7 +340,7 @@ const LocationDetailScreen = ({ route, navigation }) => {
                                         fontWeight: '600',
                                         color: '#f1f1f1'
                                     }}
-                                >Tap to edit location</Text>
+                                >Zum Bearbeiten tippen</Text>
                                 <SimpleLineIcons
                                     name="arrow-right"
                                     size={Display.setHeight(1.5)}
@@ -426,7 +425,7 @@ const LocationDetailScreen = ({ route, navigation }) => {
                                     fontSize: 14,
                                     fontWeight: '400'
                                 }}
-                            >Your rider will deliver to the pinned location. You can edit your written address for more accuracy.</Text>
+                            >Ihr Fahrer liefert an die angegebene Adresse. Sie können Ihre schriftliche Adresse für mehr Genauigkeit bearbeiten.</Text>
                         </View>
                     </View>
                     <View
@@ -441,7 +440,7 @@ const LocationDetailScreen = ({ route, navigation }) => {
                                 fontWeight: 'bold',
                                 color: '#325964',
                             }}
-                        >Add a new address</Text>
+                        >Eine neue Adresse hinzufügen</Text>
                     </View>
                     <View
                         style={{
@@ -530,7 +529,7 @@ const LocationDetailScreen = ({ route, navigation }) => {
                                         fontSize: 14,
                                         color: "grey",
                                     }}
-                                    placeholder='House'
+                                    placeholder='Haus'
                                 />
                             </View>
                             <View
@@ -553,19 +552,19 @@ const LocationDetailScreen = ({ route, navigation }) => {
                                         fontSize: 14,
                                         color: "grey",
                                     }}
-                                    placeholder='Street name'
+                                    placeholder='Straßenname'
                                 />
                             </View>
                         </View>
                         <Input
                             keyboardType="numeric"
                             onChangeText={text => handleOnchange(text, 'UnitNumber')}
-                            placeholder="Unit Number"
+                            placeholder="Appartmentnummer"
                         />
                         <Input
                             keyboardType="numeric"
                             onChangeText={text => handleOnchange(text, 'FloorNumber')}
-                            placeholder="Floor Number"
+                            placeholder="Stockwerk Nummer"
                         />
                     </View>
                     <View
@@ -581,14 +580,14 @@ const LocationDetailScreen = ({ route, navigation }) => {
                                 color: '#325964',
                                 marginTop: Display.setHeight(2)
                             }}
-                        >Set Default</Text>
+                        >Standard einstellen</Text>
                         <Text
                             style={{
                                 fontSize: 13,
                                 lineHeight: 25,
                                 fontWeight: '300'
                             }}
-                        >Add this address as the default address?</Text>
+                        >Diese Adresse als Standardadresse hinzufügen?</Text>
                         <View
                             style={{
                                 width,
@@ -613,14 +612,14 @@ const LocationDetailScreen = ({ route, navigation }) => {
                                 color: '#325964',
                                 marginTop: Display.setHeight(2)
                             }}
-                        >Delivery instructions</Text>
+                        >Anweisungen für die Lieferung</Text>
                         <Text
                             style={{
                                 fontSize: 13,
                                 lineHeight: 25,
                                 fontWeight: '300'
                             }}
-                        >Give us more information about your address.</Text>
+                        >Geben Sie uns mehr Informationen über Ihre Adresse.</Text>
                         <Input
                             onChangeText={text => handleOnchange(text, 'Notes')}
                             placeholder="Note to rider - e.g. landmark"
@@ -639,7 +638,7 @@ const LocationDetailScreen = ({ route, navigation }) => {
                                 color: '#325964',
                                 marginTop: Display.setHeight(2)
                             }}
-                        >Add a label</Text>
+                        >Ein Etikett hinzufügen</Text>
                         <FlatList
                             horizontal
                             data={data}

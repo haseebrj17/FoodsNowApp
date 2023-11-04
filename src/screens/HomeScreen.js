@@ -123,7 +123,7 @@ const HomeScreen = () => {
                         <View style={styles.SearchBarContainer}>
                             <Ionicons name="search-sharp" size={24} color="#325962" />
                             <Text style={styles.SearchBarInput}>
-                                Search for restaurants, cuisines, and more....
+                                Suche nach Restaurants, Gerichten und mehr....
                             </Text>
                         </View>
                     </View>
@@ -215,7 +215,7 @@ const HomeScreen = () => {
                                     disableElevation={true}
                                 />
                                 <Button
-                                    title="Sign Up"
+                                    title="Anmelden"
                                     onPress={() => navigation.navigate('Registration')}
                                     color="#FFAF51"
                                     uppercase={false}
@@ -270,15 +270,15 @@ const CustomLocationButton = ({ location }) => {
                     width: 40,
                     marginTop: "2%",
                 }} />
-            <Text 
-            numberOfLines={1}
-            style={{
-                fontSize: Display.setHeight(2),
-                color: "#325962",
-                fontWeight: "bold",
-                marginLeft: 5,
-                marginTop: "8%"
-            }}>{location ? location : 'Location'}</Text>
+            <Text
+                numberOfLines={1}
+                style={{
+                    fontSize: Display.setHeight(2),
+                    color: "#325962",
+                    fontWeight: "bold",
+                    marginLeft: 5,
+                    marginTop: "8%"
+                }}>{location ? location : 'Location'}</Text>
         </View>
     )
 }

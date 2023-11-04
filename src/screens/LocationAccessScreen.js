@@ -214,7 +214,7 @@ const LocationAccessScreen = ({ navigation }) => {
                 fontWeight: '700',
                 letterSpacing: 1,
             }}
-        >Add Address Details</Button>
+        >Adressdetails hinzufügen</Button>
     }
 
     return (
@@ -238,52 +238,71 @@ const LocationAccessScreen = ({ navigation }) => {
                     onRegionChangeComplete={onRegionChangeComplete}
                 >
                 </MapView>
-                <TouchableOpacity
-                    onPress={toggleMiniMapType}
-                    style={styles.miniMap}
-                >
-                    <MapView
-                        provider={PROVIDER_GOOGLE}
-                        style={styles.miniMap}
-                        mapType={miniMapType}
-                        showsUserLocation
-                        initialRegion={region}
-                        onRegionChange={onRegionChange}
-                        onRegionChangeComplete={onRegionChangeComplete}
-                        pointerEvents="none"  // Add this line
-                    />
-                </TouchableOpacity>
                 <Animated.View style={[styles.markerFixed, { transform: [{ translateY: markerTop }] }]}>
                     <Animated.View style={[styles.markerFixed, pinStyle]}>
                         <MaterialIcons name="location-pin" size={Display.setHeight(5)} color="#FFAF51" />
                     </Animated.View>
                 </Animated.View>
-                <TouchableOpacity
-                    onPress={animateToUserLocation}
+                <View
                     style={{
                         zIndex: 9999,
                         position: 'absolute',
-                        bottom: '25%',
-                        right: '3%',
-                        width: Display.setHeight(6),
-                        height: Display.setHeight(6),
-                        borderRadius: Display.setHeight(3),
-                        backgroundColor: '#fff',
+                        bottom: '13%',
+                        width: Display.setWidth(100),
+                        height: Display.setHeight(8),
                         alignItems: 'center',
                         justifyContent: 'center',
-                        shadowColor: '#325964',
-                        shadowOffset: {
-                            width: -1,
-                            height: 4
-                        },
-                        elevation: 5,
-                        shadowOpacity: 0.4,
                     }}
                 >
-                    <View>
-                        <MaterialIcons name="my-location" size={35} color="#325964" />
+                    <View
+                        style={{
+                            width: Display.setWidth(90),
+                            height: '100%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            flexDirection: 'row',
+                        }}
+                    >
+                        <TouchableOpacity
+                            onPress={toggleMiniMapType}
+                            style={styles.miniMap}
+                        >
+                            <MapView
+                                provider={PROVIDER_GOOGLE}
+                                style={styles.miniMap}
+                                mapType={miniMapType}
+                                showsUserLocation
+                                initialRegion={region}
+                                onRegionChange={onRegionChange}
+                                onRegionChangeComplete={onRegionChangeComplete}
+                                pointerEvents="none"  // Add this line
+                            />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={animateToUserLocation}
+                            style={{
+                                width: Display.setHeight(6),
+                                height: Display.setHeight(6),
+                                borderRadius: Display.setHeight(3),
+                                backgroundColor: '#fff',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                shadowColor: '#325964',
+                                shadowOffset: {
+                                    width: -1,
+                                    height: 4
+                                },
+                                elevation: 5,
+                                shadowOpacity: 0.4,
+                            }}
+                        >
+                            <View>
+                                <MaterialIcons name="my-location" size={35} color="#325964" />
+                            </View>
+                        </TouchableOpacity>
                     </View>
-                </TouchableOpacity>
+                </View>
             </View>
             {errorMsg && <Text>{errorMsg}</Text>}
             <View
@@ -319,7 +338,7 @@ const LocationAccessScreen = ({ navigation }) => {
                                     color: '#325964',
                                     marginTop: Display.setHeight(2)
                                 }}
-                            >Add a new address</Text>
+                            >Eine neue Adresse hinzufügen</Text>
                         </View>
                         <TouchableOpacity onPress={handlePresentModal} style={{ width: width * 0.9, justifyContent: 'center', alignItems: 'center' }}>
                             <View
@@ -328,7 +347,7 @@ const LocationAccessScreen = ({ navigation }) => {
                                 <View style={styles.SearchBarContainer}>
                                     <Ionicons name="search-sharp" size={24} color="#325962" />
                                     <Text style={styles.SearchBarInput}>
-                                        Enter your address
+                                        Geben Sie Ihre Adresse ein
                                     </Text>
                                 </View>
                             </View>
@@ -425,7 +444,7 @@ const LocationAccessScreen = ({ navigation }) => {
                                         fontSize: Display.setHeight(1.6),
                                         fontWeight: '400'
                                     }}
-                                >Your rider will deliver to the pinned location. You can edit your written address on the next page.</Text>
+                                >Ihr Fahrer liefert an die angegebene Adresse. Sie können Ihre schriftliche Adresse auf der nächsten Seite bearbeiten.</Text>
                             </View>
                         </View>
                         <AddressButton />
@@ -540,10 +559,10 @@ const styles = StyleSheet.create({
     miniMap: {
         width: Display.setHeight(9),
         height: Display.setHeight(9),
-        position: 'absolute',
-        bottom: '22%',
-        left: '1.5%',
-        borderRadius: 10,
+        // position: 'absolute',
+        // bottom: '11%',
+        // left: '1.5%',
+        // borderRadius: 10,
     },
     SearchBarContainer: {
         width: '95%',

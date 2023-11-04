@@ -13,12 +13,12 @@ const size = 24;
 
 const accountData = [
     {
-        "name": "Personal Details",
+        "name": "Persönliche Angaben",
         "navigator": "PersonalDetials",
         "iconname": <FontAwesome name="user" size={size} color={color} />
     },
     {
-        "name": "Addresses",
+        "name": "Adressen",
         "navigator": "Addresses",
         "iconname": <Entypo name="address" size={size} color={color} />
     },
@@ -28,7 +28,7 @@ const accountData = [
     //     "iconname": <MaterialCommunityIcons name="calendar-clock" size={size} color={color} />
     // },
     {
-        "name": "Orders",
+        "name": "Bestellungen",
         "navigator": "OrderReordering",
         "iconname": <FontAwesome5 name="truck" size={size} color={color} />
     }
@@ -155,7 +155,7 @@ const AccountScreen = ({ navigation }) => {
                                         marginTop: 35,
                                         color: "#325962"
                                     }}
-                                >Account</Text>
+                                >Konto</Text>
                             </View>
                             <View
                                 style={{
@@ -194,13 +194,13 @@ const AccountScreen = ({ navigation }) => {
                                                     color: "#FFAF51",
                                                     marginBottom: Display.setHeight(0.5)
                                                 }}
-                                            >Not a user yet</Text>
+                                            >Noch kein Benutzer?</Text>
                                             <Text
                                                 style={{
                                                     fontSize: 16,
                                                     color: "#325964"
                                                 }}
-                                            >Sign In or Register</Text>
+                                            >Anmelden oder Registrieren</Text>
                                         </View>
                                         <Button
                                             title="Sign Up"
@@ -250,7 +250,7 @@ const AccountScreen = ({ navigation }) => {
                                         marginTop: 35,
                                         color: "#325962"
                                     }}
-                                >Profile</Text>
+                                >Konto</Text>
                             </View>
                             <FlatList
                                 style={{

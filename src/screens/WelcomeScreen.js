@@ -176,7 +176,7 @@ const WelcomeScreen = () => {
                             }}
                         >
                             <Button
-                                title={'Read Policy'}
+                                title={'Politik lesen'}
                                 color={'#325964'}
                                 onPress={() => navigation.navigate('DataTracking')}
                             />

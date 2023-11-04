@@ -375,7 +375,7 @@ const CartScreen = ({ navigation }) => {
                                     marginTop: 35,
                                     color: "#325962",
                                 }}
-                            >My Cart</Text>
+                            >Einkaufswagen</Text>
                         </View>
                         <View
                             style={{
@@ -398,7 +398,7 @@ const CartScreen = ({ navigation }) => {
                                     fontWeight: 'bold',
                                     color: '#325964',
                                 }}
-                            >Your cart is empty</Text>
+                            >Ihr Einkaufswagen ist leer</Text>
                             <View
                                 style={{
                                     width: width * 0.8,
@@ -439,7 +439,7 @@ const CartScreen = ({ navigation }) => {
                                                     marginTop: 35,
                                                     color: "#325962",
                                                 }}
-                                            >My Cart</Text>
+                                            >Einkaufswagen</Text>
                                         </View>
                                         <View>
                                             <Skeleton height={Display.setHeight(15)} width={Display.setWidth(90)} style={{ borderRadius: 12, alignSelf: 'center', marginTop: Display.setHeight(1.5) }} />
@@ -536,7 +536,7 @@ const CartScreen = ({ navigation }) => {
                                                             marginTop: 35,
                                                             color: "#325962",
                                                         }}
-                                                    >My Cart</Text>
+                                                    >Einkaufswagen</Text>
                                                 </View>
                                             }
                                             ListFooterComponent={
@@ -568,7 +568,7 @@ const CartScreen = ({ navigation }) => {
                                                                         fontWeight: '600',
                                                                         color: '#325964'
                                                                     }}
-                                                                >Items Total</Text>
+                                                                >Posten Gesamt</Text>
                                                                 <Text
                                                                     style={{
                                                                         fontSize: 16,
@@ -592,7 +592,7 @@ const CartScreen = ({ navigation }) => {
                                                                         fontWeight: '600',
                                                                         color: '#325964',
                                                                     }}
-                                                                >Delivery Charges</Text>
+                                                                >Lieferkosten</Text>
                                                                 <Text
                                                                     style={{
                                                                         fontSize: 16,
@@ -628,7 +628,7 @@ const CartScreen = ({ navigation }) => {
                                                                         fontWeight: 'bold',
                                                                         color: '#325964'
                                                                     }}
-                                                                >Grand Total</Text>
+                                                                >Gesamtbetrag</Text>
                                                                 <Text
                                                                     style={{
                                                                         fontSize: 20,
@@ -668,7 +668,7 @@ const CartScreen = ({ navigation }) => {
                                                                                     fontSize: Display.setHeight(1.5),
                                                                                     color: '#000'
                                                                                 }}
-                                                                            >Please add more items to the cart to meet the minimum order value of € {minOrder}</Text>
+                                                                            >Bitte legen Sie weitere Artikel in den Warenkorb, um den Mindestbestellwert von {minOrder} € zu erreichen.</Text>
                                                                         </View>
                                                                     </View>
                                                                     <Separator width={'100%'} height={Display.setHeight(0.1)} />
@@ -684,14 +684,14 @@ const CartScreen = ({ navigation }) => {
                                                             {
                                                                 token === null || token === '' ? (
                                                                     <Button
-                                                                        title='Sign Up to Checkout'
+                                                                        title='Anmeldung zur Kasse'
                                                                         onPress={() => navigation.navigate('Registration')}
                                                                     />
                                                                 ) : (
                                                                     <Button
                                                                         disabled={grandTotal >= minOrder ? false : true}
                                                                         color={grandTotal >= minOrder ? null : '#d9d9d9'}
-                                                                        title='Proceed To Checkout'
+                                                                        title='Weiter zum Checkout'
                                                                         onPress={() => navigation.navigate('CartNavigator', { screen: 'Checkout', params: { checkoutData: checkout, cartData: cartData, grandTotal: grandTotal } })}
                                                                     />
                                                                 )}

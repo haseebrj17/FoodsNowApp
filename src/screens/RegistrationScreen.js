@@ -17,6 +17,7 @@ import { StorageService } from '../services';
 import { Dispatch } from 'react';
 import AuthenticationService from '../services/AuthenticationService';
 import { Display } from '../utils';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const { width, height } = Dimensions.get('screen')
 
@@ -107,33 +108,33 @@ const RegistrationScreen = ({ navigation }) => {
         let isValid = true;
 
         if (!inputs.email) {
-            handleError('Please input email', 'email');
+            handleError('Bitte E-Mail eingeben', 'email');
             isValid = false;
             margin = 40
         } else if (!inputs.email.match(/\S+@\S+\.\S+/)) {
-            handleError('Please input a valid email', 'email');
+            handleError('Bitte geben Sie eine gültige E-Mail ein', 'email');
             isValid = false;
             margin = 40
         }
 
         if (!inputs.fullname) {
-            handleError('Please input fullname', 'fullname');
+            handleError('Bitte Name und Vorname eingeben', 'fullname');
             isValid = false;
             margin = 40
         }
 
         if (!inputs.phone) {
-            handleError('Please input phone number', 'phone');
+            handleError('Bitte Handynummer eingeben', 'phone');
             isValid = false;
             margin = 40
         }
 
         if (!inputs.password) {
-            handleError('Please input password', 'password');
+            handleError('Bitte Passwort eingeben', 'password');
             isValid = false;
             margin = 40
         } else if (inputs.password.length < 6) {
-            handleError('Min password length of 6', 'password');
+            handleError('Mindestpasswortlänge von 6', 'password');
             isValid = false;
             margin = 40
         }
@@ -179,43 +180,43 @@ const RegistrationScreen = ({ navigation }) => {
     };
 
     return (
-        <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            style={{
-                flex: 1
-            }}>
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View
+                style={{
+                    backgroundColor: '#325962',
+                    flex: 1
+                }}
+            >
                 <View
                     style={{
-                        backgroundColor: '#325962',
-                        flex: 1
+                        backgroundColor: '#f1f1f1'
                     }}
                 >
                     <View
                         style={{
-                            backgroundColor: '#f1f1f1'
+                            width: width,
+                            height: width / 4,
+                            backgroundColor: '#f1f1f1',
+                            overflow: 'hidden',
+                            borderBottomRightRadius: Display.setHeight(80),
                         }}
                     >
-                        <View
+                        <Image
+                            source={require('../assets/images/pattern15.png')}
                             style={{
                                 width: width,
                                 height: width / 4,
-                                backgroundColor: '#f1f1f1',
-                                overflow: 'hidden',
+                                aspectRatio: 2000 / 500,
                                 borderBottomRightRadius: Display.setHeight(80),
                             }}
-                        >
-                            <Image
-                                source={require('../assets/images/pattern15.png')}
-                                style={{
-                                    width: width,
-                                    height: width / 4,
-                                    aspectRatio: 2000 / 500,
-                                    borderBottomRightRadius: Display.setHeight(80),
-                                }}
-                            />
-                        </View>
+                        />
                     </View>
+                </View>
+                <KeyboardAvoidingView
+                    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                    style={{
+                        flex: 1
+                    }}>
                     <View
                         style={{
                             flex: 1,
@@ -257,21 +258,21 @@ const RegistrationScreen = ({ navigation }) => {
                                         alignSelf: 'center',
                                         marginBottom: Display.setHeight(1)
                                     }}
-                                >Sign Up</Text>
+                                >Registrieren</Text>
                                 <Input
                                     onChangeText={text => handleOnchange(text, 'email')}
                                     onFocus={() => handleError(null, 'email')}
                                     iconName="email-outline"
-                                    label="Email"
-                                    placeholder="Enter your email address"
+                                    label="E-Mail"
+                                    placeholder="Geben Sie Ihre E-Mail Adresse ein"
                                     error={errors.email}
                                 />
                                 <Input
                                     onChangeText={text => handleOnchange(text, 'fullname')}
                                     onFocus={() => handleError(null, 'fullname')}
                                     iconName="account-outline"
-                                    label="Full Name"
-                                    placeholder="Enter your full name"
+                                    label="Voller Name"
+                                    placeholder="Geben Sie Ihren vollen Namen ein"
                                     error={errors.fullname}
                                 />
 
@@ -280,94 +281,65 @@ const RegistrationScreen = ({ navigation }) => {
                                     onChangeText={text => handleOnchange(text, 'phone')}
                                     onFocus={() => handleError(null, 'phone')}
                                     iconName="phone-outline"
-                                    label="Phone Number"
-                                    placeholder="Enter your phone no"
+                                    label="Handy-Nummer"
+                                    placeholder="Geben Sie Ihre Handynummer ein"
                                     error={errors.phone}
                                 />
                                 <Input
                                     onChangeText={text => handleOnchange(text, 'password')}
                                     onFocus={() => handleError(null, 'password')}
                                     iconName="lock-outline"
-                                    label="Password"
-                                    placeholder="Enter your password"
+                                    label="Passwort"
+                                    placeholder="Geben Sie Ihr Passwort ein"
                                     error={errors.password}
                                     password
                                 />
-                                <Button title="Register" onPress={validate} />
+                                <Button title="Registrieren" onPress={validate} />
                             </View>
                         </View>
                     </View>
+                </KeyboardAvoidingView>
+                <View
+                    style={{
+                        height: Display.setHeight(17),
+                        backgroundColor: '#325962'
+                    }}
+                >
                     <View
                         style={{
-                            height: Display.setHeight(17),
-                            backgroundColor: '#325962'
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            alignSelf: 'center',
+                            margin: Display.setHeight(1),
                         }}
                     >
                         <View
                             style={{
-                                flexDirection: 'column',
-                                justifyContent: 'center',
+                                flexDirection: 'row',
                                 alignItems: 'center',
-                                alignSelf: 'center',
+                                justifyContent: 'space-evenly',
                                 margin: Display.setHeight(1),
                             }}
                         >
-                            <View
+                            <Text
                                 style={{
-                                    flexDirection: 'row',
-                                    alignItems: 'center',
-                                    justifyContent: 'space-evenly',
-                                    margin: Display.setHeight(1),
+                                    fontWeight: "500",
+                                    fontSize: Display.setHeight(1.8),
+                                    color: '#f1f1f1'
                                 }}
-                            >
-                                <Text
-                                    style={{
-                                        fontWeight: "500",
-                                        fontSize: Display.setHeight(1.8),
-                                        color: '#f1f1f1'
-                                    }}
-                                >Sign up with</Text>
-                            </View>
-                            <View
-                                style={{
-                                    width: '60%',
-                                    flexDirection: 'row',
-                                    alignItems: 'center',
-                                    justifyContent: 'space-evenly'
-                                }}
-                            >
-                                {Platform.OS === 'ios' ? (
-                                    <>
-                                        <TouchableOpacity onPress={() => promptAsyncGoogle()}>
-                                            <View
-                                                style={{
-                                                    width: Display.setHeight(5),
-                                                    height: Display.setHeight(5),
-                                                    borderRadius: Display.setHeight(2.5),
-                                                    backgroundColor: '#f1f1f1',
-                                                    justifyContent: 'center',
-                                                    alignItems: 'center',
-                                                }}
-                                            >
-                                                <GoogleIcon size={Display.setHeight(3)} />
-                                            </View>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity onPress={handleAppleLogin}>
-                                            <View
-                                                style={{
-                                                    width: Display.setHeight(5),
-                                                    height: Display.setHeight(5),
-                                                    borderRadius: Display.setHeight(2.5),
-                                                    backgroundColor: '#f1f1f1',
-                                                    justifyContent: 'center',
-                                                    alignItems: 'center',
-                                                }}
-                                            >
-                                                <AppleIcon size={Display.setHeight(3)} />
-                                            </View>
-                                        </TouchableOpacity>
-                                    </>
-                                ) : (
+                            >Anmeldung bei</Text>
+                        </View>
+                        <View
+                            style={{
+                                width: '60%',
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                justifyContent: 'space-evenly'
+                            }}
+                        >
+                            {Platform.OS === 'ios' ? (
+                                <>
                                     <TouchableOpacity onPress={() => promptAsyncGoogle()}>
                                         <View
                                             style={{
@@ -382,38 +354,67 @@ const RegistrationScreen = ({ navigation }) => {
                                             <GoogleIcon size={Display.setHeight(3)} />
                                         </View>
                                     </TouchableOpacity>
-                                )}
-                            </View>
-                            <View
+                                    <TouchableOpacity onPress={handleAppleLogin}>
+                                        <View
+                                            style={{
+                                                width: Display.setHeight(5),
+                                                height: Display.setHeight(5),
+                                                borderRadius: Display.setHeight(2.5),
+                                                backgroundColor: '#f1f1f1',
+                                                justifyContent: 'center',
+                                                alignItems: 'center',
+                                            }}
+                                        >
+                                            <AppleIcon size={Display.setHeight(3)} />
+                                        </View>
+                                    </TouchableOpacity>
+                                </>
+                            ) : (
+                                <TouchableOpacity onPress={() => promptAsyncGoogle()}>
+                                    <View
+                                        style={{
+                                            width: Display.setHeight(5),
+                                            height: Display.setHeight(5),
+                                            borderRadius: Display.setHeight(2.5),
+                                            backgroundColor: '#f1f1f1',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                        }}
+                                    >
+                                        <GoogleIcon size={Display.setHeight(3)} />
+                                    </View>
+                                </TouchableOpacity>
+                            )}
+                        </View>
+                        <View
+                            style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                justifyContent: 'space-evenly',
+                                margin: Display.setHeight(1.2),
+                            }}
+                        >
+                            <Text
                                 style={{
-                                    flexDirection: 'row',
-                                    alignItems: 'center',
-                                    justifyContent: 'space-evenly',
-                                    margin: Display.setHeight(1.2),
+                                    fontWeight: "500",
+                                    fontSize: Display.setHeight(2),
+                                    color: '#f1f1f1'
                                 }}
-                            >
-                                <Text
-                                    style={{
-                                        fontWeight: "500",
-                                        fontSize: Display.setHeight(2),
-                                        color: '#f1f1f1'
-                                    }}
-                                >Already have an account? </Text>
-                                <TouchableOpacity
-                                    onPress={() => navigation.navigate('Login')}
-                                ><Text
-                                    style={{
-                                        fontWeight: "500",
-                                        fontSize: Display.setHeight(2),
-                                        color: '#FFAF51'
-                                    }}
-                                >Sign In</Text></TouchableOpacity>
-                            </View>
+                            >Sie haben bereits ein Konto? </Text>
+                            <TouchableOpacity
+                                onPress={() => navigation.navigate('Login')}
+                            ><Text
+                                style={{
+                                    fontWeight: "500",
+                                    fontSize: Display.setHeight(2),
+                                    color: '#FFAF51'
+                                }}
+                            >Anmelden</Text></TouchableOpacity>
                         </View>
                     </View>
                 </View>
-            </TouchableWithoutFeedback>
-        </KeyboardAvoidingView>
+            </View>
+        </TouchableWithoutFeedback>
     )
 }
 

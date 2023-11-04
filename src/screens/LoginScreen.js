@@ -118,11 +118,11 @@ const LoginScreen = () => {
         Keyboard.dismiss();
         let isValid = true;
         if (!inputs.email) {
-            handleError('Please input email', 'email');
+            handleError('Bitte E-Mail eingeben', 'email');
             isValid = false;
         }
         if (!inputs.password) {
-            handleError('Please input password', 'password');
+            handleError('Bitte Passwort eingeben', 'password');
             isValid = false;
         }
         if (isValid) {
@@ -244,27 +244,27 @@ const LoginScreen = () => {
                                         margin: Display.setHeight(1),
                                         marginBottom: Display.setHeight(5)
                                     }}
-                                >Login</Text>
+                                >Anmelden</Text>
                                 <NativeBaseProvider>
                                     <FormControl isRequired>
                                         <Input
                                             onChangeText={text => handleOnchange(text, 'email')}
                                             onFocus={() => handleError(null, 'email')}
                                             iconName="email-outline"
-                                            label="Email"
-                                            placeholder="Enter your email address"
+                                            label="E-Mail"
+                                            placeholder="Geben Sie Ihre E-Mail Adresse ein"
                                             error={errors.email}
                                         />
                                         <Input
                                             onChangeText={text => handleOnchange(text, 'password')}
                                             onFocus={() => handleError(null, 'password')}
                                             iconName="lock-outline"
-                                            label="Password"
-                                            placeholder="Enter your password"
+                                            label="Passwort"
+                                            placeholder="Geben Sie Ihr Passwort ein"
                                             error={errors.password}
                                             password
                                         />
-                                        <Button title="Log In" onPress={validate} />
+                                        <Button title="Anmelden" onPress={validate} />
                                     </FormControl>
                                 </NativeBaseProvider>
                             </View>
@@ -298,7 +298,7 @@ const LoginScreen = () => {
                                         fontSize: Display.setHeight(1.8),
                                         color: '#f1f1f1'
                                     }}
-                                >Sign in with</Text>
+                                >Anmelden mit</Text>
                             </View>
                             <View
                                 style={{
@@ -308,34 +308,53 @@ const LoginScreen = () => {
                                     justifyContent: 'space-evenly'
                                 }}
                             >
-                                <TouchableOpacity onPress={handleGoogleLogin}>
-                                    <View
-                                        style={{
-                                            width: Display.setHeight(5),
-                                            height: Display.setHeight(5),
-                                            borderRadius: Display.setHeight(2.5),
-                                            backgroundColor: '#f1f1f1',
-                                            justifyContent: 'center',
-                                            alignItems: 'center',
-                                        }}
-                                    >
-                                        <GoogleIcon size={Display.setHeight(3)} />
-                                    </View>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={handleAppleLogin}>
-                                    <View
-                                        style={{
-                                            width: Display.setHeight(5),
-                                            height: Display.setHeight(5),
-                                            borderRadius: Display.setHeight(2.5),
-                                            backgroundColor: '#f1f1f1',
-                                            justifyContent: 'center',
-                                            alignItems: 'center',
-                                        }}
-                                    >
-                                        <AppleIcon size={Display.setHeight(3)} />
-                                    </View>
-                                </TouchableOpacity>
+                                {Platform.OS === 'ios' ? (
+                                    <>
+                                        <TouchableOpacity onPress={handleGoogleLogin}>
+                                            <View
+                                                style={{
+                                                    width: Display.setHeight(5),
+                                                    height: Display.setHeight(5),
+                                                    borderRadius: Display.setHeight(2.5),
+                                                    backgroundColor: '#f1f1f1',
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                }}
+                                            >
+                                                <GoogleIcon size={Display.setHeight(3)} />
+                                            </View>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity onPress={handleAppleLogin}>
+                                            <View
+                                                style={{
+                                                    width: Display.setHeight(5),
+                                                    height: Display.setHeight(5),
+                                                    borderRadius: Display.setHeight(2.5),
+                                                    backgroundColor: '#f1f1f1',
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                }}
+                                            >
+                                                <AppleIcon size={Display.setHeight(3)} />
+                                            </View>
+                                        </TouchableOpacity>
+                                    </>
+                                ) : (
+                                    <TouchableOpacity onPress={handleAppleLogin}>
+                                        <View
+                                            style={{
+                                                width: Display.setHeight(5),
+                                                height: Display.setHeight(5),
+                                                borderRadius: Display.setHeight(2.5),
+                                                backgroundColor: '#f1f1f1',
+                                                justifyContent: 'center',
+                                                alignItems: 'center',
+                                            }}
+                                        >
+                                            <GoogleIcon size={Display.setHeight(3)} />
+                                        </View>
+                                    </TouchableOpacity>
+                                )}
                             </View>
                             <View
                                 style={{
@@ -351,7 +370,7 @@ const LoginScreen = () => {
                                         fontSize: Display.setHeight(2),
                                         color: '#f1f1f1'
                                     }}
-                                >Don't have an account? </Text>
+                                >Sie haben noch kein Konto? </Text>
                                 <TouchableOpacity
                                     onPress={() => navigation.navigate('Registration')}
                                 ><Text
@@ -360,7 +379,7 @@ const LoginScreen = () => {
                                         fontSize: Display.setHeight(2),
                                         color: '#FFAF51'
                                     }}
-                                >Sign Up</Text></TouchableOpacity>
+                                >Registrieren</Text></TouchableOpacity>
                             </View>
                         </View>
                     </View>

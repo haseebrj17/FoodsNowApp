@@ -48,7 +48,7 @@ const SreachScreen = ({ navigation }) => {
         <View style={{ width: width, height: height }}>
             <View style={styles.Container}>
                 <Searchbar
-                    placeholder="Search for restaurants, cuisines, and more...."
+                    placeholder="Suche nach Restaurants, Gerichten und mehr...."
                     style={styles.SearchBar}
                     inputStyle={styles.SearchBarInput}
                     iconColor="#325962"
@@ -59,13 +59,13 @@ const SreachScreen = ({ navigation }) => {
             <View style={{ width: width * 0.9, alignItems: 'center', alignSelf: 'center', marginTop: 20, flexDirection: 'row' }}>
                 <Entypo name="back-in-time" size={24} color="#325962" />
                 <Text style={{ fontSize: 18, marginLeft: 10, fontWeight: 'bold', color: '#325962' }}>
-                    Recent Sreach
+                    Jüngste Suchvorgänge
                 </Text>
             </View>
             <View style={{ width: width * 0.9, alignItems: 'center', alignSelf: 'center', marginTop: 20, flexDirection: 'row' }}>
                 <MaterialIcons name='local-fire-department' size={24} color="#325962" />
                 <Text style={{ fontSize: 18, marginLeft: 10, fontWeight: 'bold', color: '#325962' }}>
-                    Most loved restaurants
+                    Beliebteste Restaurants
                 </Text>
             </View>
             <View style={{
