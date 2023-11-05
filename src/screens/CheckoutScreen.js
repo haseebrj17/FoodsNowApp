@@ -32,6 +32,7 @@ import Input from "../components/Input";
 import { placeOrder } from "../actions/PlaceOrderAction";
 import { clearCart } from "../actions/CartAction";
 import { getToken } from "../Store";
+import LoadingOverlay from "../components/LoadingOverlay";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -57,6 +58,7 @@ const CheckoutScreen = ({ route, navigation }) => {
     const [franchiseId, setFranchiseId] = useState(null);
     const [paymentMethod, setPaymentMethod] = useState("cash");
     const [selectedAddressId, setSelectedAddressId] = useState(null);
+    const [subLoading, setSubLoading] = useState(false)
 
     const token = useSelector(getToken);
 
@@ -73,17 +75,21 @@ const CheckoutScreen = ({ route, navigation }) => {
     );
 
     const handleOrder = async (inputs) => {
+        setSubLoading(true)
         try {
             const response = await dispatch(placeOrder(inputs, token));
             if (response.status) {
                 dispatch(clearCart());
+                setSubLoading(false)
                 navigation.navigate('OrderConfirmation');
                 Alert.alert('Bestellung aufgegeben', 'Ihre Bestellung wurde erfolgreich aufgegeben.');
             } else {
+                setSubLoading(false)
                 Alert.alert('Fehler', 'Bei Ihrer Bestellung ist ein Fehler aufgetreten.');
                 throw new Error(`Unexpected response: ${response.message}`);
             }
         } catch (error) {
+            setSubLoading(false)
             console.error('Error:', error);
             Alert.alert('Fehler', 'Bei Ihrer Bestellung ist ein Fehler aufgetreten.');
         }
@@ -483,6 +489,10 @@ const CheckoutScreen = ({ route, navigation }) => {
         { title: "Mein Einkaufswagen", data: cartData ? cartData : [] },
         { title: "Adressen", data: addresses ? addresses : [] },
     ];
+
+    if (subLoading) {
+        return <LoadingOverlay />
+    }
 
     return (
         <View
