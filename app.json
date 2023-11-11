@@ -6,7 +6,7 @@
     "owner": "foodsnowgmbh",
     "version": "1.0.1",
     "orientation": "portrait",
-    "icon": "./src/assets/BN_Published_LOGO.png",
+    "icon": "./src/assets/BNPublishingLogo512.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./src/assets/BNSplash500x500.png",
@@ -36,7 +36,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./src/assets/BN_Published_LOGO.png",
+        "foregroundImage": "./src/assets/BNPublishingLogo512.png",
         "backgroundColor": "#ffffff"
       },
       "runtimeVersion": {
@@ -50,7 +50,7 @@
       "package": "co.foodsnow.BytezNow"
     },
     "web": {
-      "favicon": "./src/assets/BN_Published_LOGO.png"
+      "favicon": "./src/assets/BNPublishingLogo512.png"
     },
     "extra": {
       "eas": {
