@@ -8,6 +8,7 @@ import {
     Animated,
     SectionList,
     Alert,
+    SafeAreaView
 } from "react-native";
 import { Display } from "../utils";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -496,12 +497,10 @@ const CheckoutScreen = ({ route, navigation }) => {
     }
 
     return (
-        <View
-            style={{
-                width,
-                height,
-                backgroundColor: "#fff",
-            }}>
+        <SafeAreaView style={{
+            flex: 1,
+            justifyContent: 'space-between'
+        }}>
             <SectionList
                 stickySectionHeadersEnabled={false}
                 sections={sectionsData}
@@ -862,31 +861,37 @@ const CheckoutScreen = ({ route, navigation }) => {
                                 </View>
                             </View>
                         </View>
-                        <View
-                            style={{
-                                width: width * 0.8,
-                                height: Display.setHeight(10),
-                                alignSelf: 'center',
-                                alignItems: "center",
-                                justifyContent: "center",
-                                marginBottom: Display.setHeight(3)
-                            }}
-                        >
-                            <Separator
-                                width={Display.setWidth(100)}
-                                height={Display.setHeight(0.1)}
-                            />
-                            <Button
-                                disabled={selectedAddressId === null ? true : false}
-                                color={selectedAddressId === null ? '#696969' : '#325964'}
-                                title={'Bestellung aufgeben'}
-                                onPress={() => handleOrder(inputs)}
-                            />
-                        </View>
                     </>
                 }
             />
-        </View>
+            <View
+                style={{
+                    width: width,
+                    height: Display.setHeight(10),
+                    alignSelf: 'center',
+                    alignItems: 'flex-start',
+                }}
+            >
+                <Separator
+                    width={Display.setWidth(100)}
+                    height={Display.setHeight(0.1)}
+                />
+                <View
+                    style={{
+                        width: width * 0.8,
+                        height: '100%',
+                        alignSelf: 'center',
+                        alignItems: 'flex-start',
+                    }}>
+                    <Button
+                        disabled={selectedAddressId === null ? true : false}
+                        color={selectedAddressId === null ? '#696969' : '#325964'}
+                        title={'Bestellung aufgeben'}
+                        onPress={() => handleOrder(inputs)}
+                    />
+                </View>
+            </View>
+        </SafeAreaView>
     );
 };
 
