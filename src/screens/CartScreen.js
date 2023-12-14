@@ -3,7 +3,7 @@ import React, { useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { addListener, removeListener } from '@reduxjs/toolkit';
 import { useEffect, useState } from 'react'
-import { Display } from '../utils'
+import { Display, transformImageUrl } from '../utils'
 import { StatusBar } from 'native-base'
 import { RestaurantService } from '../services'
 import Skeleton from '../components/Skeleton'
@@ -90,10 +90,6 @@ const CartScreen = ({ navigation }) => {
         }
     }, [dataLoaded]);
 
-    // useEffect(() => {
-    //     setLoading(false);
-    // }, [itemTotal, grandTotal, cartData, checkout, locationData, cartItems])
-
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -111,7 +107,7 @@ const CartScreen = ({ navigation }) => {
                 })
             } catch (error) {
                 console.error("Error while fetching data:", error);
-                setLoading(false);  // Handle loading state in case of error
+                setLoading(false);
             } finally {
                 setTimeout(() => {
                     setDataLoaded(true);
@@ -133,6 +129,7 @@ const CartScreen = ({ navigation }) => {
                 const parsedProductId = JSON.parse(item.product_id);
                 if (parsedProductId && parsedProductId.dishId) {
                     const productDetails = await RestaurantService.getProductById(parsedProductId.dishId);
+                    console.log("Product Details:", productDetails)
                     return productDetails;
                 }
                 return null;
@@ -247,7 +244,10 @@ const CartScreen = ({ navigation }) => {
                         justifyContent: 'center'
                     }}
                 >
-                    <Image source={{ uri: item.Product.Image }}
+                    <Image
+                        source={{
+                            uri: transformImageUrl({ originalUrl: item?.Product?.Image, size: '/tr:w-200'})
+                        }}
                         style={{
                             width: '80%',
                             height: '65%',

@@ -57,10 +57,6 @@ export const addToCart = ({ dishId, selectedSize, selectedExtras, selectedDips, 
 
         const serializedProduct = JSON.stringify(product);
 
-        console.log("Serialized Product:", serializedProduct);
-        console.log("Quantity:", quantity);
-
-        // Ensure that serializedProduct goes to product_id column and quantity goes to quantity column
         db.transaction(
             (tx) => {
                 tx.executeSql(

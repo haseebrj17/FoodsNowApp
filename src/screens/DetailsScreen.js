@@ -22,7 +22,7 @@ import {
     Box, Heading, AspectRatio, Center, HStack, Stack, ScrollView, StatusBar
 } from 'native-base';
 import { Button } from "@react-native-material/core";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useFonts } from 'expo-font';
 import { Searchbar } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
@@ -38,7 +38,7 @@ import UseModal from "../components/UseModal";
 import AddToCart from "../components/AddToCart";
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProducts } from '../actions/ProductActions';
-import { Display } from "../utils";
+import { Display, transformImageUrl } from "../utils";
 import { Separator } from "../components";
 import Skeleton from "../components/Skeleton";
 import { GetImageAspectRatio } from "../utils/ImageAspect";
@@ -58,6 +58,86 @@ const formatData = (dish, column) => {
     return dish;
 }
 
+const RenderImage = React.memo((props) => {
+    const { cover } = props;
+    return (
+        <Image
+            source={{ uri: transformImageUrl({ originalUrl: cover, size: '/tr:w-900' }) }}
+            style={styles.bannerImage}
+        />
+    );
+});
+
+const RenderLogoBox = (props) => {
+    const { logo } = props
+    let imgAspect = 1; // Default aspect ratio
+
+    GetImageAspectRatio(logo, (aspectRatio) => {
+        imgAspect = aspectRatio;
+    });
+    return <View style={[
+        styles.logoBox,
+        {
+            backgroundColor: '#f1f1f1'
+        }
+    ]}>
+        <Image source={{ uri: transformImageUrl({ originalUrl: logo, size: '/tr:w-200' }) }} style={{
+            aspectRatio: imgAspect,
+            resizeMode: 'contain',
+            height: undefined,
+            width: '90%',
+            margin: Display.setHeight(0.2)
+        }} />
+    </View>
+}
+
+const ListHeader = React.memo(({ cover, logo, brandName, brandDescription, handlePresentModal }) => {
+    return (
+        <>
+            <View style={{ height: width / 1.3 }}>
+                <RenderImage cover={cover} />
+                <RenderLogoBox logo={logo} />
+            </View>
+            <View
+                style={{
+                    width,
+                    alignItems: 'flex-start',
+                    justifyContent: 'flex-start'
+                }}
+            >
+                <Text style={{ fontSize: Display.setHeight(2.2), fontWeight: 'bold', color: '#325962', marginLeft: Display.setHeight(2), marginBottom: Display.setHeight(1.5), marginTop: Display.setHeight(1.2), letterSpacing: 1, }}>{brandName.toUpperCase()}
+                </Text>
+                <Text style={{ lineHeight: 15, fontSize: Display.setHeight(1.4), fontWeight: 'bold', color: '#325962', letterSpacing: 0.5, marginLeft: Display.setHeight(2), marginBottom: Display.setHeight(0.5) }}>{brandDescription ? brandDescription : null}
+                </Text>
+            </View>
+            <Separator height={Display.setHeight(1)} width={'100%'} />
+            <View
+                style={{
+                    width: "100%",
+                    height: Display.setHeight(4),
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginBottom: 5,
+                }}
+            >
+                <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', left: '4%' }}
+                    onPress={handlePresentModal}
+                >
+                    <Text style={{ marginRight: 3, color: '#325962', opacity: 0.6 }}>Sortieren/Filtern</Text>
+                    <Icon
+                        name="sliders"
+                        type="font-awesome"
+                        color="#325962"
+                        size={18}
+                    />
+                </TouchableOpacity>
+            </View>
+            <Separator height={Display.setHeight(1)} width={'100%'} />
+        </>
+    )
+})
+
 const DetailsScreen = ({ route }) => {
     const navigation = useNavigation();
 
@@ -68,8 +148,10 @@ const DetailsScreen = ({ route }) => {
     const [Brand, setBrand] = useState(route.params.brand)
     const [deliveryParams, setDeliveryParams] = useState(route.params.deliveryParams)
     const [dish, setDish] = useState(null);
+    const [unfilteredDish, setUnfilteredDish] = useState(null);
     const [extras, setExtras] = useState(null);
     const [dips, setDips] = useState(null);
+    const [categories, setCategories] = useState(null);
 
     const dispatch = useDispatch();
 
@@ -81,7 +163,6 @@ const DetailsScreen = ({ route }) => {
         (state) => state.productState
     );
     const categoryId = route.params.brand.Id;
-    // console.log(categoryId)
 
     useEffect(() => {
         dispatch(fetchProducts(categoryId));
@@ -113,10 +194,11 @@ const DetailsScreen = ({ route }) => {
 
     useEffect(() => {
         if (products) {
-            console.log(loadingProducts)
-            setDish(products.Products)
-            setDips(products.ProductExtraDippings)
-            setExtras(products.ProductExtraTroppings)
+            setDish(products?.Products)
+            setUnfilteredDish(products?.Products)
+            setDips(products?.ProductExtraDippings)
+            setExtras(products?.ProductExtraTroppings)
+            setCategories(products?.Categories)
         }
     }, [products])
 
@@ -219,6 +301,8 @@ const DetailsScreen = ({ route }) => {
         bottomSheetModalRef.current.close();
     }, []);
 
+    ///////////////  Sorting Modal  ///////////////
+
     const [sortByName, setSortByName] = useState(false);
     const [sortByPriceLowHigh, setSortByPriceLowHigh] = useState(false);
     const [sortByPriceHighLow, setSortByPriceHighLow] = useState(false);
@@ -308,7 +392,75 @@ const DetailsScreen = ({ route }) => {
         sortedDishes.sort((a, b) => b.SpiceLevel - a.SpiceLevel);
     }
 
-    ///////////////  Sorting Modal  ///////////////
+    ///////////////  Categories Funtion  ///////////////
+
+    const [selectedCategory, setSelectedCategory] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
+
+    const filterProductsByCategory = (categoryId) => {
+        console.log("Filtering for category ID:", categoryId);
+
+        if (categoryId === null) {
+            return unfilteredDish;
+        } else {
+            const filtered = unfilteredDish.filter(product =>
+                product.ProductCategories.some(category => {
+                    console.log("Comparing:", category.CategoryId, "with", categoryId);
+                    return category.CategoryId === categoryId;
+                })
+            );
+            console.log("Filtered Products:", filtered);
+            return filtered;
+        }
+    };
+
+    const handleCategory = (item) => {
+        if (item.Id === selectedCategory?.Id) {
+            setSelectedCategory(null);
+            setDish(unfilteredDish);
+        } else {
+            setSelectedCategory(item);
+            // setIsLoading(true);
+            const filteredProducts = filterProductsByCategory(item.Id);
+            setDish(filteredProducts);
+        }
+    };
+
+    // useEffect(() => {
+    //     if (!loadingProducts) {
+    //         setIsLoading(false);
+    //     }
+    // }, [loadingProducts]);
+
+    // Render Categories FlatList Item
+
+    const renderCategories = ({ item }) => {
+        const isSelected = item.Id === selectedCategory?.Id;
+        return (
+            <TouchableOpacity onPress={() => handleCategory(item)}>
+                <View style={{
+                    width: Display.setWidth(25),
+                    height: Display.setHeight(4),
+                    backgroundColor: isSelected ? '#325964' : '#F4E4CD', // Change color if selected
+                    margin: Display.setHeight(1),
+                    borderRadius: '20%',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                }}>
+                    <Text style={{
+                        fontSize: Display.setHeight(1.2),
+                        fontWeight: '700',
+                        color: isSelected ? '#F4E4CD' : '#325964' // Change text color if selected
+                    }}>
+                        {item.Name}
+                    </Text>
+                </View>
+            </TouchableOpacity>
+        );
+    };
+
+    ///////////////  Render Main FlatList Item  ///////////////
 
     const renderItem = ({ item: dishes }) => {
         const brand = Brand
@@ -359,8 +511,7 @@ const DetailsScreen = ({ route }) => {
                 <Box>
                     <Image
                         source={{
-                            uri:
-                                dishes.Image
+                            uri: transformImageUrl({ originalUrl: dishes.Image, size: '/tr:w-240' })
                         }}
                         alt="image"
                         style={styles.ImageOfferCard}
@@ -414,37 +565,6 @@ const DetailsScreen = ({ route }) => {
                 </View>
             </Box>
         </Box>
-    }
-
-    const RenderImage = (props) => {
-        const { cover } = props;
-        return <Image source={{ uri: cover }} style={styles.bannerImage} />
-    }
-
-    const colorObject = JSON.parse(route.params.brand?.Color?.replace(/'/g, "\""));
-    const color1 = colorObject.color1;
-
-    const RenderLogoBox = (props) => {
-        const { logo } = props
-        let imgAspect = 1; // Default aspect ratio
-
-        GetImageAspectRatio(logo, (aspectRatio) => {
-            imgAspect = aspectRatio;
-        });
-        return <View style={[
-            styles.logoBox,
-            {
-                backgroundColor: '#f1f1f1'
-            }
-        ]}>
-            <Image source={{ uri: logo }} style={{
-                aspectRatio: imgAspect,
-                resizeMode: 'contain',
-                height: undefined,
-                width: '90%',
-                margin: Display.setHeight(0.2)
-            }} />
-        </View>
     }
 
     const SkeletonRender = () => {
@@ -752,7 +872,7 @@ const DetailsScreen = ({ route }) => {
                                 if (navigation.canGoBack()) {
                                     navigation.goBack();
                                 } else {
-                                    navigation.navigate('Home');
+                                    navigation.navigate('Main');
                                 }
                             }}
                             style={{
@@ -770,66 +890,99 @@ const DetailsScreen = ({ route }) => {
                                 }}
                             />
                         </TouchableOpacity>
+                        {
+                            route.params.brand.Logo === null ||
+                            route.params.brand.Logo === undefined ||
+                            route.params.brand.Logo === "" && (
+                                <View
+                                    style={{
+                                        width,
+                                        height: Dimensions.get('window').height * 0.09,
+                                        backgroundColor: '#F4E4CD',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        flexDirection: 'row',
+                                        position: 'sticky',
+                                        top: 0,
+                                        zIndex: 1,
+                                    }}
+                                >
+                                    <Text
+                                        style={{
+                                            fontSize: 20,
+                                            fontWeight: 'bold',
+                                            marginTop: 30,
+                                            color: "#325962",
+                                        }}
+                                    >
+                                        Kategorien - {route.params.brand.Name}
+                                    </Text>
+                                </View>
+                            )
+                        }
                         <View
                             style={{
-                                backgroundColor: '#fff'
+                                backgroundColor: '#fff',
                             }}
                         >
                             <FlatList
                                 ListHeaderComponent={
-                                    <>
-                                        <View
+                                    <View
+                                        style={{
+                                            width,
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                        }}
+                                    >
+                                        {
+                                            route.params.brand.Logo &&
+                                            <ListHeader
+                                                cover={route.params.brand.Cover}
+                                                logo={route.params.brand.Logo}
+                                                brandName={route.params.brand.Name}
+                                                brandDescription={route.params.brand.Description}
+                                                handlePresentModal={handlePresentModal}
+                                            />
+                                        }
+                                        {
+                                            categories &&
+                                            <FlatList
+                                                horizontal={true}
+                                                data={categories}
+                                                keyExtractor={(item) => item.Id}
+                                                renderItem={renderCategories}
+                                                showsHorizontalScrollIndicator={false}
+                                                contentContainerStyle={{
+                                                    paddingHorizontal: Display.setWidth(2),
+                                                }}
+                                            />
+                                        }
+                                        <Separator height={Display.setHeight(1)} width={'100%'} />
+                                    </View>
+                                }
+                                ListFooterComponent={
+                                    <View
+                                        style={{
+                                            width: "100%",
+                                            height: Display.setHeight(40),
+                                            backgroundColor: "#f1f1f1",
+                                            marginTop: Display.setHeight(1),
+                                        }}
+                                    >
+                                        <Image
+                                            source={require('../assets/BNFooter.png')}
                                             style={{
-                                                width,
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
+                                                width: "100%",
+                                                height: "100%",
+                                                resizeMode: "contain",
+                                                top: 0,
+                                                left: 0,
+                                                aspectRatio: 800 / 646,
                                             }}
-                                        >
-                                            <View style={{ height: width / 1.3 }}>
-                                                <RenderImage cover={route.params.brand.Cover} />
-                                                <RenderLogoBox logo={route.params.brand.Logo} />
-                                            </View>
-                                            <View
-                                                style={{
-                                                    width,
-                                                    alignItems: 'flex-start',
-                                                    justifyContent: 'flex-start'
-                                                }}
-                                            >
-                                                <Text style={{ fontSize: Display.setHeight(2.2), fontWeight: 'bold', color: '#325962', marginLeft: Display.setHeight(2), marginBottom: Display.setHeight(1.5), marginTop: Display.setHeight(1.2), letterSpacing: 1, }}>{route.params.brand.Name.toUpperCase()}
-                                                </Text>
-                                                <Text style={{ lineHeight: 15, fontSize: Display.setHeight(1.4), fontWeight: 'bold', color: '#325962', letterSpacing: 0.5, marginLeft: Display.setHeight(2), marginBottom: Display.setHeight(0.5) }}>{route.params.brand.Description ? route.params.brand.Description : null}
-                                                </Text>
-                                            </View>
-                                            <Separator height={Display.setHeight(1)} width={'100%'} />
-                                            <View
-                                                style={{
-                                                    width: "100%",
-                                                    height: Display.setHeight(4),
-                                                    flexDirection: 'row',
-                                                    justifyContent: 'space-between',
-                                                    alignItems: 'center',
-                                                    marginBottom: 5,
-                                                }}
-                                            >
-                                                <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', left: '4%' }}
-                                                    onPress={handlePresentModal}
-                                                >
-                                                    <Text style={{ marginRight: 3, color: '#325962', opacity: 0.6 }}>Sortieren/Filtern</Text>
-                                                    <Icon
-                                                        name="sliders"
-                                                        type="font-awesome"
-                                                        color="#325962"
-                                                        size={18}
-                                                    />
-                                                </TouchableOpacity>
-                                            </View>
-                                            <Separator height={Display.setHeight(1)} width={'100%'} />
-                                        </View>
-                                    </>
+                                        />
+                                    </View>
                                 }
                                 data={formatData(sortedDishes, column)}
-                                contentContainerStyle={styles.container}
                                 renderItem={renderItem}
                                 numColumns={column}
                                 keyExtractor={(item) => item.Id}
@@ -931,7 +1084,7 @@ const styles = StyleSheet.create({
         height: undefined,
         aspectRatio: 114.666 / 81.719,
     },
-    container: {
+    subContainer: {
         width: "100%",
         alignItems: 'center',
     },

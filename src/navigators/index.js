@@ -29,6 +29,7 @@ import {
     CheckoutScreen,
     OrderConfirmationScreen,
     BrandScreen,
+    CategoryScreen,
 } from "../screens";
 import BottomTabBar from "./BottomTabBar";
 import { appStart } from '../actions/GeneralAction';
@@ -71,6 +72,7 @@ const MainAppNavigator = () => (
                 >
                     <Stack.Screen name="Details" component={DetailsScreen} />
                     <Stack.Screen name='Brand' component={BrandScreen} />
+                    <Stack.Screen name='Category' component={CategoryScreen} />
                 </Stack.Navigator>
             )
             }

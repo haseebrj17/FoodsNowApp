@@ -13,7 +13,9 @@ const register = async user => {
             FullName: user?.FullName,
             EmailAdress: user?.EmailAdress,
             ContactNumber: user?.ContactNumber,
-            Password: user?.Password
+            Password: user?.Password,
+            DeviceToken: user?.DeviceToken
+
         };
         let registerResponse = await AuthRequest.post(
             ApiContants.BACKEND_API.REGISTER,

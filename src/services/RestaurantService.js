@@ -60,10 +60,11 @@ const getDashboard = async ({ FranchiseId }) => {
             const brands = dashboardResponse?.data?.Brands;
             const franchiseId = dashboardResponse?.data?.FranchiseId;
             const clientId = dashboardResponse?.data?.ClientId;
+            const categories = dashboardResponse?.data?.Categories;
             return {
                 status: true,
                 message: `Dashboard data fetched`,
-                data: { banners, brands, franchiseId, clientId },
+                data: { banners, brands, franchiseId, clientId, categories },
             };
         } else {
             return {
@@ -76,6 +77,42 @@ const getDashboard = async ({ FranchiseId }) => {
         return {
             status: false,
             message: `Dashboard data not found. Catch Error Block`,
+        };
+    }
+};
+
+const getCategories = async ({ FranchiseId }) => {
+    console.log(`DashboardService | getCategories`);
+    try {
+        const requestBody = {
+            Id: FranchiseId
+        };
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+        let categoriesResponse = await axios.post(
+            `${ApiContants.BACKEND_API.BASE_API_URL}${ApiContants.BACKEND_API.CATEGORIES}`,
+            requestBody,
+            { headers }
+        );
+        if (categoriesResponse?.status === 200) {
+            const categories = dashboardResponse?.data?.categories;
+            return {
+                status: true,
+                message: `Categories data fetched`,
+                data: { categories },
+            };
+        } else {
+            return {
+                status: false,
+                message: `Categories data not found. If Error Block`,
+            };
+        }
+    } catch (error) {
+        console.log('Catch Error:', error);
+        return {
+            status: false,
+            message: `Categories data not found. Catch Error Block`,
         };
     }
 };
@@ -151,8 +188,9 @@ const getProductById = async dishId => {
 };
 
 export default {
-    getDashboard,
     getFranchises,
+    getDashboard,
+    getCategories,
     getProducts,
-    getProductById 
+    getProductById
 };

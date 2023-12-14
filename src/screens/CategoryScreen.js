@@ -8,73 +8,55 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Display, transformImageUrl } from '../utils';
 import Skeleton from '../components/Skeleton';
 import { useDispatch, useSelector } from "react-redux";
-import { fetchBrands } from "../actions/BrandAction";
 import { MaterialIcons, Ionicons, EvilIcons, Feather, SimpleLineIcons } from '@expo/vector-icons';
 
-const column = 3;
+const column = 4;
 
 const { width, height } = Dimensions.get('screen');
 
-const formatData = (brands, column) => {
-    const numOfFullRow = Math.floor(brands.length / column)
-    let numOfElementsLastRow = brands.length - (numOfFullRow * column);
+const formatData = (categories, column) => {
+    const numOfFullRow = Math.floor(categories.length / column)
+    let numOfElementsLastRow = categories.length - (numOfFullRow * column);
     while (numOfElementsLastRow !== column && numOfElementsLastRow !== 0) {
-        brands.push({ key: `balnk-${numOfElementsLastRow}`, empty: true });
+        categories.push({ key: `balnk-${numOfElementsLastRow}`, empty: true });
         numOfElementsLastRow = numOfElementsLastRow + 1;
     }
-    return brands;
+    return categories;
 }
 
-const BrandScreen = ({ route }) => {
+const CategoryScreen = ({ route }) => {
 
     const navigation = useNavigation();
 
-    const { brand, deliveryParams } = route.params;
+    const { category, deliveryParams } = route.params;
 
     const [imagesLoaded, setImagesLoaded] = useState(0);
-    const [brands, setBrand] = useState(null);
+    const [categories, setCategories] = useState(null);
     const [loading, setLoading] = useState(true);
 
     const handleImageLoad = () => {
         setImagesLoaded(prevCount => prevCount + 1);
-        if (imagesLoaded + 1 === brands.length) {
+        if (imagesLoaded + 1 === categories.length) {
             setLoading(false);
         }
     };
 
     useEffect(() => {
-        if (brand) {
-            console.log(brand);
-            setBrand(brand);
+        if (category) {
+            console.log(category);
+            setCategories(category);
             setLoading(false);
         }
-    }, [brand]);
+    }, [category]);
 
-    renderItem = ({ item: brand }) => {
-        if (brand.empty === true) {
+    renderItem = ({ item: category }) => {
+        if (category.empty === true) {
             return <View style={[styles.BrandCard, styles.itemInvisible]} />;
         }
-        const imageSource = brand.Logo;
-        const thumbnailSource = brand.Thumbnail;
-        let imgAspect = 1;
-        let imgHeight = 1;
-        let imgWidth = 1;
+        const thumbnailSource = category.Thumbnail;
         let imgThumbAspect = 1;
         let imgThumbHeight = 1;
         let imgThumbWidth = 1;
-        Image.getSize(
-            imageSource,
-            (width, height) => {
-                if (width && height) {
-                    imgWidth = width;
-                    imgHeight = height;
-                    imgAspect = width / height;
-                }
-            },
-            (error) => {
-                console.error(`Couldn't get the image size, check the URI: ${error}`);
-            }
-        );
         Image.getSize(
             thumbnailSource,
             (width, height) => {
@@ -93,7 +75,7 @@ const BrandScreen = ({ route }) => {
                 onPress={() => navigation.navigate('HomeNavigator', {
                     screen: 'Details',
                     params: {
-                        brand: brand,
+                        brand: category,
                         deliveryParams: deliveryParams
                     }
                 })
@@ -101,57 +83,41 @@ const BrandScreen = ({ route }) => {
             >
                 <View
                     style={{
-                        width: width * 0.27,
+                        width: Display.setWidth(18),
                         flexDirection: "column",
-                        justifyContent: "flex-start",
+                        justifyContent: "center",
                         alignItems: "center",
                         borderRadius: 8,
-                        backgroundColor: '#d9d9d9',
-                        flex: 1,
                         margin: Display.setHeight(1),
-                        height: width * 0.35,
-                        marginBottom: Display.setHeight(1.3),
+                        height: Display.setWidth(18),
+                        marginTop: Display.setHeight(1.8),
                     }}
                 >
                     <View
                         style={{
-                            overflow: 'hidden',
                             width: '100%',
-                            height: '85%',
-                            alignItems: 'center',
+                            height: '100%',
                         }}
                     >
-                        <Image source={{ uri: transformImageUrl({ originalUrl: brand.Thumbnail, size: '/tr:w-200'}) }}
+                        <Image
+                            source={{ uri: transformImageUrl({ originalUrl: category.Thumbnail, size: '/tr:w-150' }) }}
                             onLoad={handleImageLoad}
                             style={{
-                                height: '100%',
-                                resizeMode: "contain",
-                                aspectRatio: imgAspect,
+                                aspectRatio: imgThumbAspect,
+                                borderRadius: Display.setHeight(50),
                             }}
                         />
                     </View>
                     <View
                         style={{
-                            width: '100%',
-                            height: '15%',
                             alignItems: "center",
                             justifyContent: "center",
-                            backgroundColor: "white",
-                            shadowColor: '#000000',
-                            shadowOffset: {
-                                width: 0,
-                                height: 5,
-                            },
-                            shadowOpacity: 0.4,
-                            shadowRadius: 5,
-                            elevation: 10,
-                            borderBottomRightRadius: 8,
-                            borderBottomLeftRadius: 8,
+                            marginTop: Display.setHeight(0.5),
                         }}
                     >
                         <Text
                             style={styles.itemText}
-                        >{brand.Name}</Text>
+                        >{category.Name}</Text>
                     </View>
                 </View>
             </TouchableWithoutFeedback>
@@ -207,7 +173,7 @@ const BrandScreen = ({ route }) => {
                                 marginTop: 35,
                                 color: "#325962",
                             }}
-                        >Brands</Text>
+                        >Categories</Text>
                     </View>
                     <View
                         style={{
@@ -225,9 +191,9 @@ const BrandScreen = ({ route }) => {
                                 flexDirection: 'row'
                             }}
                         >
-                            <Skeleton height={Display.setHeight(14)} width={Display.setHeight(11.5)} style={{ margin: 10, borderRadius: 12 }} />
-                            <Skeleton height={Display.setHeight(14)} width={Display.setHeight(11.5)} style={{ margin: 10, borderRadius: 12 }} />
-                            <Skeleton height={Display.setHeight(14)} width={Display.setHeight(11.5)} style={{ margin: 10, borderRadius: 12 }} />
+                            <Skeleton height={Display.setHeight(14)} width={Display.setHeight(11.5)} style={{ margin: 10, borderRadius: '50%' }} />
+                            <Skeleton height={Display.setHeight(14)} width={Display.setHeight(11.5)} style={{ margin: 10, borderRadius: '50%' }} />
+                            <Skeleton height={Display.setHeight(14)} width={Display.setHeight(11.5)} style={{ margin: 10, borderRadius: '50%' }} />
                         </View>
                         <View
                             style={{
@@ -237,9 +203,9 @@ const BrandScreen = ({ route }) => {
                                 flexDirection: 'row'
                             }}
                         >
-                            <Skeleton height={Display.setHeight(14)} width={Display.setHeight(11.5)} style={{ margin: 10, borderRadius: 12 }} />
-                            <Skeleton height={Display.setHeight(14)} width={Display.setHeight(11.5)} style={{ margin: 10, borderRadius: 12 }} />
-                            <Skeleton height={Display.setHeight(14)} width={Display.setHeight(11.5)} style={{ margin: 10, borderRadius: 12 }} />
+                            <Skeleton height={Display.setHeight(14)} width={Display.setHeight(11.5)} style={{ margin: 10, borderRadius: '50%' }} />
+                            <Skeleton height={Display.setHeight(14)} width={Display.setHeight(11.5)} style={{ margin: 10, borderRadius: '50%' }} />
+                            <Skeleton height={Display.setHeight(14)} width={Display.setHeight(11.5)} style={{ margin: 10, borderRadius: '50%' }} />
                         </View>
                     </View>
                 </View>
@@ -290,7 +256,7 @@ const BrandScreen = ({ route }) => {
                                 marginTop: 35,
                                 color: "#325962",
                             }}
-                        >Marken</Text>
+                        >Kategorien</Text>
                     </View>
                     <View
                         style={{
@@ -302,7 +268,7 @@ const BrandScreen = ({ route }) => {
                         }}
                     >
                         <FlatList
-                            data={brands ? formatData(brands, column) : null}
+                            data={categories ? formatData(categories, column) : null}
                             renderItem={renderItem}
                             numColumns={column}
                             keyExtractor={(item, index) => index.toString()}
@@ -376,4 +342,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default BrandScreen;
+export default CategoryScreen;

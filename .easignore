@@ -1,0 +1,8 @@
+node_modules/
+ios/
+android/.gradle/
+.git/
+*.log
+dist/
+.vscode/
+.expo/

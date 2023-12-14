@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, Dimensions, ImageBackground, TouchableOpacity, Image, Keyboard, Alert, Platform, KeyboardAvoidingView, TouchableWithoutFeedback } from 'react-native'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { TextInput } from 'react-native-paper'
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { FormControl, Stack, WarningOutlineIcon, Box, Center, NativeBaseProvider, Icon } from "native-base";
@@ -18,6 +18,9 @@ import { Dispatch } from 'react';
 import AuthenticationService from '../services/AuthenticationService';
 import { Display } from '../utils';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import * as Device from 'expo-device';
+import * as Notifications from 'expo-notifications';
+import Constants from 'expo-constants';
 
 const { width, height } = Dimensions.get('screen')
 
@@ -26,6 +29,7 @@ const RegistrationScreen = ({ navigation }) => {
     const [isLoading, setIsLoading] = React.useState(false);
     const [errors, setErrors] = React.useState({});
     const [errorMessage, setErrorMessage] = React.useState({});
+    const [token, setToken] = useState(null)
 
 
     ///// Google OAuth /////
@@ -35,6 +39,89 @@ const RegistrationScreen = ({ navigation }) => {
         clientId: 'GOOGLE_CLIENT_ID',
         redirectUri,
     });
+
+
+    async function registerForPushNotificationsAsync() {
+        let token;
+
+        if (Platform.OS === 'android') {
+            Notifications.setNotificationChannelAsync('default', {
+                name: 'default',
+                importance: Notifications.AndroidImportance.MAX,
+                vibrationPattern: [0, 250, 250, 250],
+                lightColor: '#FF231F7C',
+            });
+        }
+
+        if (Device.isDevice) {
+            const { status: existingStatus } = await Notifications.getPermissionsAsync();
+            let finalStatus = existingStatus;
+            if (existingStatus !== 'granted') {
+                const { status } = await Notifications.requestPermissionsAsync();
+                finalStatus = status;
+            }
+            if (finalStatus !== 'granted') {
+                alert('Failed to get push token for push notification!');
+                return;
+            }
+            token = await Notifications.getExpoPushTokenAsync({
+                projectId: Constants.expoConfig.extra.eas.projectId,
+            });
+            console.log(token);
+        } else {
+            alert('Must use physical device for Push Notifications');
+        }
+
+        setToken(token.data)
+
+        return token.data;
+    }
+
+    useEffect(() => {
+        registerForPushNotificationsAsync();
+
+        Notifications.addNotificationReceivedListener(notification => {
+            console.log(notification);
+        });
+
+        Notifications.addNotificationResponseReceivedListener(response => {
+            console.log(response);
+        });
+
+        return () => {
+            Notifications.removeNotificationSubscription(notificationSubscription);
+            Notifications.removeNotificationSubscription(responseSubscription);
+        };
+    }, []);
+
+    useEffect(() => {
+        const fetchLocationAndDashboard = async () => {
+            try {
+                const location = await StorageService.getLocation();
+                setLocation(location)
+                console.log(location)
+                const { FranchiseId, DeliveryParams } = location;
+                setDeliveryParams(DeliveryParams)
+                console.log(location);
+
+                RestaurantService.getDashboard({ FranchiseId }).then(response => {
+                    if (response?.status) {
+                        const brandsData = response?.data?.brands;
+                        setBrand(response?.data?.brands);
+                    } else {
+                        console.log(`${response.message} Error Status False`);
+                    }
+                })
+                    .catch(error => {
+                        console.error(`${error} Error unexpected`);
+                    });
+            } catch (error) {
+                console.error(`Error fetching location: ${error}`);
+            }
+        };
+
+        fetchLocationAndDashboard();
+    }, []);
 
     useEffect(() => {
         if (responseGoogle?.type === 'success') {
@@ -89,6 +176,7 @@ const RegistrationScreen = ({ navigation }) => {
         fullname: '',
         phone: '',
         password: '',
+        deviceToken: token
     });
 
     const initialCreds = {};
@@ -149,7 +237,8 @@ const RegistrationScreen = ({ navigation }) => {
             FullName: inputs.fullname,
             EmailAdress: inputs.email,
             ContactNumber: inputs.phone,
-            Password: inputs.password
+            Password: inputs.password,
+            DeviceToken: inputs.deviceToken
         };
 
         setIsLoading(true);

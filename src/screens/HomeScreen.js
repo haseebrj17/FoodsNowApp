@@ -26,6 +26,8 @@ import { createAvatar } from '@dicebear/core';
 import { adventurer, thumbs } from '@dicebear/collection';
 import { SvgXml } from 'react-native-svg';
 import { Display } from "../utils";
+import CategoriesHome from "../components/CategoriesHome";
+import { ca } from "date-fns/locale";
 
 const config = require('../../package.json').projectName;
 const CLIENT_NAME = config.name;
@@ -40,6 +42,7 @@ const HomeScreen = () => {
     });
 
     const [brand, setBrand] = useState(null);
+    const [category, setCategory] = useState(null);
     const [deliveryParams, setDeliveryParams] = useState(null);
     const [location, setLocation] = useState(null)
 
@@ -57,6 +60,9 @@ const HomeScreen = () => {
                     if (response?.status) {
                         const brandsData = response?.data?.brands;
                         setBrand(response?.data?.brands);
+                        setCategory(response?.data?.categories);
+
+                        console.log(category)
                     } else {
                         console.log(`${response.message} Error Status False`);
                     }
@@ -251,7 +257,7 @@ const HomeScreen = () => {
             <View style={{ width: "100%", height: "0.5%", backgroundColor: "#f1f1f1", marginTop: "3%", marginBottom: 10 }}></View>
             <BrandCardsHome brand={brand} deliveryParams={deliveryParams} />
             <View style={{ width: "100%", height: "0.5%", backgroundColor: "#f1f1f1", marginTop: "3%", marginBottom: 5 }}></View>
-            {/* <View
+            <View
                 style={[
                     styles.Container,
                     {
@@ -267,10 +273,32 @@ const HomeScreen = () => {
                 ]}
             >
                 <TouchableHighlight activeOpacity={0.6} underlayColor="#DDDDDD" borderRadius={8}>
-                    <Image source={require('../assets/images/10.png')} style={[styles.Image, { borderRadius: 12 }]} />
+                    <Image source={require('../assets/images/10.jpg')} style={[styles.Image, { borderRadius: 12 }]} />
                 </TouchableHighlight>
             </View>
             <View style={{ width: "100%", height: "0.5%", backgroundColor: "#f1f1f1", }} />
+            <CategoriesHome category={category} deliveryParams={deliveryParams} />
+            <View style={{ width: "100%", height: "0.5%", backgroundColor: "#f1f1f1", }} />
+            <View
+                style={{
+                    width: "100%",
+                    height: Display.setHeight(40),
+                    backgroundColor: "#f1f1f1",
+                }}
+            >
+                <Image
+                    source={require('../assets/BNFooter.png')}
+                    style={{
+                        width: "100%",
+                        height: "100%",
+                        resizeMode: "contain",
+                        top: 0,
+                        left: 0,
+                        aspectRatio: 800 / 646,
+                    }}
+                />
+            </View>
+            {/*
             <View style={styles.Container}>
                 <BuyGetOfferList />
             </View>

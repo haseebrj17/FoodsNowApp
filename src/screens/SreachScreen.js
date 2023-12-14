@@ -22,17 +22,16 @@ const SreachScreen = ({ navigation }) => {
     })
     const [logo, setLogo] = useState(Logo)
     const [searchQuery, setSearchQuery] = useState('');
-    const [filteredBrands, setFilteredBrands] = useState(BrandCard);
     const onChangeSearch = query => setSearchQuery(query);
-    useEffect(() => {
-        const results = BrandCard.filter(brand =>
-            brand.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            brand.dishes.some(dish =>
-                dish.name.toLowerCase().includes(searchQuery.toLowerCase())
-            )
-        );
-        setFilteredBrands(results);
-    }, [searchQuery]);
+    // useEffect(() => {
+    //     const results = BrandCard.filter(brand =>
+    //         brand.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    //         brand.dishes.some(dish =>
+    //             dish.name.toLowerCase().includes(searchQuery.toLowerCase())
+    //         )
+    //     );
+    //     setFilteredBrands(results);
+    // }, [searchQuery]);
     const renderItem = ({ item: logo }) => {
         return (
             <TouchableOpacity>
@@ -73,16 +72,6 @@ const SreachScreen = ({ navigation }) => {
             }}>
                 <FlatList
                     data={logo}
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    renderItem={renderItem}
-                />
-            </View>
-            <View style={{
-                marginTop: 10,
-            }}>
-                <FlatList
-                    data={filteredBrands}
                     horizontal
                     showsHorizontalScrollIndicator={false}
                     renderItem={renderItem}

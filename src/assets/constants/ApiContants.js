@@ -18,6 +18,7 @@ const BACKEND_API = {
     BASE_API_URL: `${BACKEND_BASE_URL}/api`,
     FRANCHISES: '/GetClientFranchises',
     DASHBORAD: '/GetAppDashboardData',
+    CATEGORIES: '/GetCategories',
     PRODUCTS: '/GetProducts',
     PRODUCT: '/GetProduct',
     REGISTER: '/Register',
