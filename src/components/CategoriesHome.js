@@ -49,7 +49,7 @@ const CategoriesHome = ({ category, deliveryParams }) => {
     }, [category]);
 
     const ConditionalRendering = ({ categories, deliveryParams }) => {
-        if (categories?.length > 8) {
+        if (categories?.length > 12) {
             return (
                 <Button
                     onPress={() => navigation.navigate('HomeNavigator', {
