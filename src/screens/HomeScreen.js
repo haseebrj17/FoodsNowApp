@@ -1,4 +1,4 @@
-import { Animated, FlatList, StyleSheet, View, ScrollView, Text, Image, Dimensions, TouchableWithoutFeedback, TouchableOpacity, TouchableHighlight } from "react-native";
+import { Animated, FlatList, StyleSheet, View, ScrollView, Text, Image, Dimensions, TouchableWithoutFeedback, TouchableOpacity, TouchableHighlight, SafeAreaView } from "react-native";
 import { AppBar, Button } from "@react-native-material/core";
 import { Searchbar } from 'react-native-paper';
 import { Center, Flex, Icon, Row, Box, Card, NativeBaseProvider } from "native-base";
@@ -155,6 +155,7 @@ const HomeScreen = () => {
                                         flexDirection: 'row',
                                         alignItems: 'center',
                                         justifyContent: 'flex-start',
+                                        marginTop: 10,
                                     }}
                                 >
                                     <Button
@@ -173,6 +174,7 @@ const HomeScreen = () => {
                                         flexDirection: 'row',
                                         alignItems: 'center',
                                         justifyContent: 'flex-end',
+                                        marginTop: 10,
                                     }}
                                 >
                                     <Text
@@ -206,7 +208,8 @@ const HomeScreen = () => {
                                         styles.ButtonLocation,
                                         {
                                             backgroundColor: "#F4E4CD",
-                                            height: "100%"
+                                            height: "100%",
+                                            marginTop: 10,
                                         }
                                     ]}
                                     style={{
@@ -229,6 +232,7 @@ const HomeScreen = () => {
                                     style={{
                                         position: "absolute",
                                         right: "9%",
+                                        top: "10%",
                                     }}
                                     contentContainerStyle={[
                                         styles.ButtonSignUp,

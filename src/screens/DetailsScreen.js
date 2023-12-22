@@ -5,21 +5,14 @@ import {
     Text,
     Image,
     Dimensions,
-    TouchableWithoutFeedback,
-    TextInput,
     TouchableOpacity,
     Switch,
-    SectionList
+    Animated
 } from "react-native";
 import {
     NativeBaseProvider,
-    Container,
-    Header,
-    Content,
-    Card,
-    CardItem,
-    Body,
-    Box, Heading, AspectRatio, Center, HStack, Stack, ScrollView, StatusBar
+    Box, Heading,
+    HStack
 } from 'native-base';
 import { Button } from "@react-native-material/core";
 import React, { useEffect, useState, useMemo } from "react";
@@ -31,7 +24,7 @@ import Slider from "../components/Slider";
 import { Icon } from "@rneui/base";
 import { BottomSheetModal, BottomSheetModalProvider, BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 import { useRef, useCallback } from "react";
-import Animated from "react-native-reanimated";
+// import Animated from "react-native-reanimated";
 import { MaterialIcons, AntDesign } from '@expo/vector-icons';
 import CustomBackdrop from "../components/CustomBackdrop";
 import UseModal from "../components/UseModal";
@@ -107,31 +100,6 @@ const ListHeader = React.memo(({ cover, logo, brandName, brandDescription, handl
             >
                 <Text style={{ fontSize: Display.setHeight(2.2), fontWeight: 'bold', color: '#325962', marginLeft: Display.setHeight(2), marginBottom: Display.setHeight(1.5), marginTop: Display.setHeight(1.2), letterSpacing: 1, }}>{brandName.toUpperCase()}
                 </Text>
-                <Text style={{ lineHeight: 15, fontSize: Display.setHeight(1.4), fontWeight: 'bold', color: '#325962', letterSpacing: 0.5, marginLeft: Display.setHeight(2), marginBottom: Display.setHeight(0.5) }}>{brandDescription ? brandDescription : null}
-                </Text>
-            </View>
-            <Separator height={Display.setHeight(1)} width={'100%'} />
-            <View
-                style={{
-                    width: "100%",
-                    height: Display.setHeight(4),
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    marginBottom: 5,
-                }}
-            >
-                <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', left: '4%' }}
-                    onPress={handlePresentModal}
-                >
-                    <Text style={{ marginRight: 3, color: '#325962', opacity: 0.6 }}>Sortieren/Filtern</Text>
-                    <Icon
-                        name="sliders"
-                        type="font-awesome"
-                        color="#325962"
-                        size={18}
-                    />
-                </TouchableOpacity>
             </View>
             <Separator height={Display.setHeight(1)} width={'100%'} />
         </>
@@ -152,6 +120,21 @@ const DetailsScreen = ({ route }) => {
     const [extras, setExtras] = useState(null);
     const [dips, setDips] = useState(null);
     const [categories, setCategories] = useState(null);
+    const [isSticky, setIsSticky] = useState(false);
+    const scrollY = useRef(new Animated.Value(0)).current;
+
+    const categoryListPosition = 100;
+
+    const handleScroll = Animated.event(
+        [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+        {
+            listener: event => {
+                const offsetY = event.nativeEvent.contentOffset.y;
+                setIsSticky(offsetY >= categoryListPosition);
+            },
+            useNativeDriver: false,
+        }
+    );
 
     const dispatch = useDispatch();
 
@@ -184,13 +167,6 @@ const DetailsScreen = ({ route }) => {
             setHeight(60)
         }
     }, [])
-
-    const renderBackdrop = useCallback(
-        (props) => (
-            <BottomSheetBackdrop {...props} onPress={closeBottomSheet} />
-        ),
-        [closeBottomSheet]
-    );
 
     useEffect(() => {
         if (products) {
@@ -277,121 +253,6 @@ const DetailsScreen = ({ route }) => {
 
     let sortedDishes = dish ? [...dish] : [];
 
-    const [isOpen, setIsOpen] = useState(true)
-
-    const [isEnabled, setIsEnabled] = useState(false);
-
-    const bottomSheetModalRef = useRef(null);
-    const snapPoints = ["50%"];
-
-    function handlePresentModal() {
-        bottomSheetModalRef.current?.present();
-    }
-
-    const handlePresentModalPress = useCallback(() => {
-        bottomSheetModalRef.current.present();
-    }, []);
-
-    const handleSheetChanges = useCallback((index) => {
-        setIsOpen(index > 0 ? true : false);
-    }, []);
-
-    const closeBottomSheet = useCallback(() => {
-        setIsOpen(false);
-        bottomSheetModalRef.current.close();
-    }, []);
-
-    ///////////////  Sorting Modal  ///////////////
-
-    const [sortByName, setSortByName] = useState(false);
-    const [sortByPriceLowHigh, setSortByPriceLowHigh] = useState(false);
-    const [sortByPriceHighLow, setSortByPriceHighLow] = useState(false);
-    const [sortBySpiceLowHigh, setSortBySpiceLowHigh] = useState(false);
-    const [sortBySpiceHighLow, setSortBySpiceHighLow] = useState(false);
-
-    const toggleSwitch = (sortType) => {
-        switch (sortType) {
-            case "name":
-                setSortByName(previousState => {
-                    if (!previousState) {
-                        setSortByPriceLowHigh(false);
-                        setSortByPriceHighLow(false);
-                        setSortBySpiceLowHigh(false);
-                        setSortBySpiceHighLow(false);
-                    }
-                    return !previousState;
-                });
-                break;
-            case "priceLowHigh":
-                setSortByPriceLowHigh(previousState => {
-                    if (!previousState) {
-                        setSortByName(false);
-                        setSortByPriceHighLow(false);
-                        setSortBySpiceLowHigh(false);
-                        setSortBySpiceHighLow(false);
-                    }
-                    return !previousState;
-                });
-                break;
-            case "priceHighLow":
-                setSortByPriceHighLow(previousState => {
-                    if (!previousState) {
-                        setSortByName(false);
-                        setSortByPriceLowHigh(false);
-                        setSortBySpiceLowHigh(false);
-                        setSortBySpiceHighLow(false);
-                    }
-                    return !previousState;
-                });
-                break;
-            case "spiceLowHigh":
-                setSortBySpiceLowHigh(previousState => {
-                    if (!previousState) {
-                        setSortByName(false);
-                        setSortByPriceLowHigh(false);
-                        setSortByPriceHighLow(false);
-                        setSortBySpiceHighLow(false);
-                    }
-                    return !previousState;
-                });
-                break;
-            case "spiceHighLow":
-                setSortBySpiceHighLow(previousState => {
-                    if (!previousState) {
-                        setSortByName(false);
-                        setSortByPriceLowHigh(false);
-                        setSortByPriceHighLow(false);
-                        setSortBySpiceLowHigh(false);
-                    }
-                    return !previousState;
-                });
-                break;
-            default:
-                console.log("Invalid sort type");
-                break;
-        }
-    }
-
-    if (sortByName) {
-        sortedDishes.sort((a, b) => a.Name.localeCompare(b.Name));
-    } else if (sortByPriceLowHigh) {
-        sortedDishes.sort((a, b) => {
-            const priceA = a.Prices.find(price => price.Description === "Normal")?.Price || 0;
-            const priceB = b.Prices.find(price => price.Description === "Normal")?.Price || 0;
-            return priceA - priceB;
-        });
-    } else if (sortByPriceHighLow) {
-        sortedDishes.sort((a, b) => {
-            const priceA = a.Prices.find(price => price.Description === "Normal")?.Price || 0;
-            const priceB = b.Prices.find(price => price.Description === "Normal")?.Price || 0;
-            return priceB - priceA;
-        });
-    } else if (sortBySpiceLowHigh) {
-        sortedDishes.sort((a, b) => a.SpiceLevel - b.SpiceLevel);
-    } else if (sortBySpiceHighLow) {
-        sortedDishes.sort((a, b) => b.SpiceLevel - a.SpiceLevel);
-    }
-
     ///////////////  Categories Funtion  ///////////////
 
     const [selectedCategory, setSelectedCategory] = useState(null);
@@ -426,12 +287,6 @@ const DetailsScreen = ({ route }) => {
             setDish(filteredProducts);
         }
     };
-
-    // useEffect(() => {
-    //     if (!loadingProducts) {
-    //         setIsLoading(false);
-    //     }
-    // }, [loadingProducts]);
 
     // Render Categories FlatList Item
 
@@ -725,148 +580,6 @@ const DetailsScreen = ({ route }) => {
             ) : (
                 <BottomSheetModalProvider>
                     <NativeBaseProvider>
-                        <BottomSheetModal
-                            ref={bottomSheetModalRef}
-                            snapPoints={snapPoints}
-                            backdropComponent={renderBackdrop}
-                            onAnimate={handleSheetChanges}
-                            index={0}
-                            enablePanDownToClose={true}
-                            onClose={() => setIsOpen(false)}
-                            backgroundStyle={{
-                                borderRadius: 30
-                            }}
-                            animateOnMount={true}
-                        >
-                            <View style={{
-                                width: '100%',
-                                height: '100%',
-                                justifyContent: 'flex-start',
-                                alignItems: 'center'
-                            }}>
-                                <View>
-                                    <Text style={{
-                                        fontSize: Display.setHeight(2.4),
-                                        fontWeight: 'bold',
-                                        alignSelf: 'center',
-                                        margin: 10,
-                                        color: '#325962'
-                                    }}>
-                                        Sortieren/Filtern
-                                    </Text>
-                                </View>
-                                <View style={{
-                                    width: '90%',
-                                    alignItems: 'center',
-                                    justifyContent: 'space-between',
-                                    flexDirection: 'row',
-                                    margin: 10
-                                }}>
-                                    <Text style={{
-                                        fontSize: Display.setHeight(1.7),
-                                        fontWeight: '500',
-                                        color: '#325962'
-                                    }}>
-                                        Niedriger bis hoher Preis
-                                    </Text>
-                                    <Switch
-                                        trackColor={{ false: '#767577', true: '#325962' }}
-                                        thumbColor={isEnabled ? '#f4f3f4' : '#f4f3f4'}
-                                        ios_backgroundColor="#3e3e3e"
-                                        onValueChange={() => toggleSwitch("priceLowHigh")}
-                                        value={sortByPriceLowHigh}
-                                    />
-                                </View>
-                                <View style={{
-                                    width: '90%',
-                                    alignItems: 'center',
-                                    justifyContent: 'space-between',
-                                    flexDirection: 'row',
-                                    margin: 10
-                                }}>
-                                    <Text style={{
-                                        fontSize: Display.setHeight(1.7),
-                                        fontWeight: '500',
-                                        color: '#325962'
-                                    }}>
-                                        Hoher bis niedriger Preis
-                                    </Text>
-                                    <Switch
-                                        trackColor={{ false: '#767577', true: '#325962' }}
-                                        thumbColor={isEnabled ? '#f4f3f4' : '#f4f3f4'}
-                                        ios_backgroundColor="#3e3e3e"
-                                        onValueChange={() => toggleSwitch("priceHighLow")}
-                                        value={sortByPriceHighLow}
-                                    />
-                                </View>
-                                <View style={{
-                                    width: '90%',
-                                    alignItems: 'center',
-                                    justifyContent: 'space-between',
-                                    flexDirection: 'row',
-                                    margin: 10
-                                }}>
-                                    <Text style={{
-                                        fontSize: Display.setHeight(1.7),
-                                        fontWeight: '500',
-                                        color: '#325962'
-                                    }}>
-                                        Niedrig bis hoch Gewürz
-                                    </Text>
-                                    <Switch
-                                        trackColor={{ false: '#767577', true: '#325962' }}
-                                        thumbColor={isEnabled ? '#f4f3f4' : '#f4f3f4'}
-                                        ios_backgroundColor="#3e3e3e"
-                                        onValueChange={() => toggleSwitch("spiceLowHigh")}
-                                        value={sortBySpiceLowHigh}
-                                    />
-                                </View>
-                                <View style={{
-                                    width: '90%',
-                                    alignItems: 'center',
-                                    justifyContent: 'space-between',
-                                    flexDirection: 'row',
-                                    margin: 10
-                                }}>
-                                    <Text style={{
-                                        fontSize: Display.setHeight(1.7),
-                                        fontWeight: '500',
-                                        color: '#325962'
-                                    }}>
-                                        Hoch bis Niedrig Gewürz
-                                    </Text>
-                                    <Switch
-                                        trackColor={{ false: '#767577', true: '#325962' }}
-                                        thumbColor={isEnabled ? '#f4f3f4' : '#f4f3f4'}
-                                        ios_backgroundColor="#3e3e3e"
-                                        onValueChange={() => toggleSwitch("spiceHighLow")}
-                                        value={sortBySpiceHighLow}
-                                    />
-                                </View>
-                                <View style={{
-                                    width: '90%',
-                                    alignItems: 'center',
-                                    justifyContent: 'space-between',
-                                    flexDirection: 'row',
-                                    margin: 10
-                                }}>
-                                    <Text style={{
-                                        fontSize: Display.setHeight(1.7),
-                                        fontWeight: '500',
-                                        color: '#325962'
-                                    }}>
-                                        Nach Name sortieren
-                                    </Text>
-                                    <Switch
-                                        trackColor={{ false: '#767577', true: '#325962' }}
-                                        thumbColor={isEnabled ? '#f4f3f4' : '#f4f3f4'}
-                                        ios_backgroundColor="#3e3e3e"
-                                        onValueChange={() => toggleSwitch("name")}
-                                        value={sortByName}
-                                    />
-                                </View>
-                            </View>
-                        </BottomSheetModal>
                         <TouchableOpacity
                             onPress={() => {
                                 if (navigation.canGoBack()) {
@@ -941,7 +654,6 @@ const DetailsScreen = ({ route }) => {
                                                 logo={route.params.brand.Logo}
                                                 brandName={route.params.brand.Name}
                                                 brandDescription={route.params.brand.Description}
-                                                handlePresentModal={handlePresentModal}
                                             />
                                         }
                                         {

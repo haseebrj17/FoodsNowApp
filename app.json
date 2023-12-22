@@ -4,7 +4,7 @@
     "slug": "byteznow",
     "scheme": "foodsnowapp",
     "owner": "foodsnowgmbh",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./src/assets/BNPublishingLogo512.png",
     "userInterfaceStyle": "light",

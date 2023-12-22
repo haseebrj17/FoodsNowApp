@@ -30,6 +30,7 @@ import {
     OrderConfirmationScreen,
     BrandScreen,
     CategoryScreen,
+    TestHeader,
 } from "../screens";
 import BottomTabBar from "./BottomTabBar";
 import { appStart } from '../actions/GeneralAction';
@@ -55,7 +56,9 @@ const FirstTimeNavigator = () => (
 const MainAppStack = createStackNavigator();
 
 const MainAppNavigator = () => (
-    <MainAppStack.Navigator screenOptions={{ headerShown: false }}>
+    <MainAppStack.Navigator
+        screenOptions={{ headerShown: false }}
+    >
         <MainAppStack.Screen name="Main" component={BottomTabBar} />
         <Stack.Screen name="LocationDetail" component={LocationDetailScreen} />
         <Stack.Screen name="LocationAccess" component={LocationAccessScreen} />
