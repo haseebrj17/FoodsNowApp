@@ -123,19 +123,6 @@ const DetailsScreen = ({ route }) => {
     const [isSticky, setIsSticky] = useState(false);
     const scrollY = useRef(new Animated.Value(0)).current;
 
-    const categoryListPosition = 100;
-
-    const handleScroll = Animated.event(
-        [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-        {
-            listener: event => {
-                const offsetY = event.nativeEvent.contentOffset.y;
-                setIsSticky(offsetY >= categoryListPosition);
-            },
-            useNativeDriver: false,
-        }
-    );
-
     const dispatch = useDispatch();
 
     const { cart } = useSelector(
