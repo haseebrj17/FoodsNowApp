@@ -100,15 +100,12 @@ const updateUserAddress = async (user, address, token) => {
     }
 };
 
-const getUserAddresses = async ({ Id, token}) => {
+const getUserAddresses = async ({ token}) => {
     console.log("UserService | getUserAddresses");
     try {
-        let requestBody = {
-            Id: Id
-        };
         let response = await axios.post(
             `${ApiContants.BACKEND_API.BASE_API_URL}${ApiContants.BACKEND_API.GET_ADDRESS}`,
-            requestBody,
+            {},
             {
                 headers: authHeader(token),
             }

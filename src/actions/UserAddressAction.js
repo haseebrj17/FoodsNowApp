@@ -95,11 +95,11 @@ export const updateUserAddress = ({ Id, inputs, token }) => {
 };
 
 
-export const fetchUserAddresses = (Id, token) => {
+export const fetchUserAddresses = (token) => {
     return async (dispatch) => {
         dispatch(fetchAddressStart());
         try {
-            const response = await UserAddressService.getUserAddresses({ Id, token });
+            const response = await UserAddressService.getUserAddresses({ token });
             if (response?.status) {
                 dispatch(fetchAddressSuccess(response?.data));
                 return Promise.resolve("OK");

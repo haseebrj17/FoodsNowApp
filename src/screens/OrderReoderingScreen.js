@@ -101,7 +101,7 @@ const OrderReoderingScreen = ({ navigation }) => {
                                 <View>
                                     {
                                         // Only display the first two products
-                                        item?.Products.slice(0, 2).map((i, index) => (
+                                        item?.Products?.slice(0, 2).map((i, index) => (
                                             <Text
                                                 key={index}
                                                 style={{
@@ -111,12 +111,12 @@ const OrderReoderingScreen = ({ navigation }) => {
                                                     marginVertical: Display.setHeight(0.5)
                                                 }}
                                             >
-                                                {i.Name} x{i.Quanity}
+                                                {i?.Name} x{i?.Quanity}
                                             </Text>
                                         ))
                                     }
                                     {
-                                        item?.Products.length > 2 && <Text
+                                        item?.Products?.length > 2 && <Text
                                             style={{
                                                 fontSize: Display.setHeight(1.6),
                                                 fontWeight: "bold",
@@ -148,7 +148,7 @@ const OrderReoderingScreen = ({ navigation }) => {
                                             fontWeight: '400',
                                             color: '#696969'
                                         }}
-                                    >Artikel insgesamt: {item.TotalItems}</Text>
+                                    >Artikel insgesamt: {item?.TotalItems}</Text>
                                 </View>
                             </View>
                         </View>

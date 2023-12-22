@@ -30,7 +30,8 @@ const BACKEND_API = {
     ORDER: '/PlaceOrder',
     GET_ORDER: '/GetCustomerOrders',
     USER_EXIST: '/User',
-    DELETE_USER_ACCOUNT: '/DeleteMyAccount'
+    DELETE_USER_ACCOUNT: '/DeleteMyAccount',
+    PRODUCTS_BY_IDS: '/GetProductsById'
 };
 
 export default { COUNTRY_FLAG, BACKEND_API, STATIC_IMAGE }

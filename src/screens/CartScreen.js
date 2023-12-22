@@ -3,7 +3,7 @@ import React, { useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { addListener, removeListener } from '@reduxjs/toolkit';
 import { useEffect, useState } from 'react'
-import { Display } from '../utils'
+import { Display, transformImageUrl } from '../utils'
 import { StatusBar } from 'native-base'
 import { RestaurantService } from '../services'
 import Skeleton from '../components/Skeleton'
@@ -90,10 +90,6 @@ const CartScreen = ({ navigation }) => {
         }
     }, [dataLoaded]);
 
-    // useEffect(() => {
-    //     setLoading(false);
-    // }, [itemTotal, grandTotal, cartData, checkout, locationData, cartItems])
-
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -103,15 +99,22 @@ const CartScreen = ({ navigation }) => {
                     setMinOrder(location?.DeliveryParams?.minOrderValue);
                 }
 
-                await calculateTotalPrice(cartItems).then(response => {
-                    setItemTotal(response.grandTotal);
-                    setGrandTotal(response.grandTotal + location.DeliveryParams.deliverCharges);
-                    setCartData(response.productDetailsArray);
-                    setCheckout(response.checkoutArray);
-                })
+                const productIds = cartItems.map(item => {
+                    const parsedProductId = JSON.parse(item.product_id);
+                    return parsedProductId.dishId;
+                });
+
+                const response = await RestaurantService.getProductByIds(productIds);
+                const allProductDetails = response.data;
+
+                const calculatedData = await calculateTotalPrice(cartItems, allProductDetails);
+                setItemTotal(calculatedData.grandTotal);
+                setGrandTotal(calculatedData.grandTotal + location.DeliveryParams.deliverCharges);
+                setCartData(calculatedData.productDetailsArray);
+                setCheckout(calculatedData.checkoutArray);
             } catch (error) {
                 console.error("Error while fetching data:", error);
-                setLoading(false);  // Handle loading state in case of error
+                setLoading(false);
             } finally {
                 setTimeout(() => {
                     setDataLoaded(true);
@@ -122,46 +125,29 @@ const CartScreen = ({ navigation }) => {
         fetchData();
     }, [cartItems]);
 
-    const calculateTotalPrice = async (cartItems) => {
+    const calculateTotalPrice = async (cartItems, allProductDetails) => {
         let grandTotal = 0;
         const productDetailsArray = [];
         const checkoutArray = [];
 
-        // Iterate over cartItems to fetch product details
-        const productPromises = cartItems?.map(async item => {
-            try {
-                const parsedProductId = JSON.parse(item.product_id);
-                if (parsedProductId && parsedProductId.dishId) {
-                    const productDetails = await RestaurantService.getProductById(parsedProductId.dishId);
-                    return productDetails;
-                }
-                return null;
-            } catch (error) {
-                console.error("Error in productPromises map:", error);
-                return null;
-            }
-        });
+        cartItems.forEach((cartItem, index) => {
+            const item = allProductDetails[index];
+            if (!item) return;
 
-        const allProductDetails = await Promise.all(productPromises);
-
-        allProductDetails.forEach((productDetails, index) => {
-            if (!productDetails) return;
-
-            const cartItem = cartItems[index];
             const productId = JSON.parse(cartItem.product_id);
-            const quantity = JSON.parse(cartItem.quantity)
+            const quantity = JSON.parse(cartItem.quantity);
 
             let itemTotal = 0;
 
-            const basePrice = productDetails.data.Product.Prices.find(price => price.Description === productId.selectedSize)?.Price || 0;
+            const basePrice = item.Prices.find(price => price.Description === productId.selectedSize)?.Price || 0;
             itemTotal += basePrice;
 
             const isEmpty = (obj) => {
                 return Object.keys(obj).length === 0;
             }
 
-            if (productDetails.data.ProductExtraTroppings && !isEmpty(productId.selectedToppings)) {
-                productDetails.data.ProductExtraTroppings.forEach(extra => {
+            if (item.ProductExtraTroppings && !isEmpty(productId.selectedToppings)) {
+                item.ProductExtraTroppings.forEach(extra => {
                     const selectedExtra = productId.selectedToppings[extra.Name];
                     if (selectedExtra && selectedExtra.selected) {
                         const extraPrice = extra.Prices.find(price => price.Description === selectedExtra.priceDescription)?.Price || 0;
@@ -171,8 +157,8 @@ const CartScreen = ({ navigation }) => {
                 });
             }
 
-            if (productDetails.data.ProductExtraDippings && !isEmpty(productId.selectedDippings)) {
-                productDetails.data.ProductExtraDippings.forEach(dip => {
+            if (item.ProductExtraDippings && !isEmpty(productId.selectedDippings)) {
+                item.ProductExtraDippings.forEach(dip => {
                     const selectedDip = productId.selectedDippings[dip.Name];
                     if (selectedDip && selectedDip.selected) {
                         const dipPrice = dip.Prices.find(price => price.Description === selectedDip.priceDescription)?.Price || 0;
@@ -186,17 +172,17 @@ const CartScreen = ({ navigation }) => {
 
             grandTotal += itemTotal;
 
-            const selectedDips = productDetails.data.ProductExtraDippings && !isEmpty(productId.selectedDippings)
-                ? productDetails.data.ProductExtraDippings.filter(dip => productId.selectedDippings[dip.Name])
+            const selectedDips = item.ProductExtraDippings && !isEmpty(productId.selectedDippings)
+                ? item.ProductExtraDippings.filter(dip => productId.selectedDippings[dip.Name])
                 : [];
 
-            const selectedToppings = productDetails.data.ProductExtraTroppings && !isEmpty(productId.selectedToppings)
-                ? productDetails.data.ProductExtraTroppings.filter(topping => productId.selectedToppings[topping.Name])
+            const selectedToppings = item.ProductExtraTroppings && !isEmpty(productId.selectedToppings)
+                ? item.ProductExtraTroppings.filter(topping => productId.selectedToppings[topping.Name])
                 : [];
 
             productDetailsArray.push({
                 id: cartItem.id,
-                Product: productDetails.data.Product,
+                Product: item.Product,
                 ProductExtraDippings: selectedDips,
                 ProductExtraTroppings: selectedToppings,
                 itemTotal,
@@ -204,8 +190,8 @@ const CartScreen = ({ navigation }) => {
             });
             checkoutArray.push({
                 Quantity: quantity,
-                ProductId: productDetails.data.Product.Id,
-                ProductPriceId: productDetails.data.Product.Prices.find(price => price.Description === productId.selectedSize)?.Id,
+                ProductId: item.Product.Id,
+                ProductPriceId: item.Product.Prices.find(price => price.Description === productId.selectedSize)?.Id,
                 OrderProductExtraDippings: selectedDips.map(dip => ({
                     Quantity: "1",
                     ProductExtraDippingId: dip.Id,
@@ -247,7 +233,10 @@ const CartScreen = ({ navigation }) => {
                         justifyContent: 'center'
                     }}
                 >
-                    <Image source={{ uri: item.Product.Image }}
+                    <Image
+                        source={{
+                            uri: transformImageUrl({ originalUrl: item?.Product?.Image, size: '/tr:w-200' })
+                        }}
                         style={{
                             width: '80%',
                             height: '65%',
@@ -407,7 +396,7 @@ const CartScreen = ({ navigation }) => {
                                 }}
                             >
                                 <Button
-                                    title='Add Something'
+                                    title='Etwas hinzufügen'
                                     onPress={() => {
                                         navigation.navigate('Home')
                                         setActiveTab("Home")
@@ -684,7 +673,7 @@ const CartScreen = ({ navigation }) => {
                                                             {
                                                                 token === null || token === '' ? (
                                                                     <Button
-                                                                        title='Anmeldung zur Kasse'
+                                                                        title='Sign Up to Checkout'
                                                                         onPress={() => navigation.navigate('Registration')}
                                                                     />
                                                                 ) : (

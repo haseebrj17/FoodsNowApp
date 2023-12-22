@@ -150,9 +150,45 @@ const getProductById = async dishId => {
     }
 };
 
+
+const getProductByIds = async Ids => {
+    console.log(`DashboardService | getProductByIds`);
+    try {
+        const requestBody = {
+            Ids
+        };
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+        let ProductByIdsResponse = await axios.post(
+            `${ApiContants.BACKEND_API.BASE_API_URL}${ApiContants.BACKEND_API.PRODUCTS_BY_IDS}`,
+            requestBody,
+            { headers }
+        );
+        if (ProductByIdsResponse?.status === 200) {
+            return {
+                status: true,
+                message: `Product data fetched`,
+                data: ProductByIdsResponse?.data,
+            };
+        } else {
+            return {
+                status: false,
+                message: `Product data not found`,
+            };
+        }
+    } catch (error) {
+        return {
+            status: false,
+            message: `Product data not found`,
+        };
+    }
+};
+
 export default {
     getDashboard,
     getFranchises,
     getProducts,
-    getProductById 
+    getProductById,
+    getProductByIds
 };

@@ -42,46 +42,23 @@ const AddresseButton = ({ onpress, loadingAddress }) => {
 
 const AddressesScreen = ({ navigation }) => {
 
-    const [isReady, setIsReady] = useState(false);
     const [address, setAddress] = useState(null)
-    const [flatListAddress, setFlatListAddress] = useState(null);
-    const [Id, setId] = useState(null);
-    const [franchiseId, setFranchiseId] = useState(null);
-    const [paymentMethod, setPaymentMethod] = useState("cash");
-    const [selectedAddressId, setSelectedAddressId] = useState(null);
 
     const dispatch = useDispatch();
-
-    useEffect(() => {
-        const FetchAddresses = async () => {
-            const Data = await StorageService.getUserData();
-            const { Id } = JSON.parse(Data);
-            setId(Id);
-            const LocationData = await StorageService.getLocation();
-            const FranchiseId = LocationData.FranchiseId
-            setFranchiseId(FranchiseId)
-        };
-
-        FetchAddresses();
-    });
 
     const token = useSelector(getToken);
 
     useEffect(() => {
-        if (Id) {
-            dispatch(fetchUserAddresses(Id, token));
+        if (token) {
+            dispatch(fetchUserAddresses(token));
         } else {
-            console.log("User Id not available");
+            console.log("User token not available");
         }
-    }, [Id, token]);
+    }, [token]);
 
     const { addresses, loadingAddress, error } = useSelector(
         (state) => state.addressState
     );
-
-    useEffect(() => {
-        console.log(addresses, loadingAddress, error)
-    }, [addresses])
 
     const sectionsData = [
         { title: 'Addresses', data: addresses ? addresses : [] }
