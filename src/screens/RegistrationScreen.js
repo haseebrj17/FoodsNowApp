@@ -72,19 +72,25 @@ const RegistrationScreen = ({ navigation }) => {
             alert('Must use physical device for Push Notifications');
         }
 
-        setToken(token.data)
+        if (token) {
+            setToken(token.data);
+            setInputs(prevState => ({ ...prevState, deviceToken: token.data }));
+            await StorageService.setDeviceToken(token.data);
+        } else {
+            console.error('Token is undefined');
+        }
 
-        return token.data;
+        return token ? token.data : null;
     }
 
     useEffect(() => {
         registerForPushNotificationsAsync();
 
-        Notifications.addNotificationReceivedListener(notification => {
+        const notificationSubscription = Notifications.addNotificationReceivedListener(notification => {
             console.log(notification);
         });
 
-        Notifications.addNotificationResponseReceivedListener(response => {
+        const responseSubscription = Notifications.addNotificationResponseReceivedListener(response => {
             console.log(response);
         });
 
@@ -92,35 +98,6 @@ const RegistrationScreen = ({ navigation }) => {
             Notifications.removeNotificationSubscription(notificationSubscription);
             Notifications.removeNotificationSubscription(responseSubscription);
         };
-    }, []);
-
-    useEffect(() => {
-        const fetchLocationAndDashboard = async () => {
-            try {
-                const location = await StorageService.getLocation();
-                setLocation(location)
-                console.log(location)
-                const { FranchiseId, DeliveryParams } = location;
-                setDeliveryParams(DeliveryParams)
-                console.log(location);
-
-                RestaurantService.getDashboard({ FranchiseId }).then(response => {
-                    if (response?.status) {
-                        const brandsData = response?.data?.brands;
-                        setBrand(response?.data?.brands);
-                    } else {
-                        console.log(`${response.message} Error Status False`);
-                    }
-                })
-                    .catch(error => {
-                        console.error(`${error} Error unexpected`);
-                    });
-            } catch (error) {
-                console.error(`Error fetching location: ${error}`);
-            }
-        };
-
-        fetchLocationAndDashboard();
     }, []);
 
     useEffect(() => {
@@ -176,20 +153,23 @@ const RegistrationScreen = ({ navigation }) => {
         fullname: '',
         phone: '',
         password: '',
-        deviceToken: token
+        deviceToken: ''
     });
 
     const initialCreds = {};
 
     const [oAuthSignUp, setOAuthSignUp] = useState({
         creds: initialCreds,
-        provider: ''
+        provider: '',
+        deviceToken: ''
     })
 
     let margin = 50;
     if (!inputs.email && !inputs.fullname && !inputs.password) {
         margin = 40
     }
+
+    const [loading, setLoading] = React.useState(false);
 
     const validate = () => {
         Keyboard.dismiss();
@@ -233,6 +213,8 @@ const RegistrationScreen = ({ navigation }) => {
     };
 
     const register = async () => {
+
+        console.log(inputs)
         const user = {
             FullName: inputs.fullname,
             EmailAdress: inputs.email,

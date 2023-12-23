@@ -15,7 +15,6 @@ const register = async user => {
             ContactNumber: user?.ContactNumber,
             Password: user?.Password,
             DeviceToken: user?.DeviceToken
-
         };
         let registerResponse = await AuthRequest.post(
             ApiContants.BACKEND_API.REGISTER,
@@ -45,6 +44,7 @@ const login = async user => {
         let requestBody = {
             EmailAdress: user?.EmailAdress,
             Password: user?.Password,
+            DeviceToken: user?.DeviceToken
         };
         let loginResponse = await AuthRequest.post(
             ApiContants.BACKEND_API.LOGIN,

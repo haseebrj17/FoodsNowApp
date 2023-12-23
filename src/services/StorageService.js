@@ -59,6 +59,14 @@ const removeData = async (key) => {
     }
 };
 
+const setDeviceToken = token => {
+    return AsyncStorage.setItem('deviceToken', token);
+};
+
+const getDeviceToken = () => {
+    return AsyncStorage.getItem('deviceToken');
+};
+
 export default { 
     setFirstTimeUse, 
     getFirstTimeUse, 
@@ -73,4 +81,6 @@ export default {
     getLocation, 
     setLocation,
     removeData,
+    setDeviceToken,
+    getDeviceToken
 };

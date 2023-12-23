@@ -121,7 +121,8 @@ const getProducts = async ({ categoryId }) => {
     console.log(`DashboardService | getProducts`);
     try {
         const requestBody = {
-            Id: categoryId
+            Id: categoryId,
+            AddSides: true
         };
 
         const headers = {
