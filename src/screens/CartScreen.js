@@ -99,22 +99,15 @@ const CartScreen = ({ navigation }) => {
                     setMinOrder(location?.DeliveryParams?.minOrderValue);
                 }
 
-                const productIds = cartItems.map(item => {
-                    const parsedProductId = JSON.parse(item.product_id);
-                    return parsedProductId.dishId;
-                });
-
-                const response = await RestaurantService.getProductByIds(productIds);
-                const allProductDetails = response.data;
-
-                const calculatedData = await calculateTotalPrice(cartItems, allProductDetails);
-                setItemTotal(calculatedData.grandTotal);
-                setGrandTotal(calculatedData.grandTotal + location.DeliveryParams.deliverCharges);
-                setCartData(calculatedData.productDetailsArray);
-                setCheckout(calculatedData.checkoutArray);
+                await calculateTotalPrice(cartItems).then(response => {
+                    setItemTotal(response.grandTotal);
+                    setGrandTotal(response.grandTotal + location.DeliveryParams.deliverCharges);
+                    setCartData(response.productDetailsArray);
+                    setCheckout(response.checkoutArray);
+                })
             } catch (error) {
                 console.error("Error while fetching data:", error);
-                setLoading(false);
+                setLoading(false);  // Handle loading state in case of error
             } finally {
                 setTimeout(() => {
                     setDataLoaded(true);
@@ -125,29 +118,46 @@ const CartScreen = ({ navigation }) => {
         fetchData();
     }, [cartItems]);
 
-    const calculateTotalPrice = async (cartItems, allProductDetails) => {
+    const calculateTotalPrice = async (cartItems) => {
         let grandTotal = 0;
         const productDetailsArray = [];
         const checkoutArray = [];
 
-        cartItems.forEach((cartItem, index) => {
-            const item = allProductDetails[index];
-            if (!item) return;
+        // Iterate over cartItems to fetch product details
+        const productPromises = cartItems?.map(async item => {
+            try {
+                const parsedProductId = JSON.parse(item.product_id);
+                if (parsedProductId && parsedProductId.dishId) {
+                    const productDetails = await RestaurantService.getProductById(parsedProductId.dishId);
+                    return productDetails;
+                }
+                return null;
+            } catch (error) {
+                console.error("Error in productPromises map:", error);
+                return null;
+            }
+        });
 
+        const allProductDetails = await Promise.all(productPromises);
+
+        allProductDetails.forEach((productDetails, index) => {
+            if (!productDetails) return;
+
+            const cartItem = cartItems[index];
             const productId = JSON.parse(cartItem.product_id);
-            const quantity = JSON.parse(cartItem.quantity);
+            const quantity = JSON.parse(cartItem.quantity)
 
             let itemTotal = 0;
 
-            const basePrice = item.Prices.find(price => price.Description === productId.selectedSize)?.Price || 0;
+            const basePrice = productDetails.data.Product.Prices.find(price => price.Description === productId.selectedSize)?.Price || 0;
             itemTotal += basePrice;
 
             const isEmpty = (obj) => {
                 return Object.keys(obj).length === 0;
             }
 
-            if (item.ProductExtraTroppings && !isEmpty(productId.selectedToppings)) {
-                item.ProductExtraTroppings.forEach(extra => {
+            if (productDetails.data.ProductExtraTroppings && !isEmpty(productId.selectedToppings)) {
+                productDetails.data.ProductExtraTroppings.forEach(extra => {
                     const selectedExtra = productId.selectedToppings[extra.Name];
                     if (selectedExtra && selectedExtra.selected) {
                         const extraPrice = extra.Prices.find(price => price.Description === selectedExtra.priceDescription)?.Price || 0;
@@ -157,8 +167,8 @@ const CartScreen = ({ navigation }) => {
                 });
             }
 
-            if (item.ProductExtraDippings && !isEmpty(productId.selectedDippings)) {
-                item.ProductExtraDippings.forEach(dip => {
+            if (productDetails.data.ProductExtraDippings && !isEmpty(productId.selectedDippings)) {
+                productDetails.data.ProductExtraDippings.forEach(dip => {
                     const selectedDip = productId.selectedDippings[dip.Name];
                     if (selectedDip && selectedDip.selected) {
                         const dipPrice = dip.Prices.find(price => price.Description === selectedDip.priceDescription)?.Price || 0;
@@ -172,17 +182,17 @@ const CartScreen = ({ navigation }) => {
 
             grandTotal += itemTotal;
 
-            const selectedDips = item.ProductExtraDippings && !isEmpty(productId.selectedDippings)
-                ? item.ProductExtraDippings.filter(dip => productId.selectedDippings[dip.Name])
+            const selectedDips = productDetails.data.ProductExtraDippings && !isEmpty(productId.selectedDippings)
+                ? productDetails.data.ProductExtraDippings.filter(dip => productId.selectedDippings[dip.Name])
                 : [];
 
-            const selectedToppings = item.ProductExtraTroppings && !isEmpty(productId.selectedToppings)
-                ? item.ProductExtraTroppings.filter(topping => productId.selectedToppings[topping.Name])
+            const selectedToppings = productDetails.data.ProductExtraTroppings && !isEmpty(productId.selectedToppings)
+                ? productDetails.data.ProductExtraTroppings.filter(topping => productId.selectedToppings[topping.Name])
                 : [];
 
             productDetailsArray.push({
                 id: cartItem.id,
-                Product: item.Product,
+                Product: productDetails.data.Product,
                 ProductExtraDippings: selectedDips,
                 ProductExtraTroppings: selectedToppings,
                 itemTotal,
@@ -190,8 +200,8 @@ const CartScreen = ({ navigation }) => {
             });
             checkoutArray.push({
                 Quantity: quantity,
-                ProductId: item.Product.Id,
-                ProductPriceId: item.Product.Prices.find(price => price.Description === productId.selectedSize)?.Id,
+                ProductId: productDetails.data.Product.Id,
+                ProductPriceId: productDetails.data.Product.Prices.find(price => price.Description === productId.selectedSize)?.Id,
                 OrderProductExtraDippings: selectedDips.map(dip => ({
                     Quantity: "1",
                     ProductExtraDippingId: dip.Id,

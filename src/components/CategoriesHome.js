@@ -8,52 +8,54 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Display, transformImageUrl } from '../utils';
 import Skeleton from './Skeleton';
 import { useDispatch, useSelector } from "react-redux";
-import { fetchBrands } from "../actions/BrandAction";
 
-const column = 3;
+const column = 4;
 
 const { width, height } = Dimensions.get('screen');
 
-const formatData = (brands, column) => {
-    const numOfFullRow = Math.floor(brands.length / column)
-    let numOfElementsLastRow = brands.length - (numOfFullRow * column);
+const formatData = (categories, column) => {
+    const numOfFullRow = Math.floor(categories.length / column)
+    let numOfElementsLastRow = categories.length - (numOfFullRow * column);
     while (numOfElementsLastRow !== column && numOfElementsLastRow !== 0) {
-        brands.push({ key: `balnk-${numOfElementsLastRow}`, empty: true });
+        categories.push({ key: `balnk-${numOfElementsLastRow}`, empty: true });
         numOfElementsLastRow = numOfElementsLastRow + 1;
     }
-    return brands;
+    return categories;
 }
 
-const BrandCardsHome = ({ brand, deliveryParams }) => {
-    const [showAllBrands, setShowAllBrands] = useState(false);
+const CategoriesHome = ({ category, deliveryParams }) => {
+
+    console.log(category);
+    const [showAllCategories, setShowAllCategories] = useState(false);
     const [imagesLoaded, setImagesLoaded] = useState(0);
     const [scroll, setScroll] = useState(false);
     const navigation = useNavigation();
-    const [brands, setBrand] = useState(null);
+    const [categories, setCategory] = useState(null);
     const [loading, setLoading] = useState(true);
 
     const handleImageLoad = () => {
         setImagesLoaded(prevCount => prevCount + 1);
-        if (imagesLoaded + 1 === brands.length) {
-            setLoading(false);
+        if (imagesLoaded + 1 === categories.length) {
+            setLoading(false); // Assuming you have a setLoading function somewhere
         }
     };
 
     useEffect(() => {
-        if (brand) {
-            setBrand(brand);
+        if (category) {
+            console.log(category);
+            setCategory(category);
             setLoading(false);
         }
-    }, [brand]);
+    }, [category]);
 
-    const ConditionalRendering = ({ brands, deliveryParams }) => {
-        if (brands?.length > 6) {
+    const ConditionalRendering = ({ categories, deliveryParams }) => {
+        if (categories?.length > 12) {
             return (
                 <Button
                     onPress={() => navigation.navigate('HomeNavigator', {
-                        screen: 'Brand',
+                        screen: 'Category',
                         params: {
-                            brand: brands,
+                            category: categories,
                             deliveryParams: deliveryParams
                         }
                     })
@@ -87,38 +89,20 @@ const BrandCardsHome = ({ brand, deliveryParams }) => {
                         fontSize: 12,
                         fontWeight: "600",
                         letterSpacing: 0.2,
-                        // marginTop: 2,
                     }}
-                >Alle Restaurants erkunden</Text>
+                >Alle Kategorien Erkunden</Text>
             </View>
         )
     }
 
-    renderItem = ({ item: brand }) => {
-        if (brand.empty === true) {
+    renderItem = ({ item: category }) => {
+        if (category.empty === true) {
             return <View style={[styles.BrandCard, styles.itemInvisible]} />;
         }
-        const imageSource = brand.Logo;
-        const thumbnailSource = brand.Thumbnail;
-        let imgAspect = 1;
-        let imgHeight = 1;
-        let imgWidth = 1;
+        const thumbnailSource = category.Thumbnail;
         let imgThumbAspect = 1;
         let imgThumbHeight = 1;
         let imgThumbWidth = 1;
-        Image.getSize(
-            imageSource,
-            (width, height) => {
-                if (width && height) {
-                    imgWidth = width;
-                    imgHeight = height;
-                    imgAspect = width / height;
-                }
-            },
-            (error) => {
-                console.error(`Couldn't get the image size, check the URI: ${error}`);
-            }
-        );
         Image.getSize(
             thumbnailSource,
             (width, height) => {
@@ -137,7 +121,7 @@ const BrandCardsHome = ({ brand, deliveryParams }) => {
                 onPress={() => navigation.navigate('HomeNavigator', {
                     screen: 'Details',
                     params: {
-                        brand: brand,
+                        brand: category,
                         deliveryParams: deliveryParams
                     }
                 })
@@ -145,58 +129,41 @@ const BrandCardsHome = ({ brand, deliveryParams }) => {
             >
                 <View
                     style={{
-                        width: width * 0.27,
+                        width: Display.setWidth(18),
                         flexDirection: "column",
-                        justifyContent: "flex-start",
+                        justifyContent: "center",
                         alignItems: "center",
                         borderRadius: 8,
-                        backgroundColor: '#d9d9d9',
-                        flex: 1,
                         margin: Display.setHeight(1),
-                        height: width * 0.35,
-                        marginBottom: Display.setHeight(1.8),
+                        height: Display.setWidth(18),
+                        marginTop: Display.setHeight(1.8),
                     }}
                 >
                     <View
                         style={{
-                            overflow: 'hidden',
                             width: '100%',
-                            height: '85%',
-                            alignItems: 'center',
+                            height: '100%',
                         }}
                     >
-                        <Image 
-                        source={{ uri: transformImageUrl({ originalUrl: brand.Thumbnail, size: '/tr:w-200'}) }}
+                        <Image
+                            source={{ uri: transformImageUrl({ originalUrl: category.Thumbnail, size: '/tr:w-100' }) }}
                             onLoad={handleImageLoad}
                             style={{
-                                height: '100%',
-                                resizeMode: "contain",
-                                aspectRatio: imgAspect,
+                                aspectRatio: imgThumbAspect,
+                                borderRadius: Display.setHeight(50),
                             }}
                         />
                     </View>
                     <View
                         style={{
-                            width: '100%',
-                            height: '15%',
                             alignItems: "center",
                             justifyContent: "center",
-                            backgroundColor: "white",
-                            shadowColor: '#000000',
-                            shadowOffset: {
-                                width: 0,
-                                height: 5,
-                            },
-                            shadowOpacity: 0.4,
-                            shadowRadius: 5,
-                            elevation: 10,
-                            borderBottomRightRadius: 8,
-                            borderBottomLeftRadius: 8,
+                            marginTop: Display.setHeight(0.5),
                         }}
                     >
                         <Text
                             style={styles.itemText}
-                        >{brand.Name}</Text>
+                        >{category.Name}</Text>
                     </View>
                 </View>
             </TouchableWithoutFeedback>
@@ -207,7 +174,7 @@ const BrandCardsHome = ({ brand, deliveryParams }) => {
         <View>
             {loading ? (
                 <View>
-                    <Skeleton height={Display.setHeight(2.5)} width={Display.setHeight(35)} style={{ alignSelf: 'center', marginBottom: Display.setHeight(1.2), borderRadius: 6 }} />
+                    <Skeleton height={Display.setHeight(2.5)} width={Display.setHeight(35)} style={{ alignSelf: 'center', marginBottom: 5, marginTop: 10, borderRadius: 6 }} />
                     <View
                         style={{
                             width: '100%',
@@ -224,9 +191,10 @@ const BrandCardsHome = ({ brand, deliveryParams }) => {
                                 flexDirection: 'row'
                             }}
                         >
-                            <Skeleton height={Display.setHeight(14)} width={Display.setHeight(11.5)} style={{ margin: Display.setHeight(1.2), borderRadius: 12 }} />
-                            <Skeleton height={Display.setHeight(14)} width={Display.setHeight(11.5)} style={{ margin: Display.setHeight(1.2), borderRadius: 12 }} />
-                            <Skeleton height={Display.setHeight(14)} width={Display.setHeight(11.5)} style={{ margin: Display.setHeight(1.2), borderRadius: 12 }} />
+                            <Skeleton height={Display.setHeight(10)} width={Display.setHeight(10)} style={{ margin: 10, borderRadius: Display.setHeight(50) }} />
+                            <Skeleton height={Display.setHeight(10)} width={Display.setHeight(10)} style={{ margin: 10, borderRadius: Display.setHeight(50) }} />
+                            <Skeleton height={Display.setHeight(10)} width={Display.setHeight(10)} style={{ margin: 10, borderRadius: Display.setHeight(50) }} />
+                            <Skeleton height={Display.setHeight(10)} width={Display.setHeight(10)} style={{ margin: 10, borderRadius: Display.setHeight(50) }} />
                         </View>
                         <View
                             style={{
@@ -236,42 +204,46 @@ const BrandCardsHome = ({ brand, deliveryParams }) => {
                                 flexDirection: 'row'
                             }}
                         >
-                            <Skeleton height={Display.setHeight(14)} width={Display.setHeight(11.5)} style={{ margin: Display.setHeight(1.2), borderRadius: 12 }} />
-                            <Skeleton height={Display.setHeight(14)} width={Display.setHeight(11.5)} style={{ margin: Display.setHeight(1.2), borderRadius: 12 }} />
-                            <Skeleton height={Display.setHeight(14)} width={Display.setHeight(11.5)} style={{ margin: Display.setHeight(1.2), borderRadius: 12 }} />
+                            <Skeleton height={Display.setHeight(10)} width={Display.setHeight(10)} style={{ margin: 10, borderRadius: Display.setHeight(50) }} />
+                            <Skeleton height={Display.setHeight(10)} width={Display.setHeight(10)} style={{ margin: 10, borderRadius: Display.setHeight(50) }} />
+                            <Skeleton height={Display.setHeight(10)} width={Display.setHeight(10)} style={{ margin: 10, borderRadius: Display.setHeight(50) }} />
+                            <Skeleton height={Display.setHeight(10)} width={Display.setHeight(10)} style={{ margin: 10, borderRadius: Display.setHeight(50) }} />
                         </View>
                         <View>
-                            <Skeleton height={Display.setHeight(5.8)} width={Display.setHeight(28)} style={{ margin: Display.setHeight(1.2), borderRadius: 12 }} />
+                            <Skeleton height={50} width={240} style={{ margin: 10, borderRadius: 12 }} />
                         </View>
                     </View>
                 </View>
             ) : (
-                <View>
+                <>
                     <View
                         style={{
                             flex: 1,
                             justifyContent: 'center',
                             alignSelf: 'center',
-                            marginBottom: Display.setHeight(0.1),
                             width: width * 0.9,
                         }}
                     >
                         <Text style={{
-                            fontSize: 15,
+                            fontSize: 16,
                             color: '#325962',
                             fontWeight: "bold",
                             alignSelf: "center",
-                            marginBottom: 1,
-                        }}>Alles in unserem Food Court, in EINER Lieferung!</Text>
+                            marginTop: Display.setHeight(2),
+                        }}>Vielfältige Auswahl an Kategorien!</Text>
                         <FlatList
-                            data={brands ? formatData(brands.slice(0, 6), column) : null}
+                            contentContainerStyle={{
+                                marginBottom: Display.setHeight(1),
+                                marginTop: Display.setHeight(1),
+                            }}
+                            data={categories ? formatData(categories.slice(0, 8), column) : null}
                             renderItem={renderItem}
                             numColumns={column}
                             keyExtractor={(item, index) => index.toString()}
                         />
                     </View>
-                    <ConditionalRendering brands={brands} />
-                </View>
+                    <ConditionalRendering categories={categories} />
+                </>
             )}
         </View>
     );
@@ -338,4 +310,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default BrandCardsHome;
+export default CategoriesHome;

@@ -18,6 +18,9 @@ import { Dispatch } from 'react';
 import AuthenticationService from '../services/AuthenticationService';
 import { Display } from '../utils';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import * as Device from 'expo-device';
+import * as Notifications from 'expo-notifications';
+import Constants from 'expo-constants';
 
 const { width, height } = Dimensions.get('screen')
 
@@ -26,7 +29,67 @@ const RegistrationScreen = ({ navigation }) => {
     const [isLoading, setIsLoading] = React.useState(false);
     const [errors, setErrors] = React.useState({});
     const [errorMessage, setErrorMessage] = React.useState({});
+    const [token, setToken] = useState(null)
 
+    ///// Notifications /////
+    async function registerForPushNotificationsAsync() {
+        let token;
+
+        if (Platform.OS === 'android') {
+            Notifications.setNotificationChannelAsync('default', {
+                name: 'default',
+                importance: Notifications.AndroidImportance.MAX,
+                vibrationPattern: [0, 250, 250, 250],
+                lightColor: '#FF231F7C',
+            });
+        }
+
+        if (Device.isDevice) {
+            const { status: existingStatus } = await Notifications.getPermissionsAsync();
+            let finalStatus = existingStatus;
+            if (existingStatus !== 'granted') {
+                const { status } = await Notifications.requestPermissionsAsync();
+                finalStatus = status;
+            }
+            if (finalStatus !== 'granted') {
+                alert('Failed to get push token for push notification!');
+                return;
+            }
+            token = await Notifications.getExpoPushTokenAsync({
+                projectId: Constants.expoConfig.extra.eas.projectId,
+            });
+            console.log(token);
+        } else {
+            alert('Must use physical device for Push Notifications');
+        }
+
+        if (token) {
+            setToken(token.data);
+            setInputs(prevState => ({ ...prevState, deviceToken: token.data }));
+            await StorageService.setDeviceToken(token.data);
+        } else {
+            console.error('Token is undefined');
+        }
+
+        return token ? token.data : null;
+    }
+
+    useEffect(() => {
+        registerForPushNotificationsAsync();
+
+        const notificationSubscription = Notifications.addNotificationReceivedListener(notification => {
+            console.log(notification);
+        });
+
+        const responseSubscription = Notifications.addNotificationResponseReceivedListener(response => {
+            console.log(response);
+        });
+
+        return () => {
+            Notifications.removeNotificationSubscription(notificationSubscription);
+            Notifications.removeNotificationSubscription(responseSubscription);
+        };
+    }, []);
 
     ///// Google OAuth /////
     const redirectUri = AuthSession.makeRedirectUri({ useProxy: true });
@@ -82,6 +145,8 @@ const RegistrationScreen = ({ navigation }) => {
         }
     };
 
+
+
     ///// Email Registration /////
 
     const [inputs, setInputs] = React.useState({
@@ -89,13 +154,15 @@ const RegistrationScreen = ({ navigation }) => {
         fullname: '',
         phone: '',
         password: '',
+        deviceToken: '',
     });
 
     const initialCreds = {};
 
     const [oAuthSignUp, setOAuthSignUp] = useState({
         creds: initialCreds,
-        provider: ''
+        provider: '',
+        deviceToken: ''
     })
 
     let margin = 50;
@@ -149,7 +216,8 @@ const RegistrationScreen = ({ navigation }) => {
             FullName: inputs.fullname,
             EmailAdress: inputs.email,
             ContactNumber: inputs.phone,
-            Password: inputs.password
+            Password: inputs.password,
+            DeviceToken: inputs.deviceToken
         };
 
         setIsLoading(true);
@@ -277,12 +345,12 @@ const RegistrationScreen = ({ navigation }) => {
                                 />
 
                                 <Input
-                                    keyboardType="numeric"
+                                    keyboardType="number-pad"
                                     onChangeText={text => handleOnchange(text, 'phone')}
                                     onFocus={() => handleError(null, 'phone')}
                                     iconName="phone-outline"
                                     label="Handy-Nummer"
-                                    placeholder="Geben Sie Ihre Handynummer ein"
+                                    placeholder="Your phone number +49 851 98...."
                                     error={errors.phone}
                                 />
                                 <Input

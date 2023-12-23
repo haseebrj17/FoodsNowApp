@@ -26,6 +26,8 @@ import { createAvatar } from '@dicebear/core';
 import { adventurer, thumbs } from '@dicebear/collection';
 import { SvgXml } from 'react-native-svg';
 import { Display } from "../utils";
+import CategoriesHome from "../components/CategoriesHome";
+import { ca } from "date-fns/locale";
 
 const config = require('../../package.json').projectName;
 const CLIENT_NAME = config.name;
@@ -41,6 +43,7 @@ const HomeScreen = () => {
 
     const [brand, setBrand] = useState(null);
     const [deliveryParams, setDeliveryParams] = useState(null);
+    const [category, setCategory] = useState(null);
     const [location, setLocation] = useState(null)
 
     useEffect(() => {
@@ -57,6 +60,7 @@ const HomeScreen = () => {
                     if (response?.status) {
                         const brandsData = response?.data?.brands;
                         setBrand(response?.data?.brands);
+                        setCategory(response?.data?.categories);
                     } else {
                         console.log(`${response.message} Error Status False`);
                     }
@@ -137,7 +141,8 @@ const HomeScreen = () => {
                     left: '5%',
                     flexDirection: "row",
                     alignItems: "center",
-                    justifyContent: 'space-between'
+                    justifyContent: 'space-between',
+                    marginTop: 10,
                 }}>
                     {
                         token ? (
@@ -148,7 +153,7 @@ const HomeScreen = () => {
                                         height: Display.setHeight(3.5),
                                         flexDirection: 'row',
                                         alignItems: 'center',
-                                        justifyContent: 'flex-start',
+                                        justifyContent: 'flex-start'
                                     }}
                                 >
                                     <Button
@@ -240,6 +245,51 @@ const HomeScreen = () => {
             <View style={{ width: "100%", height: "0.5%", backgroundColor: "#f1f1f1", marginTop: "3%", marginBottom: 10 }}></View>
             <BrandCardsHome brand={brand} deliveryParams={deliveryParams} />
             <View style={{ width: "100%", height: "0.5%", backgroundColor: "#f1f1f1", marginTop: "3%", marginBottom: 5 }}></View>
+            <View
+                style={[
+                    styles.Container,
+                    {
+                        backgroundColor: "red",
+                        width: "90%",
+                        height: undefined,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        alignSelf: "center",
+                        borderRadius: Display.setHeight(1.4),
+                        marginBottom: 5,
+                    }
+                ]}
+            >
+                <TouchableHighlight activeOpacity={0.6} underlayColor="#DDDDDD" 
+                    style={{
+                        borderRadius: Display.setHeight(1.4),
+                    }}
+                >
+                    <Image source={require('../assets/images/10.jpg')} style={[styles.Image, { borderRadius: Display.setHeight(1.4) }]} />
+                </TouchableHighlight>
+            </View>
+            <View style={{ width: "100%", height: "0.5%", backgroundColor: "#f1f1f1", }} />
+            <CategoriesHome category={category} deliveryParams={deliveryParams} />
+            <View style={{ width: "100%", height: "0.5%", backgroundColor: "#f1f1f1", }} />
+            <View
+                style={{
+                    width: "100%",
+                    height: Display.setHeight(40),
+                    backgroundColor: "#f1f1f1",
+                }}
+            >
+                <Image
+                    source={require('../assets/BNFooter.png')}
+                    style={{
+                        width: "100%",
+                        height: "100%",
+                        resizeMode: "contain",
+                        top: 0,
+                        left: 0,
+                        aspectRatio: 800 / 646,
+                    }}
+                />
+            </View>
         </ScrollView>
     )
 }
@@ -310,7 +360,7 @@ const styles = StyleSheet.create({
         width: '100%',
         height: Display.setHeight(4.5),
         backgroundColor: 'white',
-        borderRadius: 12,
+        borderRadius: Display.setHeight(1.4),
         fontSize: Display.setHeight(2.2),
         borderColor: 'rgba(50, 89, 98, 0.4)',
         borderWidth: 1,

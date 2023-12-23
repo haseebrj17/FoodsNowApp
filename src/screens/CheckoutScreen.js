@@ -79,6 +79,7 @@ const CheckoutScreen = ({ route, navigation }) => {
         setSubLoading(true)
         try {
             const response = await dispatch(placeOrder(inputs, token));
+            console.log(inputs)
             if (response.status) {
                 dispatch(clearCart());
                 setSubLoading(false)
@@ -111,7 +112,6 @@ const CheckoutScreen = ({ route, navigation }) => {
             OrderDeliveryDateTime: deliveryDetails.time,
         }));
 
-        console.log(inputs)
     }, [Id, selectedAddressId, franchiseId, deliveryDetails]);
 
     const currentDate = new Date();

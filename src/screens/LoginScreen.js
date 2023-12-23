@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, Dimensions, ImageBackground, Platform, TouchableOpacity, Image, Keyboard, Alert, KeyboardAvoidingView, TouchableWithoutFeedback } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useEffect} from 'react'
 import { TextInput } from 'react-native-paper'
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { Backdrop } from 'react-native-backdrop';
@@ -20,16 +20,20 @@ import { StorageService } from '../services';
 import jwt_decode from "jwt-decode";
 import { useNavigation } from '@react-navigation/native';
 import { Display } from '../utils';
+import * as Device from 'expo-device';
+import * as Notifications from 'expo-notifications';
+import Constants from 'expo-constants';
 
 const { width, height } = Dimensions.get('screen')
 
 const LoginScreen = () => {
     const navigation = useNavigation();
 
-    const [inputs, setInputs] = React.useState({ email: '', password: '' });
+    const [inputs, setInputs] = React.useState({ email: '', password: '', deviceToken: '' });
     const [errors, setErrors] = React.useState({});
     const [isLoading, setIsLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const [deviceToken, setDeviceToken] = useState(null);
 
     const dispatch = useDispatch();
 
@@ -114,6 +118,65 @@ const LoginScreen = () => {
         }
     };
 
+    async function registerForPushNotificationsAsync() {
+        let token;
+
+        if (Platform.OS === 'android') {
+            Notifications.setNotificationChannelAsync('default', {
+                name: 'default',
+                importance: Notifications.AndroidImportance.MAX,
+                vibrationPattern: [0, 250, 250, 250],
+                lightColor: '#FF231F7C',
+            });
+        }
+
+        if (Device.isDevice) {
+            const { status: existingStatus } = await Notifications.getPermissionsAsync();
+            let finalStatus = existingStatus;
+            if (existingStatus !== 'granted') {
+                const { status } = await Notifications.requestPermissionsAsync();
+                finalStatus = status;
+            }
+            if (finalStatus !== 'granted') {
+                alert('Failed to get push token for push notification!');
+                return;
+            }
+            token = await Notifications.getExpoPushTokenAsync({
+                projectId: Constants.expoConfig.extra.eas.projectId,
+            });
+            console.log(token);
+        } else {
+            alert('Must use physical device for Push Notifications');
+        }
+
+        if (token) {
+            setDeviceToken(token?.data);
+            setInputs(prevState => ({ ...prevState, deviceToken: token?.data }));
+            await StorageService.setDeviceToken(token?.data);
+        } else {
+            console.error('Token is undefined');
+        }
+
+        return token ? token.data : null;
+    }
+
+    useEffect(() => {
+        registerForPushNotificationsAsync();
+
+        const notificationSubscription = Notifications.addNotificationReceivedListener(notification => {
+            console.log(notification);
+        });
+
+        const responseSubscription = Notifications.addNotificationResponseReceivedListener(response => {
+            console.log(response);
+        });
+
+        return () => {
+            Notifications.removeNotificationSubscription(notificationSubscription);
+            Notifications.removeNotificationSubscription(responseSubscription);
+        };
+    }, []);
+
     const validate = async () => {
         Keyboard.dismiss();
         let isValid = true;
@@ -134,12 +197,12 @@ const LoginScreen = () => {
         setIsLoading(true);
         let user = {
             EmailAdress: inputs.email,
-            Password: inputs.password
+            Password: inputs.password,
+            DeviceToken: inputs.deviceToken
         };
         try {
             const response = await AuthenticationService.login(user);
             setIsLoading(false);
-            console.log("Response status:", response?.status);
             if (response?.status) {
                 await StorageService.setToken(response?.data?.Token);
                 dispatch(setToken(response?.data?.Token));
@@ -149,7 +212,7 @@ const LoginScreen = () => {
                 dispatch(setUserData(decodedData));
                 navigation.navigate('Main');
             } else {
-                setErrorMessage(response?.message);
+                Alert.alert('Error', response?.message);
             }
         } catch (error) {
             console.error("Login error:", error);

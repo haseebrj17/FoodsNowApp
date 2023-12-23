@@ -6,7 +6,6 @@ import { Fonts } from '../assets/constants'
 import { useFonts } from 'expo-font'
 import { Entypo, SimpleLineIcons, MaterialIcons } from '@expo/vector-icons';
 import { Logo } from '../assets/constants/Slider'
-import { BrandCard } from '../assets/constants/Slider'
 import { useState, useEffect } from 'react'
 
 const { width, height } = Dimensions.get('screen')
@@ -22,17 +21,7 @@ const SreachScreen = ({ navigation }) => {
     })
     const [logo, setLogo] = useState(Logo)
     const [searchQuery, setSearchQuery] = useState('');
-    const [filteredBrands, setFilteredBrands] = useState(BrandCard);
     const onChangeSearch = query => setSearchQuery(query);
-    useEffect(() => {
-        const results = BrandCard.filter(brand =>
-            brand.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            brand.dishes.some(dish =>
-                dish.name.toLowerCase().includes(searchQuery.toLowerCase())
-            )
-        );
-        setFilteredBrands(results);
-    }, [searchQuery]);
     const renderItem = ({ item: logo }) => {
         return (
             <TouchableOpacity>
@@ -62,12 +51,12 @@ const SreachScreen = ({ navigation }) => {
                     Jüngste Suchvorgänge
                 </Text>
             </View>
-            <View style={{ width: width * 0.9, alignItems: 'center', alignSelf: 'center', marginTop: 20, flexDirection: 'row' }}>
+            {/* <View style={{ width: width * 0.9, alignItems: 'center', alignSelf: 'center', marginTop: 20, flexDirection: 'row' }}>
                 <MaterialIcons name='local-fire-department' size={24} color="#325962" />
                 <Text style={{ fontSize: 18, marginLeft: 10, fontWeight: 'bold', color: '#325962' }}>
                     Beliebteste Restaurants
                 </Text>
-            </View>
+            </View> */}
             <View style={{
                 marginTop: 10,
             }}>
@@ -78,16 +67,7 @@ const SreachScreen = ({ navigation }) => {
                     renderItem={renderItem}
                 />
             </View>
-            <View style={{
-                marginTop: 10,
-            }}>
-                <FlatList
-                    data={filteredBrands}
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    renderItem={renderItem}
-                />
-            </View>
+
         </View>
     )
 }

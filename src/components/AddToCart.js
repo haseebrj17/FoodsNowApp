@@ -4,7 +4,7 @@ import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { Button } from '@react-native-material/core';
 import { FontAwesome, MaterialCommunityIcons, AntDesign, Entypo } from '@expo/vector-icons';
 import { useDispatch } from 'react-redux';
-import { Display } from '../utils';
+import { Display, transformImageUrl } from '../utils';
 import DishFormPizza from './DishFormPizza';
 import Separator from './Separator';
 import { addToCart, getCartItems } from '../actions/CartAction';
@@ -254,6 +254,9 @@ const AddToCartModal = forwardRef((props, ref) => {
             .then((result) => {
                 if (result === 'OK') {
                     setQuantity(1);
+                    setSelectedDips(initialDipsState)
+                    setSelectedExtras(initialExtrasState)
+                    setSelectedSize("Normal")
                     dispatch(getCartItems())
                     modalRef.current.dismiss();
                 }
@@ -289,7 +292,7 @@ const AddToCartModal = forwardRef((props, ref) => {
         >
             <View style={styles.contentContainer}>
                 <Image
-                    source={{ uri: dish ? dish.Image : '' }}
+                    source={{ uri: dish ? transformImageUrl({ originalUrl: dish.Image, size: '/tr:w-500'}) : '' }}
                     style={styles.image}
                 />
                 <View style={styles.modalContent}>

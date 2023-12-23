@@ -60,10 +60,11 @@ const getDashboard = async ({ FranchiseId }) => {
             const brands = dashboardResponse?.data?.Brands;
             const franchiseId = dashboardResponse?.data?.FranchiseId;
             const clientId = dashboardResponse?.data?.ClientId;
+            const categories = dashboardResponse?.data?.Categories;
             return {
                 status: true,
                 message: `Dashboard data fetched`,
-                data: { banners, brands, franchiseId, clientId },
+                data: { banners, brands, franchiseId, clientId, categories },
             };
         } else {
             return {
@@ -84,7 +85,8 @@ const getProducts = async ({ categoryId }) => {
     console.log(`DashboardService | getProducts`);
     try {
         const requestBody = {
-            Id: categoryId
+            Id: categoryId,
+            AddSides: true
         };
 
         const headers = {
@@ -115,7 +117,7 @@ const getProducts = async ({ categoryId }) => {
     }
 };
 
-const getProductById = async dishId => {
+const getProductById = async (dishId) => {
     console.log(`DashboardService | getProductById`);
     console.log(dishId)
     try {
@@ -151,7 +153,7 @@ const getProductById = async dishId => {
 };
 
 
-const getProductByIds = async Ids => {
+const getProductByIds = async (Ids) => {
     console.log(`DashboardService | getProductByIds`);
     try {
         const requestBody = {
@@ -166,6 +168,7 @@ const getProductByIds = async Ids => {
             { headers }
         );
         if (ProductByIdsResponse?.status === 200) {
+            console.log(ProductByIdsResponse?.data)
             return {
                 status: true,
                 message: `Product data fetched`,

@@ -22,6 +22,7 @@ import LocationDetailScreen from "./LocationDetailScreen";
 import CheckoutScreen from "./CheckoutScreen";
 import OrderConfirmationScreen from "./OrderConfirmationScreen";
 import BrandScreen from "./BrandScreen";
+import CategoryScreen from "./CategoryScreen";
 
 export {
     DataTrackingScreen,
@@ -48,4 +49,5 @@ export {
     CheckoutScreen,
     OrderConfirmationScreen,
     BrandScreen,
+    CategoryScreen,
 }

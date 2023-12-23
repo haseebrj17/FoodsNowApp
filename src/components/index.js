@@ -12,6 +12,8 @@ import Slider from "./Slider";
 import ToggleButton from "./ToggleButton";
 import UseModal from "./UseModal";
 import DishForm from "./DishFormPizza";
+import CacheImage from "./CacheImage";
+import CategoriesHome from "./CategoriesHome";
 
 export {
     AddToCartModal,
@@ -28,4 +30,6 @@ export {
     ToggleButton,
     UseModal,
     DishForm,
+    CacheImage,
+    CategoriesHome,
 }

@@ -243,13 +243,23 @@ const LocationAccessScreen = ({ navigation }) => {
                         <MaterialIcons name="location-pin" size={Display.setHeight(5)} color="#FFAF51" />
                     </Animated.View>
                 </Animated.View>
+            </View>
+            {errorMsg && <Text>{errorMsg}</Text>}
+            <View
+                style={{
+                    position: 'absolute',
+                    bottom: '0%',
+                    width,
+                    alignItems: 'center',
+                    justifyContent: 'flex-start',
+                }}
+            >
                 <View
                     style={{
                         zIndex: 9999,
-                        position: 'absolute',
-                        bottom: '13%',
                         width: Display.setWidth(100),
                         height: Display.setHeight(8),
+                        marginBottom: Display.setHeight(1.5),
                         alignItems: 'center',
                         justifyContent: 'center',
                     }}
@@ -276,7 +286,7 @@ const LocationAccessScreen = ({ navigation }) => {
                                 initialRegion={region}
                                 onRegionChange={onRegionChange}
                                 onRegionChangeComplete={onRegionChangeComplete}
-                                pointerEvents="none"  // Add this line
+                                pointerEvents="none"
                             />
                         </TouchableOpacity>
                         <TouchableOpacity
@@ -303,153 +313,150 @@ const LocationAccessScreen = ({ navigation }) => {
                         </TouchableOpacity>
                     </View>
                 </View>
-            </View>
-            {errorMsg && <Text>{errorMsg}</Text>}
-            <View
-                style={{
-                    width,
-                    height: height * 0.35,
-                    position: 'absolute',
-                    bottom: '0%',
-                    alignItems: 'center',
-                    borderTopLeftRadius: 35,
-                    borderTopRightRadius: 35,
-                    backgroundColor: "#fff",
-                    shadowColor: '#325964',
-                    shadowOffset: {
-                        width: 0,
-                        height: -2
-                    },
-                    elevation: 10,
-                    shadowOpacity: 0.4,
-                }}
-            >
-                {!addressAdded || disabled ? (
-                    <>
-                        <View
-                            style={{
-                                width: width * 0.9,
-                            }}
-                        >
-                            <Text
-                                style={{
-                                    fontSize: 22,
-                                    fontWeight: 'bold',
-                                    color: '#325964',
-                                    marginTop: Display.setHeight(2)
-                                }}
-                            >Eine neue Adresse hinzufügen</Text>
-                        </View>
-                        <TouchableOpacity onPress={handlePresentModal} style={{ width: width * 0.9, justifyContent: 'center', alignItems: 'center' }}>
-                            <View
-                                style={styles.SearchBar}
-                            >
-                                <View style={styles.SearchBarContainer}>
-                                    <Ionicons name="search-sharp" size={24} color="#325962" />
-                                    <Text style={styles.SearchBarInput}>
-                                        Geben Sie Ihre Adresse ein
-                                    </Text>
-                                </View>
-                            </View>
-                        </TouchableOpacity>
-                        <Divider
-                            style={{
-                                height: Display.setHeight(0.1),
-                                backgroundColor: '#f1f1f1',
-                                width: width,
-                                marginTop: Display.setHeight(2)
-                            }}
-                        />
-                        <AddressButton />
-                    </>
-                ) : (
-                    <>
-                        <View
-                            style={{
-                                width: width * 0.9,
-                                height: Display.setHeight(6),
-                                justifyContent: 'center',
-                                flexDirection: 'row',
-                                marginVertical: Display.setHeight(2)
-                            }}
-                        >
+                <View
+                    style={{
+                        width,
+                        height: height * 0.35,
+                        alignItems: 'center',
+                        borderTopLeftRadius: 35,
+                        borderTopRightRadius: 35,
+                        backgroundColor: "#fff",
+                        shadowColor: '#325964',
+                        shadowOffset: {
+                            width: 0,
+                            height: -2
+                        },
+                        elevation: 10,
+                        shadowOpacity: 0.4,
+                    }}
+                >
+                    {!addressAdded || disabled ? (
+                        <>
                             <View
                                 style={{
-                                    width: '15%',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                }}
-                            >
-                                <EvilIcons name="location" size={Display.setHeight(4)} color="#325964" />
-                            </View>
-                            <View
-                                style={{
-                                    width: '85%',
-                                    alignItems: 'center',
-                                    justifyContent: 'space-between',
-                                    flexDirection: 'row',
-                                }}
-                            >
-                                <View>
-                                    <Text
-                                        style={{
-                                            fontSize: 16,
-                                            fontWeight: "bold",
-                                            marginVertical: Display.setHeight(0.5)
-                                        }}
-                                    >{addressName ? addressName : ''}</Text>
-                                    <Text
-                                        style={{
-                                            fontSize: 14,
-                                            fontWeight: '600',
-                                            color: '#7f7f7f'
-                                        }}
-                                    >{city ? city : ''}</Text>
-                                </View>
-                                <TouchableOpacity
-                                    onPress={handlePresentModal}
-                                >
-                                    <Feather name="edit-2" size={22} color="#325964" />
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                        <View
-                            style={{
-                                width: width * 0.9,
-                                height: Display.setHeight(8),
-                                borderRadius: 10,
-                                backgroundColor: "#f1f1f1",
-                                justifyContent: 'flex-start',
-                                alignItems: 'flex-start',
-                                flexDirection: 'row',
-                                padding: "3%"
-                            }}
-                        >
-                            <View
-                                style={{
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                }}
-                            >
-                                <MaterialIcons name="info" size={Display.setHeight(2.2)} color="#6d6d6d" />
-                            </View>
-                            <View
-                                style={{
-                                    width: '90%',
-                                    marginLeft: 5
+                                    width: width * 0.9,
                                 }}
                             >
                                 <Text
                                     style={{
-                                        fontSize: Display.setHeight(1.6),
-                                        fontWeight: '400'
+                                        fontSize: 22,
+                                        fontWeight: 'bold',
+                                        color: '#325964',
+                                        marginTop: Display.setHeight(2)
                                     }}
-                                >Ihr Fahrer liefert an die angegebene Adresse. Sie können Ihre schriftliche Adresse auf der nächsten Seite bearbeiten.</Text>
+                                >Eine neue Adresse hinzufügen</Text>
                             </View>
-                        </View>
-                        <AddressButton />
-                    </>
-                )}
+                            <TouchableOpacity onPress={handlePresentModal} style={{ width: width * 0.9, justifyContent: 'center', alignItems: 'center' }}>
+                                <View
+                                    style={styles.SearchBar}
+                                >
+                                    <View style={styles.SearchBarContainer}>
+                                        <Ionicons name="search-sharp" size={24} color="#325962" />
+                                        <Text style={styles.SearchBarInput}>
+                                            Geben Sie Ihre Adresse ein
+                                        </Text>
+                                    </View>
+                                </View>
+                            </TouchableOpacity>
+                            <Divider
+                                style={{
+                                    height: Display.setHeight(0.1),
+                                    backgroundColor: '#f1f1f1',
+                                    width: width,
+                                    marginTop: Display.setHeight(2)
+                                }}
+                            />
+                            <AddressButton />
+                        </>
+                    ) : (
+                        <>
+                            <View
+                                style={{
+                                    width: width * 0.9,
+                                    height: Display.setHeight(6),
+                                    justifyContent: 'center',
+                                    flexDirection: 'row',
+                                    marginVertical: Display.setHeight(2)
+                                }}
+                            >
+                                <View
+                                    style={{
+                                        width: '15%',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                    }}
+                                >
+                                    <EvilIcons name="location" size={Display.setHeight(4)} color="#325964" />
+                                </View>
+                                <View
+                                    style={{
+                                        width: '85%',
+                                        alignItems: 'center',
+                                        justifyContent: 'space-between',
+                                        flexDirection: 'row',
+                                    }}
+                                >
+                                    <View>
+                                        <Text
+                                            style={{
+                                                fontSize: 16,
+                                                fontWeight: "bold",
+                                                marginVertical: Display.setHeight(0.5)
+                                            }}
+                                        >{addressName ? addressName : ''}</Text>
+                                        <Text
+                                            style={{
+                                                fontSize: 14,
+                                                fontWeight: '600',
+                                                color: '#7f7f7f'
+                                            }}
+                                        >{city ? city : ''}</Text>
+                                    </View>
+                                    <TouchableOpacity
+                                        onPress={handlePresentModal}
+                                    >
+                                        <Feather name="edit-2" size={22} color="#325964" />
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                            <View
+                                style={{
+                                    width: width * 0.9,
+                                    height: Display.setHeight(8),
+                                    borderRadius: 10,
+                                    backgroundColor: "#f1f1f1",
+                                    justifyContent: 'flex-start',
+                                    alignItems: 'flex-start',
+                                    flexDirection: 'row',
+                                    padding: "3%"
+                                }}
+                            >
+                                <View
+                                    style={{
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                    }}
+                                >
+                                    <MaterialIcons name="info" size={Display.setHeight(2.2)} color="#6d6d6d" />
+                                </View>
+                                <View
+                                    style={{
+                                        width: '90%',
+                                        marginLeft: 5
+                                    }}
+                                >
+                                    <Text
+                                        style={{
+                                            fontSize: Display.setHeight(1.6),
+                                            fontWeight: '400'
+                                        }}
+                                    >Ihr Fahrer liefert an die angegebene Adresse. Sie können Ihre schriftliche Adresse auf der nächsten Seite bearbeiten.</Text>
+                                </View>
+                            </View>
+                            <AddressButton />
+                        </>
+                    )}
+                </View>
             </View>
             <BottomSheetModalProvider>
                 <NativeBaseProvider>
@@ -552,17 +559,15 @@ const styles = StyleSheet.create({
         ...StyleSheet.absoluteFillObject,
     },
     markerFixed: {
-        left: '44.6%',
+        left: '50%',
         position: 'absolute',
-        top: '47.7%',
+        top: '50%',
+        marginLeft: -Display.setHeight(2.5) / 2,
+        marginTop: -Display.setHeight(4.5) / 2,
     },
     miniMap: {
         width: Display.setHeight(9),
         height: Display.setHeight(9),
-        // position: 'absolute',
-        // bottom: '11%',
-        // left: '1.5%',
-        // borderRadius: 10,
     },
     SearchBarContainer: {
         width: '95%',

@@ -22,7 +22,7 @@ import {
     Box, Heading, AspectRatio, Center, HStack, Stack, ScrollView, StatusBar
 } from 'native-base';
 import { Button } from "@react-native-material/core";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useFonts } from 'expo-font';
 import { Searchbar } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
@@ -38,7 +38,7 @@ import UseModal from "../components/UseModal";
 import AddToCart from "../components/AddToCart";
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProducts } from '../actions/ProductActions';
-import { Display } from "../utils";
+import { Display, transformImageUrl } from "../utils";
 import { Separator } from "../components";
 import Skeleton from "../components/Skeleton";
 import { GetImageAspectRatio } from "../utils/ImageAspect";
@@ -58,6 +58,61 @@ const formatData = (dish, column) => {
     return dish;
 }
 
+const RenderImage = React.memo((props) => {
+    const { cover } = props;
+    return (
+        <Image
+            source={{ uri: transformImageUrl({ originalUrl: cover, size: '/tr:w-900' }) }}
+            style={styles.bannerImage}
+        />
+    );
+});
+
+const RenderLogoBox = (props) => {
+    const { logo } = props
+    let imgAspect = 1; // Default aspect ratio
+
+    GetImageAspectRatio(logo, (aspectRatio) => {
+        imgAspect = aspectRatio;
+    });
+    return <View style={[
+        styles.logoBox,
+        {
+            backgroundColor: '#f1f1f1'
+        }
+    ]}>
+        <Image source={{ uri: transformImageUrl({ originalUrl: logo, size: '/tr:w-200' }) }} style={{
+            aspectRatio: imgAspect,
+            resizeMode: 'contain',
+            height: undefined,
+            width: '90%',
+            margin: Display.setHeight(0.2)
+        }} />
+    </View>
+}
+
+const ListHeader = React.memo(({ cover, logo, brandName }) => {
+    return (
+        <>
+            <View style={{ height: width / 1.3 }}>
+                <RenderImage cover={cover} />
+                <RenderLogoBox logo={logo} />
+            </View>
+            <View
+                style={{
+                    width,
+                    alignItems: 'flex-start',
+                    justifyContent: 'flex-start'
+                }}
+            >
+                <Text style={{ fontSize: Display.setHeight(2.2), fontWeight: 'bold', color: '#325962', marginLeft: Display.setHeight(2), marginBottom: Display.setHeight(1.5), marginTop: Display.setHeight(1.2), letterSpacing: 1, }}>{brandName.toUpperCase()}
+                </Text>
+            </View>
+            <Separator height={Display.setHeight(1)} width={'100%'} />
+        </>
+    )
+})
+
 const DetailsScreen = ({ route }) => {
     const navigation = useNavigation();
 
@@ -68,8 +123,11 @@ const DetailsScreen = ({ route }) => {
     const [Brand, setBrand] = useState(route.params.brand)
     const [deliveryParams, setDeliveryParams] = useState(route.params.deliveryParams)
     const [dish, setDish] = useState(null);
+    const [unfilteredDish, setUnfilteredDish] = useState(null);
     const [extras, setExtras] = useState(null);
     const [dips, setDips] = useState(null);
+    const [categories, setCategories] = useState(null);
+    let sortedDishes = dish ? [...dish] : [];
 
     const dispatch = useDispatch();
 
@@ -81,7 +139,6 @@ const DetailsScreen = ({ route }) => {
         (state) => state.productState
     );
     const categoryId = route.params.brand.Id;
-    // console.log(categoryId)
 
     useEffect(() => {
         dispatch(fetchProducts(categoryId));
@@ -104,19 +161,13 @@ const DetailsScreen = ({ route }) => {
         }
     }, [])
 
-    const renderBackdrop = useCallback(
-        (props) => (
-            <BottomSheetBackdrop {...props} onPress={closeBottomSheet} />
-        ),
-        [closeBottomSheet]
-    );
-
     useEffect(() => {
         if (products) {
-            console.log(loadingProducts)
-            setDish(products.Products)
-            setDips(products.ProductExtraDippings)
-            setExtras(products.ProductExtraTroppings)
+            setDish(products?.Products)
+            setUnfilteredDish(products?.Products)
+            setDips(products?.ProductExtraDippings)
+            setExtras(products?.ProductExtraTroppings)
+            setCategories(products?.Categories)
         }
     }, [products])
 
@@ -193,122 +244,67 @@ const DetailsScreen = ({ route }) => {
         }
     };
 
-    let sortedDishes = dish ? [...dish] : [];
+    ///////////////  Categories Funtion  ///////////////
 
-    const [isOpen, setIsOpen] = useState(true)
+    const [selectedCategory, setSelectedCategory] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
 
-    const [isEnabled, setIsEnabled] = useState(false);
+    const filterProductsByCategory = (categoryId) => {
+        console.log("Filtering for category ID:", categoryId);
 
-    const bottomSheetModalRef = useRef(null);
-    const snapPoints = ["50%"];
-
-    function handlePresentModal() {
-        bottomSheetModalRef.current?.present();
-    }
-
-    const handlePresentModalPress = useCallback(() => {
-        bottomSheetModalRef.current.present();
-    }, []);
-
-    const handleSheetChanges = useCallback((index) => {
-        setIsOpen(index > 0 ? true : false);
-    }, []);
-
-    const closeBottomSheet = useCallback(() => {
-        setIsOpen(false);
-        bottomSheetModalRef.current.close();
-    }, []);
-
-    const [sortByName, setSortByName] = useState(false);
-    const [sortByPriceLowHigh, setSortByPriceLowHigh] = useState(false);
-    const [sortByPriceHighLow, setSortByPriceHighLow] = useState(false);
-    const [sortBySpiceLowHigh, setSortBySpiceLowHigh] = useState(false);
-    const [sortBySpiceHighLow, setSortBySpiceHighLow] = useState(false);
-
-    const toggleSwitch = (sortType) => {
-        switch (sortType) {
-            case "name":
-                setSortByName(previousState => {
-                    if (!previousState) {
-                        setSortByPriceLowHigh(false);
-                        setSortByPriceHighLow(false);
-                        setSortBySpiceLowHigh(false);
-                        setSortBySpiceHighLow(false);
-                    }
-                    return !previousState;
-                });
-                break;
-            case "priceLowHigh":
-                setSortByPriceLowHigh(previousState => {
-                    if (!previousState) {
-                        setSortByName(false);
-                        setSortByPriceHighLow(false);
-                        setSortBySpiceLowHigh(false);
-                        setSortBySpiceHighLow(false);
-                    }
-                    return !previousState;
-                });
-                break;
-            case "priceHighLow":
-                setSortByPriceHighLow(previousState => {
-                    if (!previousState) {
-                        setSortByName(false);
-                        setSortByPriceLowHigh(false);
-                        setSortBySpiceLowHigh(false);
-                        setSortBySpiceHighLow(false);
-                    }
-                    return !previousState;
-                });
-                break;
-            case "spiceLowHigh":
-                setSortBySpiceLowHigh(previousState => {
-                    if (!previousState) {
-                        setSortByName(false);
-                        setSortByPriceLowHigh(false);
-                        setSortByPriceHighLow(false);
-                        setSortBySpiceHighLow(false);
-                    }
-                    return !previousState;
-                });
-                break;
-            case "spiceHighLow":
-                setSortBySpiceHighLow(previousState => {
-                    if (!previousState) {
-                        setSortByName(false);
-                        setSortByPriceLowHigh(false);
-                        setSortByPriceHighLow(false);
-                        setSortBySpiceLowHigh(false);
-                    }
-                    return !previousState;
-                });
-                break;
-            default:
-                console.log("Invalid sort type");
-                break;
+        if (categoryId === null) {
+            return unfilteredDish;
+        } else {
+            const filtered = unfilteredDish.filter(product =>
+                product.ProductCategories.some(category => {
+                    console.log("Comparing:", category.CategoryId, "with", categoryId);
+                    return category.CategoryId === categoryId;
+                })
+            );
+            console.log("Filtered Products:", filtered);
+            return filtered;
         }
-    }
+    };
 
-    if (sortByName) {
-        sortedDishes.sort((a, b) => a.Name.localeCompare(b.Name));
-    } else if (sortByPriceLowHigh) {
-        sortedDishes.sort((a, b) => {
-            const priceA = a.Prices.find(price => price.Description === "Normal")?.Price || 0;
-            const priceB = b.Prices.find(price => price.Description === "Normal")?.Price || 0;
-            return priceA - priceB;
-        });
-    } else if (sortByPriceHighLow) {
-        sortedDishes.sort((a, b) => {
-            const priceA = a.Prices.find(price => price.Description === "Normal")?.Price || 0;
-            const priceB = b.Prices.find(price => price.Description === "Normal")?.Price || 0;
-            return priceB - priceA;
-        });
-    } else if (sortBySpiceLowHigh) {
-        sortedDishes.sort((a, b) => a.SpiceLevel - b.SpiceLevel);
-    } else if (sortBySpiceHighLow) {
-        sortedDishes.sort((a, b) => b.SpiceLevel - a.SpiceLevel);
-    }
+    const handleCategory = (item) => {
+        if (item.Id === selectedCategory?.Id) {
+            setSelectedCategory(null);
+            setDish(unfilteredDish);
+        } else {
+            setSelectedCategory(item);
+            // setIsLoading(true);
+            const filteredProducts = filterProductsByCategory(item.Id);
+            setDish(filteredProducts);
+        }
+    };
 
-    ///////////////  Sorting Modal  ///////////////
+    const renderCategories = ({ item }) => {
+        const isSelected = item.Id === selectedCategory?.Id;
+        return (
+            <TouchableOpacity onPress={() => handleCategory(item)}>
+                <View style={{
+                    width: Display.setWidth(25),
+                    height: Display.setHeight(4),
+                    backgroundColor: isSelected ? '#325964' : '#F4E4CD', // Change color if selected
+                    margin: Display.setHeight(1),
+                    borderRadius: Display.setHeight(50),
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                }}>
+                    <Text style={{
+                        fontSize: Display.setHeight(1.2),
+                        fontWeight: '700',
+                        color: isSelected ? '#F4E4CD' : '#325964' // Change text color if selected
+                    }}>
+                        {item.Name}
+                    </Text>
+                </View>
+            </TouchableOpacity>
+        );
+    };
+
+    ///////////////  Render Main FlatList Item  ///////////////
 
     const renderItem = ({ item: dishes }) => {
         const brand = Brand
@@ -359,8 +355,7 @@ const DetailsScreen = ({ route }) => {
                 <Box>
                     <Image
                         source={{
-                            uri:
-                                dishes.Image
+                            uri: transformImageUrl({ originalUrl: dishes.Image, size: '/tr:w-240' })
                         }}
                         alt="image"
                         style={styles.ImageOfferCard}
@@ -400,7 +395,7 @@ const DetailsScreen = ({ route }) => {
                         </View>
                         <Button
                             onPress={() => handleCart(dishes)}
-                            title="In den Warenkorb"
+                            title="Add to Cart"
                             color="#FFAF51"
                             titleStyle={{ color: "#325962", fontSize: Display.setHeight(1.2), fontWeight: 800 }}
                             uppercase={false}
@@ -414,37 +409,6 @@ const DetailsScreen = ({ route }) => {
                 </View>
             </Box>
         </Box>
-    }
-
-    const RenderImage = (props) => {
-        const { cover } = props;
-        return <Image source={{ uri: cover }} style={styles.bannerImage} />
-    }
-
-    const colorObject = JSON.parse(route.params.brand?.Color?.replace(/'/g, "\""));
-    const color1 = colorObject.color1;
-
-    const RenderLogoBox = (props) => {
-        const { logo } = props
-        let imgAspect = 1; // Default aspect ratio
-
-        GetImageAspectRatio(logo, (aspectRatio) => {
-            imgAspect = aspectRatio;
-        });
-        return <View style={[
-            styles.logoBox,
-            {
-                backgroundColor: '#f1f1f1'
-            }
-        ]}>
-            <Image source={{ uri: logo }} style={{
-                aspectRatio: imgAspect,
-                resizeMode: 'contain',
-                height: undefined,
-                width: '90%',
-                margin: Display.setHeight(0.2)
-            }} />
-        </View>
     }
 
     const SkeletonRender = () => {
@@ -605,154 +569,12 @@ const DetailsScreen = ({ route }) => {
             ) : (
                 <BottomSheetModalProvider>
                     <NativeBaseProvider>
-                        <BottomSheetModal
-                            ref={bottomSheetModalRef}
-                            snapPoints={snapPoints}
-                            backdropComponent={renderBackdrop}
-                            onAnimate={handleSheetChanges}
-                            index={0}
-                            enablePanDownToClose={true}
-                            onClose={() => setIsOpen(false)}
-                            backgroundStyle={{
-                                borderRadius: 30
-                            }}
-                            animateOnMount={true}
-                        >
-                            <View style={{
-                                width: '100%',
-                                height: '100%',
-                                justifyContent: 'flex-start',
-                                alignItems: 'center'
-                            }}>
-                                <View>
-                                    <Text style={{
-                                        fontSize: Display.setHeight(2.4),
-                                        fontWeight: 'bold',
-                                        alignSelf: 'center',
-                                        margin: 10,
-                                        color: '#325962'
-                                    }}>
-                                        Sortieren/Filtern
-                                    </Text>
-                                </View>
-                                <View style={{
-                                    width: '90%',
-                                    alignItems: 'center',
-                                    justifyContent: 'space-between',
-                                    flexDirection: 'row',
-                                    margin: 10
-                                }}>
-                                    <Text style={{
-                                        fontSize: Display.setHeight(1.7),
-                                        fontWeight: '500',
-                                        color: '#325962'
-                                    }}>
-                                        Niedriger bis hoher Preis
-                                    </Text>
-                                    <Switch
-                                        trackColor={{ false: '#767577', true: '#325962' }}
-                                        thumbColor={isEnabled ? '#f4f3f4' : '#f4f3f4'}
-                                        ios_backgroundColor="#3e3e3e"
-                                        onValueChange={() => toggleSwitch("priceLowHigh")}
-                                        value={sortByPriceLowHigh}
-                                    />
-                                </View>
-                                <View style={{
-                                    width: '90%',
-                                    alignItems: 'center',
-                                    justifyContent: 'space-between',
-                                    flexDirection: 'row',
-                                    margin: 10
-                                }}>
-                                    <Text style={{
-                                        fontSize: Display.setHeight(1.7),
-                                        fontWeight: '500',
-                                        color: '#325962'
-                                    }}>
-                                        Hoher bis niedriger Preis
-                                    </Text>
-                                    <Switch
-                                        trackColor={{ false: '#767577', true: '#325962' }}
-                                        thumbColor={isEnabled ? '#f4f3f4' : '#f4f3f4'}
-                                        ios_backgroundColor="#3e3e3e"
-                                        onValueChange={() => toggleSwitch("priceHighLow")}
-                                        value={sortByPriceHighLow}
-                                    />
-                                </View>
-                                <View style={{
-                                    width: '90%',
-                                    alignItems: 'center',
-                                    justifyContent: 'space-between',
-                                    flexDirection: 'row',
-                                    margin: 10
-                                }}>
-                                    <Text style={{
-                                        fontSize: Display.setHeight(1.7),
-                                        fontWeight: '500',
-                                        color: '#325962'
-                                    }}>
-                                        Niedrig bis hoch Gewürz
-                                    </Text>
-                                    <Switch
-                                        trackColor={{ false: '#767577', true: '#325962' }}
-                                        thumbColor={isEnabled ? '#f4f3f4' : '#f4f3f4'}
-                                        ios_backgroundColor="#3e3e3e"
-                                        onValueChange={() => toggleSwitch("spiceLowHigh")}
-                                        value={sortBySpiceLowHigh}
-                                    />
-                                </View>
-                                <View style={{
-                                    width: '90%',
-                                    alignItems: 'center',
-                                    justifyContent: 'space-between',
-                                    flexDirection: 'row',
-                                    margin: 10
-                                }}>
-                                    <Text style={{
-                                        fontSize: Display.setHeight(1.7),
-                                        fontWeight: '500',
-                                        color: '#325962'
-                                    }}>
-                                        Hoch bis Niedrig Gewürz
-                                    </Text>
-                                    <Switch
-                                        trackColor={{ false: '#767577', true: '#325962' }}
-                                        thumbColor={isEnabled ? '#f4f3f4' : '#f4f3f4'}
-                                        ios_backgroundColor="#3e3e3e"
-                                        onValueChange={() => toggleSwitch("spiceHighLow")}
-                                        value={sortBySpiceHighLow}
-                                    />
-                                </View>
-                                <View style={{
-                                    width: '90%',
-                                    alignItems: 'center',
-                                    justifyContent: 'space-between',
-                                    flexDirection: 'row',
-                                    margin: 10
-                                }}>
-                                    <Text style={{
-                                        fontSize: Display.setHeight(1.7),
-                                        fontWeight: '500',
-                                        color: '#325962'
-                                    }}>
-                                        Nach Name sortieren
-                                    </Text>
-                                    <Switch
-                                        trackColor={{ false: '#767577', true: '#325962' }}
-                                        thumbColor={isEnabled ? '#f4f3f4' : '#f4f3f4'}
-                                        ios_backgroundColor="#3e3e3e"
-                                        onValueChange={() => toggleSwitch("name")}
-                                        value={sortByName}
-                                    />
-                                </View>
-                            </View>
-                        </BottomSheetModal>
                         <TouchableOpacity
                             onPress={() => {
                                 if (navigation.canGoBack()) {
                                     navigation.goBack();
                                 } else {
-                                    navigation.navigate('Home');
+                                    navigation.navigate('Main');
                                 }
                             }}
                             style={{
@@ -770,66 +592,99 @@ const DetailsScreen = ({ route }) => {
                                 }}
                             />
                         </TouchableOpacity>
+                        {
+                            route.params.brand.Logo === null ||
+                            route.params.brand.Logo === undefined ||
+                            route.params.brand.Logo === "" && (
+                                <View
+                                    style={{
+                                        width,
+                                        height: Dimensions.get('window').height * 0.09,
+                                        backgroundColor: '#F4E4CD',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        flexDirection: 'row',
+                                        position: 'sticky',
+                                        top: 0,
+                                        zIndex: 1,
+                                    }}
+                                >
+                                    <Text
+                                        style={{
+                                            fontSize: 20,
+                                            fontWeight: 'bold',
+                                            marginTop: 30,
+                                            color: "#325962",
+                                        }}
+                                    >
+                                        Kategorien - {route.params.brand.Name}
+                                    </Text>
+                                </View>
+                            )
+                        }
                         <View
                             style={{
-                                backgroundColor: '#fff'
+                                backgroundColor: '#fff',
                             }}
                         >
                             <FlatList
                                 ListHeaderComponent={
-                                    <>
-                                        <View
+                                    <View
+                                        style={{
+                                            width,
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                        }}
+                                    >
+                                        {
+                                            route.params.brand.Logo &&
+                                            <ListHeader
+                                                cover={route.params.brand.Cover}
+                                                logo={route.params.brand.Logo}
+                                                brandName={route.params.brand.Name}
+                                                brandDescription={route.params.brand.Description}
+                                            />
+                                        }
+                                        {
+                                            categories &&
+                                            <FlatList
+                                                horizontal={true}
+                                                data={categories}
+                                                keyExtractor={(item) => item.Id}
+                                                renderItem={renderCategories}
+                                                showsHorizontalScrollIndicator={false}
+                                                contentContainerStyle={{
+                                                    paddingHorizontal: Display.setWidth(2),
+                                                }}
+                                            />
+                                        }
+                                        <Separator height={Display.setHeight(1)} width={'100%'} />
+                                    </View>
+                                }
+                                ListFooterComponent={
+                                    <View
+                                        style={{
+                                            width: "100%",
+                                            height: Display.setHeight(40),
+                                            backgroundColor: "#f1f1f1",
+                                            marginTop: Display.setHeight(1),
+                                            marginBottom: cart.length >= 1 ? Display.setHeight(5) : 0,
+                                        }}
+                                    >
+                                        <Image
+                                            source={require('../assets/BNFooter.png')}
                                             style={{
-                                                width,
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
+                                                width: "100%",
+                                                height: "100%",
+                                                resizeMode: "contain",
+                                                top: 0,
+                                                left: 0,
+                                                aspectRatio: 800 / 646,
                                             }}
-                                        >
-                                            <View style={{ height: width / 1.3 }}>
-                                                <RenderImage cover={route.params.brand.Cover} />
-                                                <RenderLogoBox logo={route.params.brand.Logo} />
-                                            </View>
-                                            <View
-                                                style={{
-                                                    width,
-                                                    alignItems: 'flex-start',
-                                                    justifyContent: 'flex-start'
-                                                }}
-                                            >
-                                                <Text style={{ fontSize: Display.setHeight(2.2), fontWeight: 'bold', color: '#325962', marginLeft: Display.setHeight(2), marginBottom: Display.setHeight(1.5), marginTop: Display.setHeight(1.2), letterSpacing: 1, }}>{route.params.brand.Name.toUpperCase()}
-                                                </Text>
-                                                <Text style={{ lineHeight: 15, fontSize: Display.setHeight(1.4), fontWeight: 'bold', color: '#325962', letterSpacing: 0.5, marginLeft: Display.setHeight(2), marginBottom: Display.setHeight(0.5) }}>{route.params.brand.Description ? route.params.brand.Description : null}
-                                                </Text>
-                                            </View>
-                                            <Separator height={Display.setHeight(1)} width={'100%'} />
-                                            <View
-                                                style={{
-                                                    width: "100%",
-                                                    height: Display.setHeight(4),
-                                                    flexDirection: 'row',
-                                                    justifyContent: 'space-between',
-                                                    alignItems: 'center',
-                                                    marginBottom: 5,
-                                                }}
-                                            >
-                                                <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', left: '4%' }}
-                                                    onPress={handlePresentModal}
-                                                >
-                                                    <Text style={{ marginRight: 3, color: '#325962', opacity: 0.6 }}>Sort/Filter</Text>
-                                                    <Icon
-                                                        name="sliders"
-                                                        type="font-awesome"
-                                                        color="#325962"
-                                                        size={18}
-                                                    />
-                                                </TouchableOpacity>
-                                            </View>
-                                            <Separator height={Display.setHeight(1)} width={'100%'} />
-                                        </View>
-                                    </>
+                                        />
+                                    </View>
                                 }
                                 data={formatData(sortedDishes, column)}
-                                contentContainerStyle={styles.container}
                                 renderItem={renderItem}
                                 numColumns={column}
                                 keyExtractor={(item) => item.Id}
@@ -866,11 +721,11 @@ const DetailsScreen = ({ route }) => {
                                 >
                                     <Text
                                         style={{
-                                            fontSize: Display.setHeight(1.8),
+                                            fontSize: Display.setHeight(1.6),
                                             fontWeight: 700,
                                             color: '#325964'
                                         }}
-                                    >Total items in cart: {cart?.length}</Text>
+                                    >Artikel insgesamt: {cart?.length}</Text>
                                 </View>
                                 <Button
                                     onPress={() => navigation.navigate('Cart')}
@@ -913,11 +768,11 @@ const CustomTitleCart = ({ CartItem }) => {
             <Text
                 style={{
                     color: "#325962",
-                    fontSize: Display.setHeight(1.7),
-                    fontWeight: 800
+                    fontSize: Display.setHeight(1.6),
+                    fontWeight: 600
                 }}
-            >View Cart </Text>
-            <MaterialIcons name="shopping-cart" size={28} color="#325964" />
+            >Warenkorb ansehen</Text>
+            <MaterialIcons name="shopping-cart" size={25} color="#325964" />
         </View>
     )
 }
@@ -931,7 +786,7 @@ const styles = StyleSheet.create({
         height: undefined,
         aspectRatio: 114.666 / 81.719,
     },
-    container: {
+    subContainer: {
         width: "100%",
         alignItems: 'center',
     },
