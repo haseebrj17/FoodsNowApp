@@ -24,17 +24,17 @@ const labelData = [
     {
         name: 'Heim',
         iconName: 'home-outline',
-        tag: 'Home'
+        tag: 'Heim'
     },
     {
         name: 'Arbeit',
         iconName: 'briefcase-outline',
-        tag: 'Work'
+        tag: 'Arbeit'
     },
     {
         name: 'Freund',
         iconName: 'person-outline',
-        tag: 'Friend'
+        tag: 'Freund'
     },
     {
         name: "Andere",
@@ -163,7 +163,7 @@ const LocationDetailScreen = ({ route, navigation }) => {
     const handleOnchange = (text, input) => {
         if (input === 'Tag') {
             setOtherTagInput(text);
-            if (text !== 'Home' && text !== 'Work' && text !== 'Friend') {
+            if (text !== 'Heim' && text !== 'Arbeit' && text !== 'Freund') {
                 setInputs(prevState => ({ ...prevState, [input]: text }));
             }
             return text
@@ -176,7 +176,7 @@ const LocationDetailScreen = ({ route, navigation }) => {
 
     const handleTagChange = (tag, name) => {
         if (tag === clickedTag) {
-            if (tag === clickedTag && name === 'Other') {
+            if (tag === clickedTag && name === 'Andere') {
                 Animated.timing(inputHeight, {
                     toValue: 0,
                     duration: 500,
@@ -192,7 +192,7 @@ const LocationDetailScreen = ({ route, navigation }) => {
             setClickedTag(tag);
             setInputs(prevState => ({ ...prevState, 'Tag': tag }));
 
-            if (name === 'Other') {
+            if (name === 'Andere') {
                 Animated.timing(inputHeight, {
                     toValue: 1,
                     duration: 500,
@@ -402,7 +402,7 @@ const LocationDetailScreen = ({ route, navigation }) => {
                             justifyContent: 'flex-start',
                             alignItems: 'flex-start',
                             flexDirection: 'row',
-                            padding: "3%",
+                            padding: "2%",
                             marginTop: Display.setHeight(3)
                         }}
                     >
@@ -422,7 +422,7 @@ const LocationDetailScreen = ({ route, navigation }) => {
                         >
                             <Text
                                 style={{
-                                    fontSize: 14,
+                                    fontSize: Display.setHeight(1.5),
                                     fontWeight: '400'
                                 }}
                             >Ihr Fahrer liefert an die angegebene Adresse. Sie können Ihre schriftliche Adresse für mehr Genauigkeit bearbeiten.</Text>
@@ -653,7 +653,7 @@ const LocationDetailScreen = ({ route, navigation }) => {
             </ScrollView>
             <View
                 style={{
-                    height: Display.setHeight(11),
+                    height: Display.setHeight(5),
                     width,
                     backgroundColor: '#fff',
                     position: 'absolute',

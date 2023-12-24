@@ -100,7 +100,7 @@ const updateUserAddress = async (user, address, token) => {
     }
 };
 
-const getUserAddresses = async ({ token}) => {
+const getUserAddresses = async ({token}) => {
     console.log("UserService | getUserAddresses");
     try {
         let response = await axios.post(

@@ -49,7 +49,7 @@ const CartScreen = ({ navigation }) => {
     );
 
     useEffect(() => {
-        console.log(`IsLoading ${isAppLoading}, Token ${token}, isFirst ${isFirstTimeUse}, userData ${userData}, Location ${location}`);
+        console.log(location);
     }, [isAppLoading, token, isFirstTimeUse, userData, location]);
 
     useEffect(() => {
@@ -93,8 +93,7 @@ const CartScreen = ({ navigation }) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const location = await StorageService.getLocation();
-                if (location && location.Country) {
+                if (location && location?.Country) {
                     setLocationData(location);
                     setMinOrder(location?.DeliveryParams?.minOrderValue);
                 }
@@ -107,7 +106,7 @@ const CartScreen = ({ navigation }) => {
                 })
             } catch (error) {
                 console.error("Error while fetching data:", error);
-                setLoading(false);  // Handle loading state in case of error
+                setLoading(false);
             } finally {
                 setTimeout(() => {
                     setDataLoaded(true);
@@ -406,7 +405,7 @@ const CartScreen = ({ navigation }) => {
                                 }}
                             >
                                 <Button
-                                    title='Etwas hinzufügen'
+                                    title='Add Something'
                                     onPress={() => {
                                         navigation.navigate('Home')
                                         setActiveTab("Home")
@@ -598,7 +597,7 @@ const CartScreen = ({ navigation }) => {
                                                                         fontWeight: '600',
                                                                         color: '#325964',
                                                                     }}
-                                                                >{locationData?.DeliveryParams?.deliverCharges === 0 ? 'Free' : `€ ${locationData?.DeliveryParams?.deliverCharges}`}</Text>
+                                                                >{location?.DeliveryParams?.deliverCharges === 0 ? 'Free' : `€ ${location?.DeliveryParams?.deliverCharges}`}</Text>
                                                             </View>
                                                         </View>
                                                         <Separator width={'100%'} height={Display.setHeight(0.1)} />
@@ -683,7 +682,7 @@ const CartScreen = ({ navigation }) => {
                                                             {
                                                                 token === null || token === '' ? (
                                                                     <Button
-                                                                        title='Sign Up to Checkout'
+                                                                        title='Anmeldung zur Kasse'
                                                                         onPress={() => navigation.navigate('Registration')}
                                                                     />
                                                                 ) : (

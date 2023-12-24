@@ -75,7 +75,7 @@ export const appStart = () => {
                 const location = await StorageService.getLocation();
                 dispatch({
                     type: SET_LOCATION_DATA,
-                    payload: location || {},
+                    payload: location,
                 });
 
                 const userDate = await StorageService.getUserData();

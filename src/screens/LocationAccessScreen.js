@@ -428,7 +428,7 @@ const LocationAccessScreen = ({ navigation }) => {
                                     justifyContent: 'flex-start',
                                     alignItems: 'flex-start',
                                     flexDirection: 'row',
-                                    padding: "3%"
+                                    padding: "2%"
                                 }}
                             >
                                 <View
@@ -442,12 +442,12 @@ const LocationAccessScreen = ({ navigation }) => {
                                 <View
                                     style={{
                                         width: '90%',
-                                        marginLeft: 5
+                                        marginLeft: 5,
                                     }}
                                 >
                                     <Text
                                         style={{
-                                            fontSize: Display.setHeight(1.6),
+                                            fontSize: Display.setHeight(1.5),
                                             fontWeight: '400'
                                         }}
                                     >Ihr Fahrer liefert an die angegebene Adresse. Sie können Ihre schriftliche Adresse auf der nächsten Seite bearbeiten.</Text>
@@ -568,6 +568,7 @@ const styles = StyleSheet.create({
     miniMap: {
         width: Display.setHeight(9),
         height: Display.setHeight(9),
+        borderRadius: Display.setHeight(1),
     },
     SearchBarContainer: {
         width: '95%',
