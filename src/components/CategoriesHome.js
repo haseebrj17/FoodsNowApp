@@ -236,7 +236,7 @@ const CategoriesHome = ({ category, deliveryParams }) => {
                                 marginBottom: Display.setHeight(1),
                                 marginTop: Display.setHeight(1),
                             }}
-                            data={categories ? formatData(categories.slice(0, 8), column) : null}
+                            data={categories ? formatData(categories.slice(0, 12), column) : null}
                             renderItem={renderItem}
                             numColumns={column}
                             keyExtractor={(item, index) => index.toString()}
