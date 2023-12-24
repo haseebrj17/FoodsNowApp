@@ -646,7 +646,7 @@ const DetailsScreen = ({ route }) => {
                                             />
                                         }
                                         {
-                                            categories &&
+                                            categories && route.params.brand.Logo &&
                                             <FlatList
                                                 horizontal={true}
                                                 data={categories}
