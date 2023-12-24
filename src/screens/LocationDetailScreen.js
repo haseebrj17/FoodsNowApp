@@ -24,17 +24,17 @@ const labelData = [
     {
         name: 'Heim',
         iconName: 'home-outline',
-        tag: 'Home'
+        tag: 'Heim'
     },
     {
         name: 'Arbeit',
         iconName: 'briefcase-outline',
-        tag: 'Work'
+        tag: 'Arbeit'
     },
     {
         name: 'Freund',
         iconName: 'person-outline',
-        tag: 'Friend'
+        tag: 'Freund'
     },
     {
         name: "Andere",
@@ -91,8 +91,6 @@ const AddresseButton = ({ onpress }) => {
 const LocationDetailScreen = ({ route, navigation }) => {
     const address = route.params.address;
     const selectedLocation = route.params.selectedLocation;
-
-console.log(address)
 
     const dispatch = useDispatch()
 
@@ -174,7 +172,7 @@ console.log(address)
     const handleOnchange = (text, input) => {
         if (input === 'Tag') {
             setOtherTagInput(text);
-            if (text !== 'Home' && text !== 'Work' && text !== 'Friend') {
+            if (text !== 'Heim' && text !== 'Arbeit' && text !== 'Freund') {
                 setInputs(prevState => ({ ...prevState, [input]: text }));
             }
             return text
@@ -187,7 +185,7 @@ console.log(address)
 
     const handleTagChange = (tag, name) => {
         if (tag === clickedTag) {
-            if (tag === clickedTag && name === 'Other') {
+            if (tag === clickedTag && name === 'Andere') {
                 Animated.timing(inputHeight, {
                     toValue: 0,
                     duration: 500,
@@ -203,7 +201,7 @@ console.log(address)
             setClickedTag(tag);
             setInputs(prevState => ({ ...prevState, 'Tag': tag }));
 
-            if (name === 'Other') {
+            if (name === 'Andere') {
                 Animated.timing(inputHeight, {
                     toValue: 1,
                     duration: 500,

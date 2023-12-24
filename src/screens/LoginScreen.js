@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, Dimensions, ImageBackground, TouchableOpacity, Image, Keyboard, Alert, KeyboardAvoidingView, TouchableWithoutFeedback } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { TextInput } from 'react-native-paper'
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { Backdrop } from 'react-native-backdrop';
@@ -20,6 +20,9 @@ import { StorageService } from '../services';
 import jwt_decode from "jwt-decode";
 import { useNavigation } from '@react-navigation/native';
 import { Display } from '../utils';
+import * as Device from 'expo-device';
+import * as Notifications from 'expo-notifications';
+import Constants from 'expo-constants';
 
 const { width, height } = Dimensions.get('screen')
 
@@ -30,7 +33,7 @@ const LoginScreen = () => {
     const [errors, setErrors] = React.useState({});
     const [isLoading, setIsLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-    const [token, setToken] = useState(null);
+    const [deviceToken, setDeviceToken] = useState(null);
 
     const dispatch = useDispatch();
 
@@ -163,7 +166,7 @@ const LoginScreen = () => {
         }
 
         if (token) {
-            setToken(token.data);
+            setDeviceToken(token?.data);
             setInputs(prevState => ({ ...prevState, deviceToken: token.data }));
             await StorageService.setDeviceToken(token.data);
         } else {
@@ -210,7 +213,7 @@ const LoginScreen = () => {
                 dispatch(setUserData(decodedData));
                 navigation.navigate('Main');
             } else {
-                setErrorMessage(response?.message);
+                Alert.alert('Error', response?.message);
             }
         } catch (error) {
             console.error("Login error:", error);

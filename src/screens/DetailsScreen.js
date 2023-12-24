@@ -644,7 +644,7 @@ const DetailsScreen = ({ route }) => {
                                             />
                                         }
                                         {
-                                            categories &&
+                                            categories && route.params.brand.Logo &&
                                             <FlatList
                                                 horizontal={true}
                                                 data={categories}
@@ -666,6 +666,7 @@ const DetailsScreen = ({ route }) => {
                                             height: Display.setHeight(40),
                                             backgroundColor: "#f1f1f1",
                                             marginTop: Display.setHeight(1),
+                                            marginBottom: cart.length >= 1 ? Display.setHeight(7) : 0,
                                         }}
                                     >
                                         <Image

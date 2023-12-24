@@ -347,12 +347,12 @@ const RegistrationScreen = ({ navigation }) => {
                                 />
 
                                 <Input
-                                    keyboardType="numeric"
+                                    keyboardType="number-pad"
                                     onChangeText={text => handleOnchange(text, 'phone')}
                                     onFocus={() => handleError(null, 'phone')}
                                     iconName="phone-outline"
                                     label="Handy-Nummer"
-                                    placeholder="Geben Sie Ihre Handynummer ein"
+                                    placeholder="Your phone number +49 851 98...."
                                     error={errors.phone}
                                 />
                                 <Input
