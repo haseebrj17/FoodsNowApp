@@ -4,7 +4,7 @@
     "slug": "byteznow",
     "scheme": "foodsnowapp",
     "owner": "foodsnowgmbh",
-    "version": "1.0.2",
+    "version": "1.0.4",
     "orientation": "portrait",
     "icon": "./src/assets/BN_Published_LOGO.png",
     "userInterfaceStyle": "light",
@@ -48,8 +48,7 @@
         }
       },
       "package": "co.foodsnow.BytezNow",
-      "versionCode": 2,
-      "serviceAccountKeyPath": "../KeysandBuilds/wide-planet-399409-4a9562f8858e.json"
+      "versionCode": 3
     },
     "web": {
       "favicon": "./src/assets/BN_Published_LOGO.png"
