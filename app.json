@@ -48,7 +48,7 @@
         }
       },
       "package": "co.foodsnow.BytezNow",
-      "versionCode": 3
+      "versionCode": 4
     },
     "web": {
       "favicon": "./src/assets/BN_Published_LOGO.png"

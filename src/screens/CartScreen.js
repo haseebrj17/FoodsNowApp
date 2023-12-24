@@ -93,6 +93,7 @@ const CartScreen = ({ navigation }) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
+                const location = await StorageService.getLocation();
                 if (location && location?.Country) {
                     setLocationData(location);
                     setMinOrder(location?.DeliveryParams?.minOrderValue);
