@@ -286,7 +286,7 @@ const LocationDetailScreen = ({ route, navigation }) => {
                 <MapView
                     provider={PROVIDER_GOOGLE}
                     style={styles.map}
-                    mapType={'mutedStandard'}
+                    mapType={'standard'}
                     ref={mapRef}
                     showsUserLocation
                     initialRegion={region}

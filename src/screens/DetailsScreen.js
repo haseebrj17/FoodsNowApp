@@ -141,7 +141,8 @@ const DetailsScreen = ({ route }) => {
     const categoryId = route.params.brand.Id;
 
     useEffect(() => {
-        dispatch(fetchProducts(categoryId));
+        const addSides = route.params.brand.Logo === null || route.params.brand.Logo === undefined || route.params.brand.Logo === "" ? false : true;
+        dispatch(fetchProducts(categoryId, addSides));
     }, [categoryId]);
 
     const [height, setHeight] = useState(null)

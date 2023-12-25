@@ -501,7 +501,6 @@ const AddressesScreen = ({ navigation }) => {
                             />
                         </View>
                     </View>
-
                 )}
         </>
     )

@@ -1,22 +1,15 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { View, Dimensions, StyleSheet, Image, Animated, Text, TouchableOpacity, Platform } from 'react-native';
-import { Divider, Searchbar } from 'react-native-paper'
+import { View, Dimensions, StyleSheet, Animated, Text, TouchableOpacity, Platform } from 'react-native';
+import { Divider, Button } from 'react-native-paper'
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import * as Location from 'expo-location';
-import CustomLocationPin from '../assets/icons/CustomLocationPin';
 import { MaterialIcons, Ionicons, EvilIcons, Feather } from '@expo/vector-icons';
-import { useFonts } from 'expo-font';
 import { Display } from '../utils';
-import { Fonts } from '../assets/constants';
 import { GOOGLE_LOCATION_AUTO_COMPLETE_IOS, GOOGLE_LOCATION_AUTO_COMPLETE_ANDROID } from '@env'
 import { BottomSheetModal, BottomSheetModalProvider, BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 import { NativeBaseProvider } from 'native-base';
 import { Input } from '@rneui/base';
-import { Button } from 'react-native-paper';
-import { StorageService } from '../services';
-import { useDispatch } from 'react-redux';
-
 
 const { width, height } = Dimensions.get('screen');
 const ASPECT_RATIO = width / height;
@@ -25,19 +18,11 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 const LocationAccessScreen = ({ navigation }) => {
 
-    const [fontsLoaded] = useFonts({
-        Fonts
-    });
-
-    const [isOpen, setIsOpen] = useState(true)
-
-    const [isEnabled, setIsEnabled] = useState(false);
-
     const bottomSheetModalRef = useRef(null);
     const snapPoints = ["50%", "70%"];
 
     function handlePresentModal() {
-        bottomSheetModalRef.current?.present();
+        bottomSheetModalRef?.current?.present();
     }
 
     const renderBackdrop = useCallback(
@@ -48,12 +33,7 @@ const LocationAccessScreen = ({ navigation }) => {
     );
 
     const closeBottomSheet = useCallback(() => {
-        setIsOpen(false);
-        bottomSheetModalRef.current.close();
-    }, []);
-
-    const handleSheetChanges = useCallback((index) => {
-        setIsOpen(index > 0 ? true : false);
+        bottomSheetModalRef?.current?.close();
     }, []);
 
     const [region, setRegion] = useState(null);
@@ -66,103 +46,136 @@ const LocationAccessScreen = ({ navigation }) => {
     const [addressAdded, setAddressAdded] = useState(false)
 
     useEffect(() => {
-        (async () => {
-            let { status } = await Location.requestForegroundPermissionsAsync();
+        fetchLocation();
+    }, []);
+
+    const fetchLocation = async () => {
+        try {
+            const { status } = await Location.requestForegroundPermissionsAsync();
             if (status !== 'granted') {
                 setErrorMsg('Permission to access location was denied');
                 return;
             }
-            let location = await Location.getCurrentPositionAsync({});
-            Address(location.coords);
-            setSelectedLocation({
-                latitude: location.coords.latitude,
-                longitude: location.coords.longitude,
-                latitudeDelta: LATITUDE_DELTA,
-                longitudeDelta: LONGITUDE_DELTA,
-            })
-            setRegion({
-                latitude: location.coords.latitude,
-                longitude: location.coords.longitude,
-                latitudeDelta: LATITUDE_DELTA,
-                longitudeDelta: LONGITUDE_DELTA,
-            });
-        })();
-    }, []);
 
-    const Address = async (location) => {
-        const { latitude, longitude } = location;
-        let response = await Location.reverseGeocodeAsync({
-            latitude,
-            longitude
-        });
-        if (response[0]) {
-            let firstAddress = response[0];
-            let formattedAddressName = `${firstAddress.name}`;
-            let formattedAddressCity = `${firstAddress.city}`;
-            setAddress(firstAddress)
-            setAddressName(formattedAddressName);
-            setCity(formattedAddressCity)
+            const location = await getLocationWithTimeout();
+            if (location) {
+                updateLocationState(location.coords);
+            } else {
+                setErrorMsg('Unable to fetch location');
+            }
+        } catch (error) {
+            setErrorMsg('An error occurred while fetching the location');
+            // Optionally log the error or handle it as needed
         }
-    }
-
-    const markerTop = useRef(new Animated.Value(0)).current;
-    const animatedValue = useRef(new Animated.Value(0)).current;
-
-    const mapRef = useRef();
-
-    const [mapType, setMapType] = useState('mutedStandard');
-
-    const toggleMapType = () => {
-        setMapType(mapType === 'mutedStandard' ? 'satellite' : 'mutedStandard');
     };
 
-    const [miniMapType, setMiniMapType] = useState('satellite');
+    const getLocationWithTimeout = () => {
+        return new Promise((resolve, reject) => {
+            Location.getCurrentPositionAsync({})
+                .then(resolve)
+                .catch(reject);
 
-    const toggleMiniMapType = () => {
-        setMiniMapType(miniMapType === 'satellite' ? 'mutedStandard' : 'satellite');
-        toggleMapType()
+            setTimeout(() => {
+                resolve(null); // Resolve with null after a timeout (e.g., 5000 ms)
+            }, 5000);
+        });
     };
 
-    const animateToUserLocation = async () => {
-        let location = await Location.getCurrentPositionAsync({});
-        mapRef.current.animateToRegion({
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
+    const updateLocationState = (coords) => {
+        const updatedLocation = {
+            latitude: coords.latitude,
+            longitude: coords.longitude,
             latitudeDelta: LATITUDE_DELTA,
             longitudeDelta: LONGITUDE_DELTA,
-        }, 500);
+        };
+        Address(updatedLocation);
+        setSelectedLocation(updatedLocation);
+        setRegion(updatedLocation);
     };
 
-    const onRegionChange = (selectedLocation) => {
+    const Address = async (location) => {
+        try {
+            const { latitude, longitude } = location;
+            const response = await Location.reverseGeocodeAsync({ latitude, longitude });
+
+            if (response.length === 0) {
+                // Handle the case where no address is found
+                setErrorMsg('No address found for the given location');
+                return;
+            }
+
+            const firstAddress = response[0];
+            setAddress(firstAddress);
+            setAddressName(firstAddress.name || '');
+            setCity(firstAddress.city || '');
+        } catch (error) {
+            setErrorMsg('Failed to fetch address');
+        }
+    };
+
+    // Constants
+    const ANIMATION_DURATION_SHORT = 10;
+    const ANIMATION_DURATION_LONG = 50;
+    const MARKER_JUMP_VALUE = -5;
+
+    // Refs
+    const markerTop = useRef(new Animated.Value(0)).current;
+    const animatedValue = useRef(new Animated.Value(0)).current;
+    const mapRef = useRef();
+
+    // State
+    const [mapType, setMapType] = useState('standard');
+    const [miniMapType, setMiniMapType] = useState('satellite');
+
+    // Animation function
+    const animateMarker = (toValue, duration) => {
         Animated.parallel([
             Animated.timing(animatedValue, {
-                toValue: 0.5,
-                duration: 10,
+                toValue,
+                duration,
                 useNativeDriver: true,
             }),
             Animated.timing(markerTop, {
-                toValue: -5,
-                duration: 10,
+                toValue: toValue === 0 ? 0 : MARKER_JUMP_VALUE,
+                duration,
                 useNativeDriver: true,
             })
         ]).start();
+    };
+
+    // Toggle functions
+    const toggleMapType = () => {
+        setMapType(prevType => (prevType === 'standard' ? 'satellite' : 'standard'));
+    };
+
+    const toggleMiniMapType = () => {
+        setMiniMapType(prevType => (prevType === 'satellite' ? 'standard' : 'satellite'));
+        toggleMapType();
+    };
+
+    const animateToUserLocation = async () => {
+        try {
+            const location = await Location.getCurrentPositionAsync({});
+            mapRef.current?.animateToRegion({
+                latitude: location.coords.latitude,
+                longitude: location.coords.longitude,
+                latitudeDelta: LATITUDE_DELTA,
+                longitudeDelta: LONGITUDE_DELTA,
+            }, ANIMATION_DURATION_LONG);
+        } catch (error) {
+            // Handle location fetching error
+        }
+    };
+
+    const onRegionChange = (selectedLocation) => {
+        animateMarker(0.5, ANIMATION_DURATION_SHORT);
         setSelectedLocation(selectedLocation);
     };
 
     const onRegionChangeComplete = (selectedLocation) => {
-        Animated.parallel([
-            Animated.timing(animatedValue, {
-                toValue: 0,
-                duration: 50,
-                useNativeDriver: true,
-            }),
-            Animated.timing(markerTop, {
-                toValue: 0,
-                duration: 50,
-                useNativeDriver: true,
-            })
-        ]).start();
-        if ((selectedLocation?.latitude?.toFixed(6) !== region?.latitude?.toFixed(6)) || (selectedLocation?.longitude?.toFixed(6) !== region?.longitude?.toFixed(6))) {
+        animateMarker(0, ANIMATION_DURATION_LONG);
+        const hasLocationChanged = selectedLocation?.latitude?.toFixed(6) !== region?.latitude?.toFixed(6) || selectedLocation?.longitude?.toFixed(6) !== region?.longitude?.toFixed(6);
+        if (hasLocationChanged) {
             setSelectedLocation(selectedLocation);
             Address(selectedLocation);
             setAddressAdded(true);
@@ -173,6 +186,7 @@ const LocationAccessScreen = ({ navigation }) => {
         }
     };
 
+    // Pin Styles
     const pinStyle = {
         transform: [
             {
@@ -187,6 +201,41 @@ const LocationAccessScreen = ({ navigation }) => {
             inputRange: [0, 1],
             outputRange: [1, 0.6]
         }),
+    };
+
+    const handleLocationSelect = async (data, details = null) => {
+        if (!details || !details.geometry || !details.geometry.location) {
+            console.error('Location details are not available');
+            return;
+        }
+
+        try {
+            const selectedLoc = {
+                latitude: details.geometry.location.lat,
+                longitude: details.geometry.location.lng,
+                latitudeDelta: LATITUDE_DELTA,
+                longitudeDelta: LONGITUDE_DELTA,
+            };
+
+            // Updating state based on selected location
+            setSelectedLocation(selectedLoc);
+            setAddressAdded(true);
+
+            // Fetch and set address based on selected location
+            await Address(selectedLoc);
+
+            // Animate map to the selected region
+            if (mapRef.current) {
+                mapRef.current.animateToRegion(selectedLoc, 500);
+            }
+
+            // Close the bottom sheet modal
+            if (bottomSheetModalRef.current) {
+                bottomSheetModalRef.current.close();
+            }
+        } catch (error) {
+            console.error('Failed to select location:', error);
+        }
     };
 
     const AddressButton = () => {
@@ -256,7 +305,6 @@ const LocationAccessScreen = ({ navigation }) => {
             >
                 <View
                     style={{
-                        zIndex: 9999,
                         width: Display.setWidth(100),
                         height: Display.setHeight(8),
                         marginBottom: Display.setHeight(1.5),
@@ -464,10 +512,8 @@ const LocationAccessScreen = ({ navigation }) => {
                         ref={bottomSheetModalRef}
                         snapPoints={snapPoints}
                         backdropComponent={renderBackdrop}
-                        onAnimate={handleSheetChanges}
                         index={0}
                         enablePanDownToClose={true}
-                        onClose={() => setIsOpen(false)}
                         isRowScrollable={true}
                         backgroundStyle={{
                             borderRadius: 30
@@ -490,26 +536,7 @@ const LocationAccessScreen = ({ navigation }) => {
                                     leftIcon: { type: 'font-awesome', name: 'search', size: 24, color: '#325964' },
                                     errorStyle: { color: 'red' },
                                 }}
-                                GooglePlacesSearchQuery={{
-                                    rankby: "distance"
-                                }}
-                                onPress={(data, details = null) => {
-                                    const selectedLoc = {
-                                        latitude: details.geometry.location.lat,
-                                        longitude: details.geometry.location.lng,
-                                    };
-                                    setSelectedLocation(selectedLoc);
-                                    Address(selectedLoc);
-                                    setAddress(selectedLoc);
-                                    setAddressAdded(true);
-                                    mapRef.current.animateToRegion({
-                                        latitude: selectedLoc.latitude,
-                                        longitude: selectedLoc.longitude,
-                                        latitudeDelta: LATITUDE_DELTA,
-                                        longitudeDelta: LONGITUDE_DELTA,
-                                    }, 500);
-                                    bottomSheetModalRef.current.close();
-                                }}
+                                onPress={handleLocationSelect}
                                 query={{
                                     key: Platform.OS === 'ios' ? GOOGLE_LOCATION_AUTO_COMPLETE_IOS : GOOGLE_LOCATION_AUTO_COMPLETE_ANDROID,
                                     language: "de",
@@ -538,7 +565,6 @@ const LocationAccessScreen = ({ navigation }) => {
                                     description: {
                                         fontSize: 15,
                                         fontWeight: '400',
-                                        fontFamily: 'PBO'
                                     }
                                 }}
                             />

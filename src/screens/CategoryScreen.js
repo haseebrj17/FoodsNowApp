@@ -191,9 +191,9 @@ const CategoryScreen = ({ route }) => {
                                 flexDirection: 'row'
                             }}
                         >
-                            <Skeleton height={Display.setHeight(14)} width={Display.setHeight(11.5)} style={{ margin: 10, borderRadius: '50%' }} />
-                            <Skeleton height={Display.setHeight(14)} width={Display.setHeight(11.5)} style={{ margin: 10, borderRadius: '50%' }} />
-                            <Skeleton height={Display.setHeight(14)} width={Display.setHeight(11.5)} style={{ margin: 10, borderRadius: '50%' }} />
+                            <Skeleton height={Display.setHeight(14)} width={Display.setHeight(11.5)} style={{ margin: 10, borderRadius: Display.setHeight(50) }} />
+                            <Skeleton height={Display.setHeight(14)} width={Display.setHeight(11.5)} style={{ margin: 10, borderRadius: Display.setHeight(50) }} />
+                            <Skeleton height={Display.setHeight(14)} width={Display.setHeight(11.5)} style={{ margin: 10, borderRadius: Display.setHeight(50) }} />
                         </View>
                         <View
                             style={{
@@ -203,9 +203,9 @@ const CategoryScreen = ({ route }) => {
                                 flexDirection: 'row'
                             }}
                         >
-                            <Skeleton height={Display.setHeight(14)} width={Display.setHeight(11.5)} style={{ margin: 10, borderRadius: '50%' }} />
-                            <Skeleton height={Display.setHeight(14)} width={Display.setHeight(11.5)} style={{ margin: 10, borderRadius: '50%' }} />
-                            <Skeleton height={Display.setHeight(14)} width={Display.setHeight(11.5)} style={{ margin: 10, borderRadius: '50%' }} />
+                            <Skeleton height={Display.setHeight(14)} width={Display.setHeight(11.5)} style={{ margin: 10, borderRadius: Display.setHeight(50) }} />
+                            <Skeleton height={Display.setHeight(14)} width={Display.setHeight(11.5)} style={{ margin: 10, borderRadius: Display.setHeight(50) }} />
+                            <Skeleton height={Display.setHeight(14)} width={Display.setHeight(11.5)} style={{ margin: 10, borderRadius: Display.setHeight(50) }} />
                         </View>
                     </View>
                 </View>

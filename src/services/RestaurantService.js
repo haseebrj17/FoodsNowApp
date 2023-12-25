@@ -81,12 +81,12 @@ const getDashboard = async ({ FranchiseId }) => {
     }
 };
 
-const getProducts = async ({ categoryId }) => {
+const getProducts = async ({ categoryId, addSides }) => {
     console.log(`DashboardService | getProducts`);
     try {
         const requestBody = {
             Id: categoryId,
-            AddSides: true
+            AddSides: addSides ? addSides : true
         };
 
         const headers = {

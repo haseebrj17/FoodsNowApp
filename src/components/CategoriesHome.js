@@ -303,6 +303,7 @@ const styles = StyleSheet.create({
         height: Display.setHeight(5),
         alignSelf: "center",
         marginTop: 10,
+        marginBottom: 10,
         alignItems: "center",
         justifyContent: "center",
         borderWidth: 1,
