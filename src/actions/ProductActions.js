@@ -18,11 +18,11 @@ export const fetchProductsFailure = (error) => ({
     payload: error,
 });
 
-export const fetchProducts = (categoryId) => {
+export const fetchProducts = (categoryId, addSides) => {
     return async (dispatch) => {
         dispatch(fetchProductsStart());
         try {
-            const response = await RestaurantService.getProducts({ categoryId });
+            const response = await RestaurantService.getProducts({ categoryId, addSides });
             if (response?.status) {
                 dispatch(fetchProductsSuccess(response?.data));
             } else {

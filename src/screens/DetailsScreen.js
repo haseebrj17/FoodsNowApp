@@ -135,7 +135,9 @@ const DetailsScreen = ({ route }) => {
     const categoryId = route.params.brand.Id;
 
     useEffect(() => {
-        dispatch(fetchProducts(categoryId));
+        const addSides = route.params.brand.Logo === null || route.params.brand.Logo === undefined || route.params.brand.Logo === "" ? false : true;
+        console.log(categoryId, addSides)
+        dispatch(fetchProducts(categoryId, addSides));
     }, [categoryId]);
 
     const [height, setHeight] = useState(null)
@@ -247,18 +249,15 @@ const DetailsScreen = ({ route }) => {
     const [loading, setLoading] = useState(false);
 
     const filterProductsByCategory = (categoryId) => {
-        console.log("Filtering for category ID:", categoryId);
 
         if (categoryId === null) {
             return unfilteredDish;
         } else {
             const filtered = unfilteredDish.filter(product =>
                 product.ProductCategories.some(category => {
-                    console.log("Comparing:", category.CategoryId, "with", categoryId);
                     return category.CategoryId === categoryId;
                 })
             );
-            console.log("Filtered Products:", filtered);
             return filtered;
         }
     };
