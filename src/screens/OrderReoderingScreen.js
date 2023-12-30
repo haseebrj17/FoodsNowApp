@@ -26,7 +26,7 @@ const OrderReoderingScreen = ({ navigation }) => {
 
     useEffect(() => {
         dispatch(fetchOrders(token))
-    }, [])
+    }, [token])
 
     const rightSwipe = () => {
         return <TouchableOpacity
