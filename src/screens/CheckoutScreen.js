@@ -63,12 +63,12 @@ const CheckoutScreen = ({ route, navigation }) => {
     const token = useSelector(getToken);
 
     useEffect(() => {
-        if (Id) {
-            dispatch(fetchUserAddresses(Id, token));
+        if (token) {
+            dispatch(fetchUserAddresses(token));
         } else {
-            console.log("User Id not available");
+            console.log("User token not available");
         }
-    }, [Id]);
+    }, [token]);
 
     const { addresses, loadingAddress, error } = useSelector(
         (state) => state.addressState
