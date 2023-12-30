@@ -86,7 +86,7 @@ const getProducts = async ({ categoryId, addSides }) => {
     try {
         const requestBody = {
             Id: categoryId,
-            AddSides: addSides ? addSides : true
+            AddSides: addSides
         };
 
         const headers = {

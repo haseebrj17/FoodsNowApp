@@ -142,6 +142,7 @@ const DetailsScreen = ({ route }) => {
 
     useEffect(() => {
         const addSides = route.params.brand.Logo === null || route.params.brand.Logo === undefined || route.params.brand.Logo === "" ? false : true;
+        console.log(categoryId, addSides)
         dispatch(fetchProducts(categoryId, addSides));
     }, [categoryId]);
 
