@@ -26,7 +26,7 @@ const OrderReoderingScreen = ({ navigation }) => {
 
     useEffect(() => {
         dispatch(fetchOrders(token))
-    }, [])
+    }, [token])
 
     const rightSwipe = () => {
         return <TouchableOpacity
@@ -100,7 +100,7 @@ const OrderReoderingScreen = ({ navigation }) => {
                             >
                                 <View>
                                     {
-                                        item?.Products.slice(0, 2).map((i, index) => (
+                                        item?.Products?.slice(0, 2).map((i, index) => (
                                             <Text
                                                 key={index}
                                                 style={{
@@ -115,7 +115,7 @@ const OrderReoderingScreen = ({ navigation }) => {
                                         ))
                                     }
                                     {
-                                        item?.Products.length > 2 && <Text
+                                        item?.Products?.length > 2 && <Text
                                             style={{
                                                 fontSize: Display.setHeight(1.6),
                                                 fontWeight: "bold",
